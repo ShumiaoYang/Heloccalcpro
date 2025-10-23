@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-brand: 59 130 246;
+  --color-brand-foreground: 15 23 42;
+  color-scheme: light;
+}
+
+body {
+  @apply min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50 text-slate-900;
+  font-family: var(--font-inter), var(--font-noto-sans-sc), system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+}
+
+a {
+  @apply text-sky-600 underline-offset-4 transition-colors;
+}
+
+a:hover {
+  @apply text-sky-500;
+}
+
+.surface-card {
+  @apply rounded-2xl border border-sky-100 bg-white shadow-lg shadow-sky-100/60;
+}
+
+.surface-muted {
+  @apply rounded-2xl border border-slate-200 bg-white/90 shadow-sm;
+}
+
+.section-spacing {
+  @apply space-y-6;
+}
+
+.section-title {
+  @apply text-2xl font-semibold tracking-tight text-slate-900;
+}
+
+.subtle {
+  @apply text-sm text-slate-500;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

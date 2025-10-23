@@ -1,0 +1,108 @@
+{
+  "site": {
+    "name": "AI Toolbox",
+    "tagline": "Launch AI product demos in days, not weeks.",
+    "description": "A multilingual AI tools hub with opinionated UX, ready to extend into production.",
+    "loginCta": "Login"
+  },
+  "hero": {
+    "badge": "MVP • Phase 1",
+    "title": "Build a polished AI tools experience fast",
+    "subtitle": "Validate workflows, SEO structure, and localization on top of a robust Next.js foundation.",
+    "primaryCta": "Explore Tool Demo",
+    "secondaryCta": "View Roadmap"
+  },
+  "tool": {
+    "title": "Text Summarizer Demo",
+    "description": "Simulate AI summarization with deterministic success and failure paths for testing UX flows.",
+    "inputLabel": "Enter content",
+    "inputPlaceholder": "Paste up to 1,000 characters here...",
+    "modelLabel": "Model",
+    "lengthLabel": "Summary length",
+    "generate": "Generate",
+    "reset": "Clear",
+    "mockSuccess": "Success: This is a simulated AI summary output. Replace with real inference when wired to your backend.",
+    "mockError": "Generation failed. Please try again in a few moments.",
+    "helperText": "Type “trigger-error” to preview the error path.",
+    "loading": "Generating summary…"
+  },
+  "examples": {
+    "title": "Example Use Cases",
+    "description": "Illustrative scenarios to validate the experience ahead of real integrations.",
+    "items": [
+      {
+        "title": "Marketing copy",
+        "description": "Craft launch blurbs and press snippets ready for human polish."
+      },
+      {
+        "title": "Product research",
+        "description": "Digest customer interviews into key takeaways."
+      },
+      {
+        "title": "Newsletter recaps",
+        "description": "Transform long-form articles into shareable summaries."
+      }
+    ]
+  },
+  "features": {
+    "title": "Foundation Features",
+    "description": "Ship confident MVPs with production-ready guardrails.",
+    "items": [
+      {
+        "title": "Locale-aware routing",
+        "description": "Default English at root with Chinese at /zh, auto-detected and persisted."
+      },
+      {
+        "title": "SEO-ready metadata",
+        "description": "Title, description, keywords, canonical, and hreflang ready for production."
+      },
+      {
+        "title": "Scalable tool cards",
+        "description": "Configuration-driven layout ready to host future AI tasks and models."
+      }
+    ]
+  },
+  "blog": {
+    "title": "Latest Notes",
+    "description": "Content placeholders ready to swap in CMS-driven posts."
+  },
+  "links": {
+    "title": "Friendly Links",
+    "items": [
+      {
+        "name": "Product Requirements",
+        "description": "Full PRD for reference.",
+        "href": "#"
+      },
+      {
+        "name": "Design Snapshot",
+        "description": "Iterate on hero and navigation styling.",
+        "href": "#"
+      }
+    ]
+  },
+  "footer": {
+    "tagline": "AI Toolbox — built for rapid experimentation and scale.",
+    "copyright": "© {{year}} AI Toolbox. All rights reserved."
+  },
+  "roadmap": {
+    "title": "Phase Roadmap",
+    "phases": [
+      {
+        "name": "Phase 1",
+        "status": "In progress",
+        "description": "Deliver MVP with localization, SEO, and demo tool."
+      },
+      {
+        "name": "Phase 2",
+        "status": "Planned",
+        "description": "Add user accounts, billing, and analytics."
+      },
+      {
+        "name": "Phase 3",
+        "status": "Planned",
+        "description": "Expand content, knowledge base, and multilingual CMS."
+      }
+    ]
+  }
+}

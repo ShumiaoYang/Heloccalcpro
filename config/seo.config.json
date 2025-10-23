@@ -1,0 +1,58 @@
+{
+  "global": {
+    "en": {
+      "title": "AI Toolbox | Launch multilingual AI demos fast",
+      "description": "Production-ready Next.js starter for AI tools with localization, SEO, and extensible tool cards.",
+      "keywords": ["AI", "Next.js", "localization", "SEO", "toolbox"],
+      "canonical": "https://example.com/",
+      "hreflang": {
+        "en": "https://example.com/",
+        "zh": "https://example.com/zh"
+      },
+      "openGraph": {
+        "type": "website",
+        "locale": "en_US"
+      },
+      "twitter": {
+        "card": "summary_large_image"
+      },
+      "heading": "AI Toolbox"
+    },
+    "zh": {
+      "title": "AI 工具箱｜快速交付多语言 AI 演示站点",
+      "description": "面向 AI 工具的 Next.js 模板，内置多语言、SEO 与可扩展工具框架。",
+      "keywords": ["AI", "多语言", "SEO", "工具箱"],
+      "canonical": "https://example.com/zh",
+      "hreflang": {
+        "en": "https://example.com/",
+        "zh": "https://example.com/zh"
+      },
+      "openGraph": {
+        "type": "website",
+        "locale": "zh_CN"
+      },
+      "twitter": {
+        "card": "summary_large_image"
+      },
+      "heading": "AI 工具箱"
+    }
+  },
+  "pages": {
+    "/": {
+      "en": {},
+      "zh": {}
+    },
+    "/tools/text-summarizer": {
+      "en": {
+        "title": "Text Summarizer Demo | AI Toolbox",
+        "description": "Preview how the AI Toolbox handles summarization flows before connecting real inference.",
+        "heading": "Text Summarizer Demo"
+      },
+      "zh": {
+        "title": "文本摘要演示｜AI 工具箱",
+        "description": "先行体验 AI 工具箱的摘要流程，后续可接入真实推理服务。",
+        "heading": "文本摘要演示"
+      }
+    }
+  }
+}

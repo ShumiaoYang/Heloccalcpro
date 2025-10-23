@@ -1,0 +1,54 @@
+{
+  "global": {
+    "en": {
+      "title": "AI ToolBox - Your Daily AI Assistant",
+      "description": "A collection of useful AI tools to boost your productivity.",
+      "keywords": "AI, tools, productivity, free",
+      "h1": "Welcome to AI ToolBox",
+      "h2": ["Featured AI Tools", "How it works"],
+      "h3": ["Quick Start", "Examples", "FAQ"]
+    },
+    "zh": {
+      "title": "AI工具箱 - 你的日常AI助手",
+      "description": "一系列实用的AI工具，提升您的生产力。",
+      "keywords": "AI, 工具, 生产力, 免费",
+      "h1": "欢迎使用AI工具箱",
+      "h2": ["精选AI工具", "工作原理"],
+      "h3": ["快速开始", "示例", "常见问题"]
+    }
+  },
+  "pages": {
+    "/": {
+      "en": {
+        "title": "AI ToolBox - Home",
+        "description": "Discover curated AI tools to assist your daily tasks.",
+        "keywords": "AI toolbox, home, productivity",
+        "h1": "Welcome to AI ToolBox"
+      },
+      "zh": {
+        "title": "AI工具箱 - 首页",
+        "description": "发现精选AI工具，助力你的日常任务。",
+        "keywords": "AI工具箱, 首页, 生产力",
+        "h1": "欢迎使用AI工具箱"
+      }
+    },
+    "/tools/text-summarizer": {
+      "en": {
+        "title": "Text Summarizer - AI ToolBox",
+        "description": "Summarize long texts into short, easy-to-read results.",
+        "keywords": "text summarizer, AI, NLP",
+        "h1": "AI Text Summarizer",
+        "h2": ["Input", "Results"],
+        "h3": ["Parameters", "Examples"]
+      },
+      "zh": {
+        "title": "文本摘要工具 - AI工具箱",
+        "description": "将长文本总结为简短易读的结果。",
+        "keywords": "文本摘要, AI, NLP",
+        "h1": "AI文本摘要工具",
+        "h2": ["输入", "结果"],
+        "h3": ["参数", "示例"]
+      }
+    }
+  }
+}

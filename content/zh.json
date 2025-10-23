@@ -1,0 +1,108 @@
+{
+  "site": {
+    "name": "AI 工具箱",
+    "tagline": "几天内交付高完成度的 AI 演示站点。",
+    "description": "一个具备多语言、SEO 与可扩展工具框架的 Next.js 项目，为后续商业化打下基础。",
+    "loginCta": "登录"
+  },
+  "hero": {
+    "badge": "MVP • 阶段一",
+    "title": "快速构建专业的 AI 工具体验",
+    "subtitle": "在稳定的 Next.js 基座上验证交互流程、SEO 结构与多语言能力。",
+    "primaryCta": "查看工具演示",
+    "secondaryCta": "查看路线图"
+  },
+  "tool": {
+    "title": "文本摘要演示",
+    "description": "通过可预测的成功/失败路径模拟 AI 摘要，便于验证体验与流程。",
+    "inputLabel": "输入内容",
+    "inputPlaceholder": "在此粘贴不超过 1,000 字的文本……",
+    "modelLabel": "模型",
+    "lengthLabel": "摘要长度",
+    "generate": "生成",
+    "reset": "清空",
+    "mockSuccess": "生成成功：这是模拟的 AI 摘要结果，接入真实推理后可替换。",
+    "mockError": "生成失败，请稍后重试。",
+    "helperText": "输入 “trigger-error” 可查看错误流程。",
+    "loading": "正在生成摘要…"
+  },
+  "examples": {
+    "title": "场景示例",
+    "description": "供演示体验使用的典型场景，后续可替换为真实案例。",
+    "items": [
+      {
+        "title": "营销文案",
+        "description": "快速产出上线宣传语与媒体稿要点。"
+      },
+      {
+        "title": "产品调研",
+        "description": "将用户访谈内容提炼为关键洞察。"
+      },
+      {
+        "title": "周报简报",
+        "description": "把长篇文章转化为易于分享的摘要。"
+      }
+    ]
+  },
+  "features": {
+    "title": "基础能力",
+    "description": "提供可直接上线的质量保障能力，支持快速扩展。",
+    "items": [
+      {
+        "title": "语言路由",
+        "description": "英文默认根路径，中文位于 /zh，可自动识别并持久化偏好。"
+      },
+      {
+        "title": "SEO 准备就绪",
+        "description": "Title、Description、Keywords、Canonical、Hreflang 全量输出。"
+      },
+      {
+        "title": "可扩展工具卡",
+        "description": "配置驱动的布局，便于接入更多 AI 任务与模型。"
+      }
+    ]
+  },
+  "blog": {
+    "title": "最新动态",
+    "description": "内容占位符，可与后续 CMS 数据对接。"
+  },
+  "links": {
+    "title": "友情链接",
+    "items": [
+      {
+        "name": "产品需求文档",
+        "description": "完整 PRD 供查阅。",
+        "href": "#"
+      },
+      {
+        "name": "设计快照",
+        "description": "用于迭代顶部和导航样式。",
+        "href": "#"
+      }
+    ]
+  },
+  "footer": {
+    "tagline": "AI 工具箱 —— 为快速试验与扩展而建。",
+    "copyright": "© {{year}} AI 工具箱。保留所有权利。"
+  },
+  "roadmap": {
+    "title": "阶段路线图",
+    "phases": [
+      {
+        "name": "阶段一",
+        "status": "进行中",
+        "description": "交付具有多语言、SEO 与工具演示的 MVP。"
+      },
+      {
+        "name": "阶段二",
+        "status": "规划中",
+        "description": "加入用户体系、计费与数据分析。"
+      },
+      {
+        "name": "阶段三",
+        "status": "规划中",
+        "description": "拓展内容体系、知识库与多语言 CMS。"
+      }
+    ]
+  }
+}

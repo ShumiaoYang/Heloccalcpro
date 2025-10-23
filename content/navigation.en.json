@@ -1,0 +1,9 @@
+[
+  { "id": "hero", "href": "#hero", "label": "Overview" },
+  { "id": "tool", "href": "#tool", "label": "Tool" },
+  { "id": "examples", "href": "#examples", "label": "Examples" },
+  { "id": "features", "href": "#features", "label": "Features" },
+  { "id": "blog", "href": "#blog", "label": "Blog" },
+  { "id": "links", "href": "#links", "label": "Links" },
+  { "id": "roadmap", "href": "#roadmap", "label": "Roadmap" }
+]

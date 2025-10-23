@@ -1,0 +1,9 @@
+[
+  { "id": "hero", "href": "#hero", "label": "概览" },
+  { "id": "tool", "href": "#tool", "label": "工具" },
+  { "id": "examples", "href": "#examples", "label": "案例" },
+  { "id": "features", "href": "#features", "label": "能力" },
+  { "id": "blog", "href": "#blog", "label": "博客" },
+  { "id": "links", "href": "#links", "label": "友链" },
+  { "id": "roadmap", "href": "#roadmap", "label": "路线图" }
+]
