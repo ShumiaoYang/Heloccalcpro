@@ -4,14 +4,26 @@ import { Locale } from '@/i18n/routing';
 
 type HrefLangMap = Record<string, string>;
 
+type OpenGraphEntry = {
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+};
+
+type TwitterEntry = {
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+};
+
 type SeoEntry = {
   title?: string;
   description?: string;
   keywords?: string[];
   canonical?: string;
   hreflang?: HrefLangMap;
-  openGraph?: Record<string, unknown>;
-  twitter?: Record<string, unknown>;
+  openGraph?: OpenGraphEntry;
+  twitter?: TwitterEntry;
   heading?: string;
 };
 

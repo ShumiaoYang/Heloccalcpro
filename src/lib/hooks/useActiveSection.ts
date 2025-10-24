@@ -19,7 +19,7 @@ export function useActiveSection(sections: NavigationItem[]) {
 
     const elements = sections
       .map((section) => document.getElementById(section.id))
-      .filter((el): el is Element => Boolean(el));
+      .filter((el): el is HTMLElement => Boolean(el));
 
     elements.forEach((element) => observer.observe(element));
 

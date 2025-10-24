@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import type { Route } from 'next';
 import { NavigationItem } from '@/lib/navigation';
 import { useActiveSection } from '@/lib/hooks/useActiveSection';
 import { scrollToAnchor, updateHash } from '@/lib/utils/scroll-to-anchor';
@@ -12,7 +13,7 @@ type PageShellProps = {
   navigation: NavigationItem[];
   siteName: string;
   loginLabel: string;
-  loginHref: string;
+  loginHref: Route;
   children: React.ReactNode;
 };
 
@@ -109,7 +110,7 @@ function Logo({ siteName }: { siteName: string }) {
   );
 }
 
-function FooterCTA({ loginLabel, loginHref }: { loginLabel: string; loginHref: string }) {
+function FooterCTA({ loginLabel, loginHref }: { loginLabel: string; loginHref: Route }) {
   return (
     <div className="mt-10 space-y-4 text-sm text-slate-500">
       <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Access</p>
@@ -134,7 +135,7 @@ type MobileNavProps = {
   activeSection: string;
   onNavigate: (href: string) => void;
   loginLabel: string;
-  loginHref: string;
+  loginHref: Route;
 };
 
 function MobileNav({ open, onClose, navigation, activeSection, onNavigate, loginLabel, loginHref }: MobileNavProps) {

@@ -107,20 +107,24 @@ export function LinksSection({ content }: SectionsProps) {
         <h2 className="section-title">{content.links.title}</h2>
       </header>
       <div className="grid gap-4 md:grid-cols-2">
-        {content.links.items.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            target={item.href.startsWith('http') ? '_blank' : undefined}
-            className="surface-card group block p-5"
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-900">{item.name}</h3>
-              <span className="text-xl text-sky-500 transition group-hover:translate-x-1">→</span>
-            </div>
-            <p className="mt-2 text-sm text-slate-600">{item.description}</p>
-          </Link>
-        ))}
+        {content.links.items.map((item) => {
+          const isExternal = item.href.startsWith('http');
+          return (
+            <a
+              key={item.name}
+              href={item.href}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noreferrer' : undefined}
+              className="surface-card group block p-5"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-slate-900">{item.name}</h3>
+                <span className="text-xl text-sky-500 transition group-hover:translate-x-1">→</span>
+              </div>
+              <p className="mt-2 text-sm text-slate-600">{item.description}</p>
+            </a>
+          );
+        })}
       </div>
     </section>
   );
