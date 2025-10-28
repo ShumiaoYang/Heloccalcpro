@@ -1,9 +1,69 @@
 {
-  "summarizer": {
-    "id": "text-summarizer",
-    "provider": "mock",
-    "model": "mock-summarizer",
-    "temperature": 0.3,
-    "maxOutputTokens": 600
-  }
+  "tools": [
+    {
+      "slug": "text-summarizer",
+      "type": "summarizer",
+      "provider": "mock",
+      "model": "mock-summarizer",
+      "temperature": 0.3,
+      "maxOutputTokens": 600,
+      "status": "live",
+      "cta": {
+        "en": {
+          "tag": "Live",
+          "label": "Try now",
+          "description": "Condense long-form content into concise summaries in seconds.",
+          "disabled": false
+        },
+        "zh": {
+          "tag": "已上线",
+          "label": "立即体验",
+          "description": "将长篇内容快速浓缩为易读要点。",
+          "disabled": false
+        }
+      }
+    },
+    {
+      "slug": "idea-generator",
+      "type": "idea",
+      "provider": "mock",
+      "model": "ideator-mock",
+      "status": "coming_soon",
+      "cta": {
+        "en": {
+          "tag": "Coming soon",
+          "label": "Preview",
+          "description": "Brainstorm product ideas, taglines, and campaign hooks.",
+          "disabled": true
+        },
+        "zh": {
+          "tag": "敬请期待",
+          "label": "敬请期待",
+          "description": "为产品、宣传或命名快速头脑风暴。",
+          "disabled": true
+        }
+      }
+    },
+    {
+      "slug": "transcript-polisher",
+      "type": "editing",
+      "provider": "mock",
+      "model": "editor-mock",
+      "status": "coming_soon",
+      "cta": {
+        "en": {
+          "tag": "Coming soon",
+          "label": "Preview",
+          "description": "Clean up meeting transcripts into publish-ready notes.",
+          "disabled": true
+        },
+        "zh": {
+          "tag": "敬请期待",
+          "label": "敬请期待",
+          "description": "将粗糙语音转写整理成可分享的会议纪要。",
+          "disabled": true
+        }
+      }
+    }
+  ]
 }

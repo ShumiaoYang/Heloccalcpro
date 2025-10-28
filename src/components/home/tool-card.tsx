@@ -2,16 +2,19 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { SiteContent } from '@/lib/content';
+import type { Locale } from '@/i18n/routing';
 
 type ToolCopy = SiteContent['tool'];
 
 type ToolCardProps = {
   copy: ToolCopy;
+  slug: string;
+  locale: Locale;
 };
 
 type RunState = 'idle' | 'loading' | 'success' | 'error';
 
-export default function ToolCard({ copy }: ToolCardProps) {
+export default function ToolCard({ copy, slug, locale }: ToolCardProps) {
   const [prompt, setPrompt] = useState('');
   const [length, setLength] = useState(3);
   const [state, setState] = useState<RunState>('idle');
@@ -38,10 +41,10 @@ export default function ToolCard({ copy }: ToolCardProps) {
     setErrorMessage('');
 
     try {
-      const response = await fetch('/api/tools/summarize', {
+      const response = await fetch(`/api/tools/${slug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, length }),
+        body: JSON.stringify({ prompt, length, locale }),
         signal: controller.signal,
       });
 

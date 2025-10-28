@@ -68,6 +68,37 @@
       "通过环境变量注入 OpenAI/Azure 等 API Key，即可切换真实推理。"
     ]
   },
+  "toolCatalog": {
+    "title": "工具目录",
+    "description": "模板内置多种 AI 演示，可按需扩展或二次开发。",
+    "viewAll": "查看全部工具",
+    "items": [
+      {
+        "slug": "text-summarizer",
+        "title": "文本摘要",
+        "description": "将长篇内容快速浓缩为易读要点。",
+        "tag": "已上线",
+        "cta": "立即体验",
+        "status": "live"
+      },
+      {
+        "slug": "idea-generator",
+        "title": "灵感生成器",
+        "description": "为产品、宣传或命名快速头脑风暴。",
+        "tag": "敬请期待",
+        "cta": "敬请期待",
+        "status": "coming_soon"
+      },
+      {
+        "slug": "transcript-polisher",
+        "title": "会议纪要润色",
+        "description": "将粗糙的语音转写整理成可分享的笔记。",
+        "tag": "敬请期待",
+        "cta": "敬请期待",
+        "status": "coming_soon"
+      }
+    ]
+  },
   "examples": {
     "title": "场景示例",
     "description": "供演示体验使用的典型场景，后续可替换为真实案例。",

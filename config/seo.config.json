@@ -1,4 +1,4 @@
-{
+﻿{
   "global": {
     "en": {
       "title": "AI Toolbox | Launch multilingual AI demos fast",
@@ -42,6 +42,18 @@
       "en": {},
       "zh": {}
     },
+    "/tools": {
+      "en": {
+        "title": "AI Tools Catalogue | AI Toolbox",
+        "description": "Explore the demos bundled with AI Toolbox and extend them into production-ready workflows.",
+        "heading": "AI Tools"
+      },
+      "zh": {
+        "title": "AI 工具目录｜AI 工具箱",
+        "description": "浏览模板内置的 AI 演示，并按需扩展至实际业务场景。",
+        "heading": "AI 工具目录"
+      }
+    },
     "/tools/text-summarizer": {
       "en": {
         "title": "Text Summarizer Demo | AI Toolbox",
@@ -50,8 +62,32 @@
       },
       "zh": {
         "title": "文本摘要演示｜AI 工具箱",
-        "description": "先行体验 AI 工具箱的摘要流程，后续可接入真实推理服务。",
+        "description": "先体验文本摘要流程，后续可接入真实推理服务。",
         "heading": "文本摘要演示"
+      }
+    },
+    "/tools/idea-generator": {
+      "en": {
+        "title": "Idea Generator | AI Toolbox",
+        "description": "Brainstorm product ideas, taglines, and creative concepts directly in the browser.",
+        "heading": "Idea Generator"
+      },
+      "zh": {
+        "title": "灵感生成器｜AI 工具箱",
+        "description": "快速为产品、宣传或命名收集灵感点子。",
+        "heading": "灵感生成器"
+      }
+    },
+    "/tools/transcript-polisher": {
+      "en": {
+        "title": "Transcript Polisher | AI Toolbox",
+        "description": "Turn raw meeting transcripts into shareable, polished notes in minutes.",
+        "heading": "Transcript Polisher"
+      },
+      "zh": {
+        "title": "会议纪要润色｜AI 工具箱",
+        "description": "将粗糙语音转写整理成清晰可分享的会议纪要。",
+        "heading": "会议纪要润色"
       }
     }
   }

@@ -1,9 +1,17 @@
 import Link from 'next/link';
 import ToolCard from '@/components/home/tool-card';
+import ToolCatalogCard from '@/components/tools/catalog-card';
 import type { SiteContent } from '@/lib/content';
+import type { Locale } from '@/i18n/routing';
+import { buildLocalizedToolCatalog } from '@/lib/tools/catalog';
+import { TOOL_SUMMARIZER_SLUG } from '@/lib/tools/config';
 
 type SectionsProps = {
   content: SiteContent;
+};
+
+type ToolSectionProps = SectionsProps & {
+  locale: Locale;
 };
 
 export function HeroSection({ content }: SectionsProps) {
@@ -36,14 +44,51 @@ export function HeroSection({ content }: SectionsProps) {
   );
 }
 
-export function ToolSection({ content }: SectionsProps) {
+export function ToolSection({ content, locale }: ToolSectionProps) {
+  const catalog = buildLocalizedToolCatalog(content.toolCatalog, locale);
+  const items = catalog.items;
+  const hasItems = items.length > 0;
+
   return (
     <section id="tool" className="section-spacing">
       <header className="space-y-2">
         <h2 className="section-title">{content.tool.title}</h2>
         <p className="max-w-2xl text-sm text-slate-600">{content.tool.description}</p>
       </header>
-      <ToolCard copy={content.tool} />
+      {hasItems ? (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {items.map((item) => {
+            if (item.slug === TOOL_SUMMARIZER_SLUG) {
+              return (
+                <div key={item.slug} className="md:col-span-2 xl:col-span-2">
+                  {item.disabled ? (
+                    <ToolCatalogCard item={item} locale={locale} />
+                  ) : (
+                    <ToolCard copy={content.tool} locale={locale} slug={item.slug} />
+                  )}
+                </div>
+              );
+            }
+
+            return <ToolCatalogCard key={item.slug} item={item} locale={locale} />;
+          })}
+        </div>
+      ) : (
+        <div className="mt-6">
+          <ToolCard copy={content.tool} locale={locale} slug={TOOL_SUMMARIZER_SLUG} />
+        </div>
+      )}
+      {catalog?.viewAll && hasItems ? (
+        <div className="mt-6">
+          <Link
+            href={`/${locale}/tools`}
+            className="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 transition hover:text-sky-500"
+          >
+            {catalog.viewAll}
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
+      ) : null}
     </section>
   );
 }

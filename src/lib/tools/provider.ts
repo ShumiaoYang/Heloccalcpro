@@ -7,6 +7,11 @@ type BaseParams = {
   locale: string;
 };
 
+type ProviderOptions = {
+  temperature?: number;
+  maxOutputTokens?: number;
+};
+
 export type ProviderResult = {
   summary: string;
   model: string;
@@ -16,21 +21,32 @@ export async function runProvider(
   provider: SummarizerProvider,
   model: string,
   params: BaseParams,
+  options: ProviderOptions = {},
 ): Promise<ProviderResult> {
   if (provider === 'openai') {
-    return runWithOpenAI(model, params);
+    return runWithOpenAI(model, params, options);
   }
   return runWithMock(model, params);
 }
 
-async function runWithOpenAI(model: string, params: BaseParams): Promise<ProviderResult> {
+async function runWithOpenAI(
+  model: string,
+  params: BaseParams,
+  options: ProviderOptions,
+): Promise<ProviderResult> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new SummarizerError('OPENAI_API_KEY 未配置，无法调用 OpenAI。', 'config');
   }
 
   const baseUrl = process.env.OPENAI_BASE_URL ?? 'https://api.openai.com/v1';
-  const temperature = Number(process.env.OPENAI_SUMMARIZER_TEMP ?? '0.2');
+  const envTemperature = Number.parseFloat(process.env.OPENAI_SUMMARIZER_TEMP ?? '0.2');
+  const fallbackTemperature = Number.isFinite(envTemperature) ? envTemperature : 0.2;
+  const temperature = options.temperature ?? fallbackTemperature;
+  const maxTokens =
+    typeof options.maxOutputTokens === 'number' && options.maxOutputTokens > 0
+      ? Math.floor(options.maxOutputTokens)
+      : undefined;
 
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
@@ -41,6 +57,7 @@ async function runWithOpenAI(model: string, params: BaseParams): Promise<Provide
     body: JSON.stringify({
       model,
       temperature,
+      max_tokens: maxTokens,
       messages: [
         {
           role: 'system',

@@ -38,7 +38,7 @@ export default function LocaleHomePage({ params }: PageProps) {
       locale={locale}
     >
       <HeroSection content={content} />
-      <ToolSection content={content} />
+      <ToolSection content={content} locale={locale} />
       <ExamplesSection content={content} />
       <FeaturesSection content={content} />
       <BlogSection content={content} />

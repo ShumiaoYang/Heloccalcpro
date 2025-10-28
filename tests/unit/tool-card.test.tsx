@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ToolCard from '@/components/home/tool-card';
 import enContent from '../../content/en.json';
+import { TOOL_SUMMARIZER_SLUG } from '@/lib/tools/config';
 
 const copy = enContent.tool;
 
@@ -30,7 +31,7 @@ describe('ToolCard', () => {
       ),
     );
 
-    render(<ToolCard copy={copy} />);
+    render(<ToolCard copy={copy} slug={TOOL_SUMMARIZER_SLUG} locale="en" />);
 
     const textarea = screen.getByLabelText(copy.inputLabel);
     fireEvent.change(textarea, { target: { value: 'Test prompt' } });
@@ -38,6 +39,10 @@ describe('ToolCard', () => {
     fireEvent.click(screen.getByText(copy.generate));
 
     expect(screen.getAllByText(copy.loading).length).toBeGreaterThan(0);
+    const [requestUrl, requestInit] = fetchMock.mock.calls[0] ?? [];
+    expect(requestUrl).toBe(`/api/tools/${TOOL_SUMMARIZER_SLUG}`);
+    const parsedBody = JSON.parse((requestInit?.body as string) ?? '{}');
+    expect(parsedBody).toMatchObject({ prompt: 'Test prompt', length: 3, locale: 'en' });
 
     await waitFor(
       () => {
@@ -60,7 +65,7 @@ describe('ToolCard', () => {
       ),
     );
 
-    render(<ToolCard copy={copy} />);
+    render(<ToolCard copy={copy} slug={TOOL_SUMMARIZER_SLUG} locale="en" />);
 
     const textarea = screen.getByLabelText(copy.inputLabel);
     fireEvent.change(textarea, { target: { value: 'trigger-error' } });
@@ -68,6 +73,9 @@ describe('ToolCard', () => {
     fireEvent.click(screen.getByText(copy.generate));
 
     expect(screen.getAllByText(copy.loading).length).toBeGreaterThan(0);
+    const [, errorInit] = fetchMock.mock.calls[0] ?? [];
+    const errorBody = JSON.parse((errorInit?.body as string) ?? '{}');
+    expect(errorBody).toMatchObject({ prompt: 'trigger-error', length: 3, locale: 'en' });
 
     await waitFor(
       () => {

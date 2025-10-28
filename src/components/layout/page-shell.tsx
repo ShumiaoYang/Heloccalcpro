@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import type { Route } from 'next';
 import { signOut, useSession } from 'next-auth/react';
 import { NavigationItem } from '@/lib/navigation';
 import { useActiveSection } from '@/lib/hooks/useActiveSection';
@@ -16,7 +15,7 @@ type PageShellProps = {
   siteName: string;
   loginLabel: string;
   logoutLabel: string;
-  loginHref: Route;
+  loginHref: string;
   locale: Locale;
   children: React.ReactNode;
 };

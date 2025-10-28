@@ -68,6 +68,37 @@
       "Inject your own API keys (OpenAI, Azure, etc.) via environment variables."
     ]
   },
+  "toolCatalog": {
+    "title": "Tool Catalogue",
+    "description": "Explore additional AI demos bundled with this template.",
+    "viewAll": "View all tools",
+    "items": [
+      {
+        "slug": "text-summarizer",
+        "title": "Text Summarizer",
+        "description": "Condense long-form content into concise summaries in seconds.",
+        "tag": "Live",
+        "cta": "Try now",
+        "status": "live"
+      },
+      {
+        "slug": "idea-generator",
+        "title": "Idea Generator",
+        "description": "Brainstorm product ideas, taglines, and campaign hooks.",
+        "tag": "Coming soon",
+        "cta": "Preview",
+        "status": "coming_soon"
+      },
+      {
+        "slug": "transcript-polisher",
+        "title": "Transcript Polisher",
+        "description": "Clean up meeting transcripts into publish-ready notes.",
+        "tag": "Coming soon",
+        "cta": "Preview",
+        "status": "coming_soon"
+      }
+    ]
+  },
   "examples": {
     "title": "Example Use Cases",
     "description": "Illustrative scenarios to validate the experience ahead of real integrations.",
