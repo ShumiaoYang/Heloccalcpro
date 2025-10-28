@@ -1,0 +1,9 @@
+{
+  "summarizer": {
+    "id": "text-summarizer",
+    "provider": "mock",
+    "model": "mock-summarizer",
+    "temperature": 0.3,
+    "maxOutputTokens": 600
+  }
+}

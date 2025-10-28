@@ -1,20 +1,56 @@
-'use client';
+"use client";
 
-import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/routing';
+import { usePathname, useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
+
+const DEFAULT_HASH = '';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations('site');
 
   const handleSwitch = async (nextLocale: 'en' | 'zh') => {
     if (nextLocale === locale) return;
 
-    const hash = typeof window !== 'undefined' ? window.location.hash : '';
-    const target = `${pathname}${hash}`;
+   const hash = typeof window !== 'undefined' ? window.location.hash ?? DEFAULT_HASH : DEFAULT_HASH;
+   const currentPath = typeof window !== 'undefined' ? window.location.pathname : pathname;
 
-    await router.replace(target, { locale: nextLocale });
+    const pathWithoutLocale = (() => {
+      let base = currentPath;
+      for (let i = 0; i < 5; i += 1) {
+        const updated = base.replace(/^\/(en|zh)(?=\/|$)/, '') || '/';
+        if (updated === base || (!updated.startsWith('/en') && !updated.startsWith('/zh'))) {
+          return updated;
+        }
+        base = updated;
+      }
+      return base;
+    })();
+
+    const fallbackSegments = pathWithoutLocale.split('/').filter((segment) => segment.length > 0);
+    const initialTarget = `/${[nextLocale, ...fallbackSegments].join('/')}`;
+
+    const existingSegments = currentPath.split('/').filter((segment) => segment.length > 0);
+    const isSameLocaleSegment = existingSegments[0] === nextLocale;
+    const target = isSameLocaleSegment ? currentPath : `${initialTarget}${hash}`;
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[locale-switch]', {
+        currentPath,
+        pathWithoutLocale,
+        fallbackSegments,
+        initialTarget,
+        existingSegments,
+        target,
+        nextLocale,
+      });
+    }
+
+    if (!isSameLocaleSegment) {
+      await router.replace(target);
+    }
   };
 
   return (
@@ -25,6 +61,7 @@ export default function LanguageSwitcher() {
         className={`px-3 py-2 transition ${
           locale === 'en' ? 'bg-sky-100 text-sky-700' : 'hover:bg-sky-50'
         }`}
+        aria-label={t('toggleToEnglish')}
       >
         EN
       </button>
@@ -34,6 +71,7 @@ export default function LanguageSwitcher() {
         className={`px-3 py-2 transition ${
           locale === 'zh' ? 'bg-sky-100 text-sky-700' : 'hover:bg-sky-50'
         }`}
+        aria-label={t('toggleToChinese')}
       >
         中文
       </button>

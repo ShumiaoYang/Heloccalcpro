@@ -15,52 +15,60 @@ export default function ToolCard({ copy }: ToolCardProps) {
   const [prompt, setPrompt] = useState('');
   const [length, setLength] = useState(3);
   const [state, setState] = useState<RunState>('idle');
-  const [message, setMessage] = useState('');
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [result, setResult] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const abortController = useRef<AbortController | null>(null);
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      abortController.current?.abort();
     };
   }, []);
 
-  const clearPending = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!prompt.trim()) return;
+
+    abortController.current?.abort();
+    const controller = new AbortController();
+    abortController.current = controller;
+
+    setState('loading');
+    setResult('');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/tools/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, length }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const errorBody = await safeParseJson(response);
+        throw new Error(errorBody?.message ?? copy.errorFallback);
+      }
+
+      const json = await response.json();
+      setResult(json.summary ?? '');
+      setState('success');
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return;
+      }
+      setErrorMessage(error instanceof Error ? error.message : copy.errorFallback);
+      setState('error');
     }
   };
 
-  const runMock = (value: string) => {
-    clearPending();
-    setState('loading');
-    setMessage('');
-
-    timeoutRef.current = setTimeout(() => {
-      if (value.trim().toLowerCase() === 'trigger-error') {
-        setState('error');
-        setMessage(copy.mockError);
-      } else {
-        setState('success');
-        setMessage(`${copy.mockSuccess} (≈${length * 80} chars)`);
-      }
-    }, 750);
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!prompt.trim()) return;
-    runMock(prompt);
-  };
-
   const handleReset = () => {
-    clearPending();
+    abortController.current?.abort();
     setPrompt('');
     setLength(3);
     setState('idle');
-    setMessage('');
+    setResult('');
+    setErrorMessage('');
   };
 
   return (
@@ -92,9 +100,9 @@ export default function ToolCard({ copy }: ToolCardProps) {
               defaultValue="gpt-4-turbo"
               disabled
             >
-              <option value="gpt-4-turbo">gpt-4-turbo (Mock)</option>
+              <option value="gpt-4-turbo">{copy.modelPlaceholder}</option>
             </select>
-            <p className="text-xs text-slate-500">Model selection is configurable per tool.</p>
+            <p className="text-xs text-slate-500">{copy.modelHelper}</p>
           </fieldset>
 
           <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -111,9 +119,9 @@ export default function ToolCard({ copy }: ToolCardProps) {
               className="w-full accent-sky-500"
             />
             <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>Concise</span>
+              <span>{copy.lengthIndicatorStart}</span>
               <span>{length}</span>
-              <span>Detailed</span>
+              <span>{copy.lengthIndicatorEnd}</span>
             </div>
           </div>
         </div>
@@ -139,37 +147,50 @@ export default function ToolCard({ copy }: ToolCardProps) {
       <div className="lg:col-span-3">
         <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-inner">
           {state === 'idle' && (
-            <EmptyState title={copy.title} description={copy.description} />
+            <EmptyState title={copy.title} description={copy.description} hints={copy.hints} />
           )}
-          {state === 'loading' && <LoadingState />}
-          {state === 'success' && <ResultState variant="success" message={message} />}
-          {state === 'error' && <ResultState variant="error" message={message} />}
+          {state === 'loading' && <LoadingState message={copy.loading} />}
+          {state === 'success' && (
+            <ResultState variant="success" title={copy.successTitle} body={result} />
+          )}
+          {state === 'error' && (
+            <ResultState variant="error" title={copy.errorTitle} body={errorMessage || copy.errorFallback} />
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function EmptyState({ title, description }: { title: string; description: string }) {
+function EmptyState({
+  title,
+  description,
+  hints,
+}: {
+  title: string;
+  description: string;
+  hints?: string[];
+}) {
+  const items = hints && hints.length > 0 ? hints : [];
   return (
     <div className="flex h-full flex-col items-start justify-center gap-4 text-left text-slate-600">
       <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
       <p className="text-sm leading-relaxed">{description}</p>
       <ul className="space-y-2 text-xs text-slate-500">
-        <li>• Support success, failure, and loading flows.</li>
-        <li>• Adjust layout via configuration-driven tool cards.</li>
-        <li>• Replace mock logic with API integration when ready.</li>
+        {items.map((item) => (
+          <li key={item}>• {item}</li>
+        ))}
       </ul>
     </div>
   );
 }
 
-function LoadingState() {
+function LoadingState({ message }: { message: string }) {
   return (
     <div className="flex h-full flex-col justify-center space-y-4">
       <div className="flex items-center gap-3 text-slate-600">
         <span className="h-3 w-3 animate-ping rounded-full bg-sky-400" />
-        <span className="text-sm font-medium">Processing request…</span>
+        <span className="text-sm font-medium">{message}</span>
       </div>
       <div className="space-y-2">
         {[...Array(4)].map((_, index) => (
@@ -180,7 +201,15 @@ function LoadingState() {
   );
 }
 
-function ResultState({ variant, message }: { variant: 'success' | 'error'; message: string }) {
+function ResultState({
+  variant,
+  title,
+  body,
+}: {
+  variant: 'success' | 'error';
+  title: string;
+  body: string;
+}) {
   const isError = variant === 'error';
   return (
     <div
@@ -190,7 +219,16 @@ function ResultState({ variant, message }: { variant: 'success' | 'error'; messa
           : 'border-emerald-200 bg-emerald-50 text-emerald-700'
       }`}
     >
-      <p>{message}</p>
+      <h3 className="text-base font-semibold">{title}</h3>
+      <p className="mt-3 whitespace-pre-line">{body}</p>
     </div>
   );
+}
+
+async function safeParseJson(response: Response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
 }

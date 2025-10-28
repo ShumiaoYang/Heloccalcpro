@@ -3,7 +3,39 @@
     "name": "AI Toolbox",
     "tagline": "Launch AI product demos in days, not weeks.",
     "description": "A multilingual AI tools hub with opinionated UX, ready to extend into production.",
-    "loginCta": "Login"
+    "loginCta": "Login",
+    "logoutCta": "Sign out",
+    "toggleToEnglish": "Switch to English",
+    "toggleToChinese": "Switch to Chinese"
+  },
+  "login": {
+    "meta": {
+      "title": "Login | AI Toolbox",
+      "description": "Sign in to AI Toolbox to unlock upcoming features and early access.",
+      "accessibility": "Go back to the home page"
+    },
+    "backToHome": "Back to home",
+    "badgeLabel": "Early Access",
+    "title": "Sign in to your AI Toolbox account",
+    "description": "Currently we support Google sign-in. More identity providers are coming soon. Reach out to <mailto>product@aitoolbox.com</mailto> if you need a custom plan.",
+    "ctaPrimary": "Continue with Google",
+    "ctaLoading": "Redirecting to Google…",
+    "disclaimer": "By continuing you agree to our privacy policy and terms of service.",
+    "comingSoon": "Coming soon",
+    "highlights": [
+      {
+        "title": "Single sign-on",
+        "description": "Use Google credentials to get started instantly without new passwords."
+      },
+      {
+        "title": "Roles & subscriptions",
+        "description": "Plans will map to quotas and features so your production usage stays safe."
+      },
+      {
+        "title": "Faster iteration",
+        "description": "Log in to access upcoming tools, share feedback, and follow the roadmap."
+      }
+    ]
   },
   "hero": {
     "badge": "MVP • Phase 1",
@@ -14,17 +46,27 @@
   },
   "tool": {
     "title": "Text Summarizer Demo",
-    "description": "Simulate AI summarization with deterministic success and failure paths for testing UX flows.",
+    "description": "Wire the hero tool card to a server action or API Route to preview real inference workflows.",
     "inputLabel": "Enter content",
-    "inputPlaceholder": "Paste up to 1,000 characters here...",
+    "inputPlaceholder": "Paste up to 4,000 characters here...",
     "modelLabel": "Model",
     "lengthLabel": "Summary length",
+    "modelPlaceholder": "gpt-4-turbo (configurable)",
+    "modelHelper": "Choose your preferred model per tool in config/tools.config.json.",
+    "lengthIndicatorStart": "Concise",
+    "lengthIndicatorEnd": "Detailed",
     "generate": "Generate",
     "reset": "Clear",
-    "mockSuccess": "Success: This is a simulated AI summary output. Replace with real inference when wired to your backend.",
-    "mockError": "Generation failed. Please try again in a few moments.",
-    "helperText": "Type “trigger-error” to preview the error path.",
-    "loading": "Generating summary…"
+    "successTitle": "Summary ready",
+    "errorTitle": "Generation failed",
+    "errorFallback": "We could not generate a summary. Please try again later.",
+    "helperText": "Supports up to 4,000 characters. Add more context for better summaries.",
+    "loading": "Generating summary…",
+    "hints": [
+      "Requests enforce a minimum 600 ms loading state for UX consistency.",
+      "Update config/tools.config.json to map providers and models per tool.",
+      "Inject your own API keys (OpenAI, Azure, etc.) via environment variables."
+    ]
   },
   "examples": {
     "title": "Example Use Cases",

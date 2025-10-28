@@ -3,7 +3,39 @@
     "name": "AI 工具箱",
     "tagline": "几天内交付高完成度的 AI 演示站点。",
     "description": "一个具备多语言、SEO 与可扩展工具框架的 Next.js 项目，为后续商业化打下基础。",
-    "loginCta": "登录"
+    "loginCta": "登录",
+    "logoutCta": "退出登录",
+    "toggleToEnglish": "切换到英文",
+    "toggleToChinese": "切换到中文"
+  },
+  "login": {
+    "meta": {
+      "title": "登录｜AI 工具箱",
+      "description": "登录以解锁即将上线的工具和早期体验。",
+      "accessibility": "返回首页"
+    },
+    "backToHome": "返回首页",
+    "badgeLabel": "Early Access",
+    "title": "连接你的 AI 工具箱账号",
+    "description": "目前支持 Google 登录，后续会逐步开放更多身份提供商。如需定制套餐，请联系 <mailto>product@aitoolbox.com</mailto>。",
+    "ctaPrimary": "使用 Google 登录",
+    "ctaLoading": "正在跳转至 Google…",
+    "disclaimer": "继续操作即表示你同意我们的隐私政策和服务条款。",
+    "comingSoon": "即将开放",
+    "highlights": [
+      {
+        "title": "单点登录",
+        "description": "直接使用 Google 账号，无需额外密码即可快速上手。"
+      },
+      {
+        "title": "权限与订阅",
+        "description": "即将上线套餐与配额映射，帮助你安全管理生产用量。"
+      },
+      {
+        "title": "快速迭代",
+        "description": "登录后可优先体验新工具、提交反馈并跟进路线图。"
+      }
+    ]
   },
   "hero": {
     "badge": "MVP • 阶段一",
@@ -14,17 +46,27 @@
   },
   "tool": {
     "title": "文本摘要演示",
-    "description": "通过可预测的成功/失败路径模拟 AI 摘要，便于验证体验与流程。",
+    "description": "将工具卡与服务端 API 相连，真实演示摘要推理的交互流程。",
     "inputLabel": "输入内容",
-    "inputPlaceholder": "在此粘贴不超过 1,000 字的文本……",
+    "inputPlaceholder": "在此粘贴不超过 4,000 字符的文本……",
     "modelLabel": "模型",
     "lengthLabel": "摘要长度",
+    "modelPlaceholder": "gpt-4-turbo（可配置）",
+    "modelHelper": "可在 config/tools.config.json 为不同工具指定模型与提供方。",
+    "lengthIndicatorStart": "精简",
+    "lengthIndicatorEnd": "详尽",
     "generate": "生成",
     "reset": "清空",
-    "mockSuccess": "生成成功：这是模拟的 AI 摘要结果，接入真实推理后可替换。",
-    "mockError": "生成失败，请稍后重试。",
-    "helperText": "输入 “trigger-error” 可查看错误流程。",
-    "loading": "正在生成摘要…"
+    "successTitle": "摘要已生成",
+    "errorTitle": "生成失败",
+    "errorFallback": "暂时无法返回摘要，请稍后重试。",
+    "helperText": "建议输入 4,000 字符以内的完整上下文，内容越清晰效果越好。",
+    "loading": "正在生成摘要…",
+    "hints": [
+      "交互默认保留 ≥600ms 的加载态，确保体验稳定。",
+      "可在 config/tools.config.json 中为不同工具映射模型与 provider。",
+      "通过环境变量注入 OpenAI/Azure 等 API Key，即可切换真实推理。"
+    ]
   },
   "examples": {
     "title": "场景示例",
@@ -106,3 +148,4 @@
     ]
   }
 }
+
