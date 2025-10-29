@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { getLocale } from 'next-intl/server';
 import { Inter, Noto_Sans_SC } from 'next/font/google';
-import { defaultLocale } from '@/i18n/routing';
 import './globals.css';
+import AuthSessionProvider from '@/components/providers/session-provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,11 +22,12 @@ export const metadata: Metadata = {
   description: 'AI tools hub with localization, SEO, and extensible tool cards.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
-    <html lang={defaultLocale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSans.variable} bg-slate-950 text-slate-100 antialiased`}>
-        {children}
+        <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>
   );

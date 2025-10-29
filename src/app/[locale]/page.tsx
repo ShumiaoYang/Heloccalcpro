@@ -33,10 +33,12 @@ export default function LocaleHomePage({ params }: PageProps) {
       navigation={navigation}
       siteName={content.site.name}
       loginLabel={content.site.loginCta}
-      loginHref="/auth/login"
+      logoutLabel={content.site.logoutCta}
+      loginHref={`/${locale}/auth/login`}
+      locale={locale}
     >
       <HeroSection content={content} />
-      <ToolSection content={content} />
+      <ToolSection content={content} locale={locale} />
       <ExamplesSection content={content} />
       <FeaturesSection content={content} />
       <BlogSection content={content} />

@@ -7,7 +7,7 @@
 
 ## Build, Test, and Development Commands
 - `npm install` – install dependencies (Node 18+ recommended).
-- `npm run dev` – launch the Next.js dev server with hot reload.
+- `npm run dev` – launch the Next.js dev server with hot reload, but you are strictly prohibited from running this command in an interactive terminal.
 - `npm run lint` – run ESLint with the Next.js config and Tailwind plugins.
 - `npm run build` – create the production bundle and prerender pages.
 - `npm run test` – execute Vitest unit/interaction suites in JSDOM.
@@ -34,3 +34,6 @@
 ## Internationalization & SEO Notes
 - Always update both locale JSON files; if a translation is unknown, mirror the English copy and tag the TODO.
 - When adding pages, extend `config/seo.config.json` for each locale and verify canonical/hreflang links via `npm run build` locally before merge.
+
+## Communication
+- 尽可能使用中文，按简体中文的语言习惯进行沟通，但专业、专用的名称、名词不受此限制

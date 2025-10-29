@@ -35,13 +35,19 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# add by codeX
+# add by Sapling Yang
 playwright-report
 .eslintcache
 .turbo
 *.sw? / *.tmp
 Thumbs.db
 /mid
+.env.example
+/.github
+/certs
+/docs/Deployment.md
+server-https.mjs
+
 
 # submodule
 docs/internal/
