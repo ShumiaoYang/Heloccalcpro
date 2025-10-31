@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from 'next-intl';
 
 const DEFAULT_HASH = '';
 
+type RouterReplaceArgument = Parameters<ReturnType<typeof useRouter>['replace']>[0];
+
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
@@ -49,7 +51,7 @@ export default function LanguageSwitcher() {
     }
 
     if (!isSameLocaleSegment) {
-      await router.replace(target);
+      await router.replace(target as RouterReplaceArgument);
     }
   };
 

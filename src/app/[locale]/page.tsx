@@ -34,7 +34,6 @@ export default function LocaleHomePage({ params }: PageProps) {
       siteName={content.site.name}
       loginLabel={content.site.loginCta}
       logoutLabel={content.site.logoutCta}
-      loginHref={`/${locale}/auth/login`}
       locale={locale}
     >
       <HeroSection content={content} />

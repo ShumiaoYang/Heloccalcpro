@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000';
+const shouldStartServer = !process.env.PLAYWRIGHT_BASE_URL;
+
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30 * 1000,
@@ -11,8 +14,9 @@ export default defineConfig({
   reporter: process.env.CI ? [['html'], ['list']] : [['list']],
   use: {
     trace: 'on-first-retry',
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000',
+    baseURL,
     viewport: { width: 1280, height: 720 },
+    ignoreHTTPSErrors: true,
   },
   projects: [
     {
@@ -24,9 +28,13 @@ export default defineConfig({
       use: { ...devices['Pixel 7'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  ...(shouldStartServer
+    ? {
+        webServer: {
+          command: 'npm run dev',
+          reuseExistingServer: !process.env.CI,
+          timeout: 120 * 1000,
+        },
+      }
+    : {}),
 });

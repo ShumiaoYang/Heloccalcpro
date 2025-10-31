@@ -89,6 +89,30 @@
         "description": "将粗糙语音转写整理成清晰可分享的会议纪要。",
         "heading": "会议纪要润色"
       }
+    },
+    "/account/billing": {
+      "en": {
+        "title": "Subscription & Billing | AI Toolbox",
+        "description": "Upgrade usage limits and manage your AI Toolbox subscription.",
+        "heading": "Subscription & Billing"
+      },
+      "zh": {
+        "title": "订阅与计费｜AI 工具箱",
+        "description": "管理订阅状态并升级 AI 工具箱的可用额度。",
+        "heading": "订阅与计费"
+      }
+    },
+    "/account/settings": {
+      "en": {
+        "title": "Account Settings | AI Toolbox",
+        "description": "Review your profile information and adjust account preferences.",
+        "heading": "Account Settings"
+      },
+      "zh": {
+        "title": "账号设置｜AI 工具箱",
+        "description": "查看账号信息并配置偏好设置。",
+        "heading": "账号设置"
+      }
     }
   }
 }
