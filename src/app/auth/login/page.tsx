@@ -9,7 +9,11 @@ export default async function AuthLoginRedirect({
 }: {
   searchParams: SearchParams;
 }) {
-  const fallbackLocale = await getLocale();
+  const fallbackCandidate = await getLocale();
+  const fallbackLocale: Locale = locales.includes(fallbackCandidate as Locale)
+    ? (fallbackCandidate as Locale)
+    : 'en';
+
   const targetLocale = deriveLocaleFromParams(searchParams, fallbackLocale);
   const params = new URLSearchParams();
 

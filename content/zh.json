@@ -82,14 +82,6 @@
         "status": "live"
       },
       {
-        "slug": "idea-generator",
-        "title": "灵感生成器",
-        "description": "为产品、宣传或命名快速头脑风暴。",
-        "tag": "敬请期待",
-        "cta": "敬请期待",
-        "status": "coming_soon"
-      },
-      {
         "slug": "transcript-polisher",
         "title": "会议纪要润色",
         "description": "将粗糙的语音转写整理成可分享的笔记。",
@@ -177,6 +169,45 @@
         "description": "拓展内容体系、知识库与多语言 CMS。"
       }
     ]
+  },
+  "account": {
+    "settings": {
+      "title": "账号设置",
+      "description": "管理个人资料与通知偏好，后续还会开放更多自定义能力。",
+      "comingSoon": "更多个性化选项即将上线，欢迎反馈你的需求。",
+      "actions": {
+        "updateProfile": "更新资料（敬请期待）",
+        "contactSupport": "联系支持"
+      }
+    },
+    "billing": {
+      "title": "订阅与计费",
+      "description": "升级额度并管理 AI 工具箱的订阅状态。",
+      "currentPlanLabel": "当前套餐",
+      "planFeaturesLabel": "套餐包含",
+      "freeBadge": "免费版",
+      "paidBadge": "付费版",
+      "statusLabel": "状态",
+      "limits": {
+        "toolRunsPerMonth": "每月可用次数"
+      },
+      "actions": {
+        "upgrade": "升级套餐",
+        "manage": "管理订阅",
+        "current": "当前套餐",
+        "processing": "处理中…",
+        "portalError": "无法打开订阅管理页面，请稍后再试。",
+        "checkoutError": "无法发起订阅，请稍后再试。"
+      },
+      "status": {
+        "TRIALING": "试用中",
+        "ACTIVE": "已激活",
+        "PAST_DUE": "待支付",
+        "CANCELED": "已取消",
+        "INCOMPLETE": "待完成",
+        "INCOMPLETE_EXPIRED": "已过期",
+        "UNPAID": "未支付"
+      }
+    }
   }
 }
-

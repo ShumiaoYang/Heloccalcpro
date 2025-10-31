@@ -1,6 +1,11 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import type { Locale } from '@/i18n/routing';
 import type { LocalizedToolCatalogItem } from '@/lib/tools/catalog';
+
+type ToolLink = {
+  pathname: '/[locale]/tools/[slug]';
+  params: { locale: Locale; slug: string };
+};
 
 type ToolCatalogCardProps = {
   item: LocalizedToolCatalogItem;
@@ -9,7 +14,10 @@ type ToolCatalogCardProps = {
 
 export default function ToolCatalogCard({ item, locale }: ToolCatalogCardProps) {
   const isDisabled = item.disabled;
-  const href = `/${locale}/tools/${item.slug}`;
+  const href: ToolLink = {
+    pathname: '/[locale]/tools/[slug]',
+    params: { locale, slug: item.slug },
+  };
 
   return (
     <div className="surface-card flex h-full flex-col justify-between gap-5 p-6">

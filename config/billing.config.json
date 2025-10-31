@@ -1,0 +1,71 @@
+{
+  "defaultPlan": "free",
+  "plans": [
+    {
+      "slug": "free",
+      "type": "free",
+      "currency": "usd",
+      "amount": 0,
+      "interval": "lifetime",
+      "limits": {
+        "toolRunsPerMonth": 30
+      },
+      "copy": {
+        "en": {
+          "name": "Free",
+          "description": "Try the core tools with limited usage each month."
+        },
+        "zh": {
+          "name": "免费版",
+          "description": "每月获得基础额度，体验核心工具功能。"
+        }
+      }
+    },
+    {
+      "slug": "pro-monthly",
+      "type": "recurring",
+      "currency": "usd",
+      "amount": 900,
+      "interval": "month",
+      "stripePrice": {
+        "env": "STRIPE_PRICE_PRO_MONTHLY"
+      },
+      "limits": {
+        "toolRunsPerMonth": 500
+      },
+      "copy": {
+        "en": {
+          "name": "Pro",
+          "description": "Unlock higher usage limits with monthly billing."
+        },
+        "zh": {
+          "name": "专业版",
+          "description": "按月计费，解锁更高额度与高级工具。"
+        }
+      }
+    },
+    {
+      "slug": "pro-annual",
+      "type": "recurring",
+      "currency": "usd",
+      "amount": 3900,
+      "interval": "year",
+      "stripePrice": {
+        "env": "STRIPE_PRICE_PRO_ANNUAL"
+      },
+      "limits": {
+        "toolRunsPerMonth": 1000
+      },
+      "copy": {
+        "en": {
+          "name": "Pro Annual",
+          "description": "Best value plan billed yearly with premium limits."
+        },
+        "zh": {
+          "name": "专业年度版",
+          "description": "年度付费享受优惠价格与更高额度。"
+        }
+      }
+    }
+  ]
+}

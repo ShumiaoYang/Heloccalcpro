@@ -54,7 +54,7 @@ export function buildLocalizedToolCatalog(
         ctaDescription: ctaCopy?.description,
       };
     })
-    .filter((entry): entry is LocalizedToolCatalogItem => entry !== null);
+    .filter((entry) => entry !== null) as LocalizedToolCatalogItem[];
 
   return {
     title: catalog?.title ?? '',

@@ -82,14 +82,6 @@
         "status": "live"
       },
       {
-        "slug": "idea-generator",
-        "title": "Idea Generator",
-        "description": "Brainstorm product ideas, taglines, and campaign hooks.",
-        "tag": "Coming soon",
-        "cta": "Preview",
-        "status": "coming_soon"
-      },
-      {
         "slug": "transcript-polisher",
         "title": "Transcript Polisher",
         "description": "Clean up meeting transcripts into publish-ready notes.",
@@ -177,5 +169,45 @@
         "description": "Expand content, knowledge base, and multilingual CMS."
       }
     ]
+  },
+  "account": {
+    "settings": {
+      "title": "Account Settings",
+      "description": "Manage your profile information and notification preferences.",
+      "comingSoon": "More customization options are on the roadmap. Let us know what you would like to see next.",
+      "actions": {
+        "updateProfile": "Update profile (coming soon)",
+        "contactSupport": "Contact support"
+      }
+    },
+    "billing": {
+      "title": "Subscription & Billing",
+      "description": "Upgrade your AI Toolbox experience and manage usage limits.",
+      "currentPlanLabel": "Current plan",
+      "planFeaturesLabel": "Included features",
+      "freeBadge": "Free",
+      "paidBadge": "Paid",
+      "statusLabel": "Status",
+      "limits": {
+        "toolRunsPerMonth": "Tool runs per month"
+      },
+      "actions": {
+        "upgrade": "Upgrade plan",
+        "manage": "Manage subscription",
+        "current": "Current plan",
+        "processing": "Processing…",
+        "portalError": "Unable to open billing portal.",
+        "checkoutError": "Unable to start checkout session."
+      },
+      "status": {
+        "TRIALING": "Trialing",
+        "ACTIVE": "Active",
+        "PAST_DUE": "Past due",
+        "CANCELED": "Canceled",
+        "INCOMPLETE": "Incomplete",
+        "INCOMPLETE_EXPIRED": "Expired",
+        "UNPAID": "Unpaid"
+      }
+    }
   }
 }
