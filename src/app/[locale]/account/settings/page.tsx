@@ -12,7 +12,13 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps) {
   const { metadata } = getSeoMetadata('/account/settings', params.locale);
-  return metadata;
+  return {
+    ...metadata,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
 }
 
 export default async function AccountSettingsPage({ params }: PageProps) {

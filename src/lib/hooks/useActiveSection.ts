@@ -14,7 +14,7 @@ export function useActiveSection(sections: NavigationItem[]) {
           }
         });
       },
-      { threshold: 0.4 },
+      { threshold: 0.2, rootMargin: '-80px 0px -80px 0px' },
     );
 
     const elements = sections

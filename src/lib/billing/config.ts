@@ -62,15 +62,12 @@ function normalizePlan(plan: RawPlan): BillingPlan {
     typeof plan.stripePrice?.env === 'string' ? process.env[plan.stripePrice.env] ?? undefined : undefined;
 
   if (type === 'recurring' && !stripePriceId) {
+    const warningMsg = `[billing-config] 订阅计划 ${plan.slug} 缺少 Stripe Price ID，将使用测试占位值。后续请配置 ${plan.stripePrice?.env ?? ''}。`;
     if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        `订阅计划 ${plan.slug} 缺少 Stripe 价格 ID，请配置环境变量 ${plan.stripePrice?.env ?? ''}`.trim(),
-      );
+      console.error(warningMsg);
+    } else {
+      console.warn(warningMsg);
     }
-
-    console.warn(
-      `[billing-config] 订阅计划 ${plan.slug} 缺少 Stripe Price ID，将使用测试占位值。后续请配置 ${plan.stripePrice?.env ?? ''}。`,
-    );
   }
 
   return {

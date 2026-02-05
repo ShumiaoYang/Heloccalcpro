@@ -50,7 +50,7 @@ export default function ToolCard({ copy, slug, locale }: ToolCardProps) {
 
       if (!response.ok) {
         const errorBody = await safeParseJson(response);
-        throw new Error(errorBody?.message ?? copy.errorFallback);
+        throw new Error(errorBody?.message ?? 'An error occurred');
       }
 
       const json = await response.json();
@@ -60,7 +60,7 @@ export default function ToolCard({ copy, slug, locale }: ToolCardProps) {
       if (error instanceof DOMException && error.name === 'AbortError') {
         return;
       }
-      setErrorMessage(error instanceof Error ? error.message : copy.errorFallback);
+      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
       setState('error');
     }
   };
@@ -79,18 +79,18 @@ export default function ToolCard({ copy, slug, locale }: ToolCardProps) {
       <form onSubmit={handleSubmit} className="space-y-5 lg:col-span-1">
         <div>
           <label htmlFor="prompt" className="text-sm font-medium text-slate-700">
-            {copy.inputLabel}
+            Input
           </label>
           <textarea
             id="prompt"
             name="prompt"
             value={prompt}
             onChange={(event) => setPrompt(event.target.value)}
-            placeholder={copy.inputPlaceholder}
+            placeholder="Enter your text here..."
             rows={6}
             className="mt-2 w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200"
           />
-          <p className="mt-2 text-xs text-slate-500">{copy.helperText}</p>
+          <p className="mt-2 text-xs text-slate-500">Enter the text you want to process</p>
         </div>
 
         <div className="space-y-3">

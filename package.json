@@ -1,7 +1,24 @@
 {
-  "name": "ai-tools-site",
-  "version": "0.1.0",
+  "name": "heloccalcpro",
+  "version": "1.0.0",
+  "description": "Professional HELOC Calculator with AI-powered financial analysis and risk assessment",
+  "author": "Your Name",
+  "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/Heloccalcpro.git"
+  },
+  "keywords": [
+    "heloc",
+    "calculator",
+    "home-equity",
+    "financial-analysis",
+    "mortgage",
+    "nextjs",
+    "typescript",
+    "ai-analysis"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,15 +38,21 @@
     "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.975.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^6.18.0",
+    "@react-pdf/renderer": "^4.3.2",
+    "chart.js": "^4.5.1",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.546.0",
     "next": "14.2.5",
     "next-auth": "^4.24.12",
     "next-intl": "^4.4.0",
     "nodemailer": "^7.0.10",
     "react": "^18",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^18",
+    "scoop": "^0.0.2",
     "stripe": "^14.25.0"
   },
   "devDependencies": {
@@ -37,7 +60,9 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitest/coverage-istanbul": "^3.2.4",

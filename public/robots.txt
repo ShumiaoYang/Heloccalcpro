@@ -1,5 +1,11 @@
 User-agent: *
 Allow: /
+
+# Disallow private pages
 Disallow: /api/
+Disallow: /_next/
+Disallow: /*/auth/
+Disallow: /*/account/
+Disallow: /*/heloc/payment/
 
 Sitemap: https://example.com/sitemap.xml

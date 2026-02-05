@@ -6,6 +6,7 @@ export type NavigationItem = {
   id: string;
   href: string;
   label: string;
+  subtitle?: string;
 };
 
 const navigationMap: Record<Locale, NavigationItem[]> = {

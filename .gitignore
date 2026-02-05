@@ -26,6 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
 
 # vercel
@@ -42,12 +43,30 @@ playwright-report
 *.sw? / *.tmp
 Thumbs.db
 /mid
-.env.example
 /.github
 /certs
 /docs/Deployment.md
 server-https.mjs
 
+# Test files
+test-*.js
+test-*.ts
+
+# Internal documentation
+InsideDocs/
+CLAUDE.md
+
+# Private and archive files
+private/
+archive/
+
+# Temporary files
+nul
+placeholder
+tempfix
+
+# Keep .env.example (not ignored)
+!.env.example
 
 # submodule
 docs/internal/

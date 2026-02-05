@@ -7,10 +7,13 @@ import { getActiveSubscription } from '@/lib/billing/service';
 function getEnv(name: 'GOOGLE_CLIENT_ID' | 'GOOGLE_CLIENT_SECRET' | 'NEXTAUTH_SECRET') {
   const value = process.env[name];
   if (value) return value;
+  const placeholder = `placeholder-${name.toLowerCase()}`;
   if (process.env.NODE_ENV === 'production') {
-    throw new Error(`${name} 未配置，无法初始化认证。`);
+    console.error(`[auth] ${name} 未配置，认证功能将不可用。`);
+  } else {
+    console.warn(`[auth] ${name} 未配置，使用占位值：${placeholder}`);
   }
-  return `placeholder-${name.toLowerCase()}`;
+  return placeholder;
 }
 
 export const authOptions: NextAuthOptions = {

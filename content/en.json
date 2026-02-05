@@ -1,8 +1,8 @@
 {
   "site": {
-    "name": "AI Toolbox",
-    "tagline": "Launch AI product demos in days, not weeks.",
-    "description": "A multilingual AI tools hub with opinionated UX, ready to extend into production.",
+    "name": "HELOC Calculator",
+    "tagline": "Make smarter home equity decisions with real-time calculations.",
+    "description": "Free HELOC calculator for credit line & payment estimates. Calculate max borrowing power, simulate credit score impact, and analyze risks with AI. Instant results.",
     "loginCta": "Login",
     "logoutCta": "Sign out",
     "toggleToEnglish": "Switch to English",
@@ -10,189 +10,230 @@
   },
   "login": {
     "meta": {
-      "title": "Login | AI Toolbox",
-      "description": "Sign in to AI Toolbox to unlock upcoming features and early access.",
+      "title": "Login | HELOC Calculator",
+      "description": "Sign in to HELOC Calculator to save your calculations and access premium features.",
       "accessibility": "Go back to the home page"
     },
     "backToHome": "Back to home",
-    "badgeLabel": "Early Access",
-    "title": "Sign in to your AI Toolbox account",
-    "description": "Currently we support Google sign-in. More identity providers are coming soon. Reach out to <mailto>product@aitoolbox.com</mailto> if you need a custom plan.",
+    "badgeLabel": "Free Tool",
+    "title": "Sign in to your HELOC Calculator account",
+    "description": "Currently we support Google sign-in. Save your calculations and access your history anytime.",
     "ctaPrimary": "Continue with Google",
     "ctaLoading": "Redirecting to Google…",
     "disclaimer": "By continuing you agree to our privacy policy and terms of service.",
     "comingSoon": "Coming soon",
     "highlights": [
       {
-        "title": "Single sign-on",
-        "description": "Use Google credentials to get started instantly without new passwords."
+        "title": "Save calculations",
+        "description": "Store your HELOC calculations and compare different scenarios over time."
       },
       {
-        "title": "Roles & subscriptions",
-        "description": "Plans will map to quotas and features so your production usage stays safe."
+        "title": "Premium features",
+        "description": "Access advanced analytics and downloadable PDF reports (coming soon)."
       },
       {
-        "title": "Faster iteration",
-        "description": "Log in to access upcoming tools, share feedback, and follow the roadmap."
+        "title": "Rate alerts",
+        "description": "Get notified when Prime Rate changes affect your potential HELOC terms."
       }
     ]
   },
   "hero": {
-    "badge": "MVP • Phase 1",
-    "title": "Build a polished AI tools experience fast",
-    "subtitle": "Validate workflows, SEO structure, and localization on top of a robust Next.js foundation.",
-    "primaryCta": "Explore Tool Demo",
-    "secondaryCta": "View Roadmap"
+    "badge": "Free • Real-Time",
+    "title": "Free HELOC Calculator: Estimate Credit Line, Payments & Risks",
+    "subtitle": "Calculate your maximum borrowing power, forecast inflation-adjusted monthly payments, and simulate credit score changes—all in one place.",
+    "primaryCta": "Calculate Now",
+    "secondaryCta": "Learn More"
   },
   "tool": {
-    "title": "Text Summarizer Demo",
-    "description": "Wire the hero tool card to a server action or API Route to preview real inference workflows.",
-    "inputLabel": "Enter content",
-    "inputPlaceholder": "Paste up to 4,000 characters here...",
-    "modelLabel": "Model",
-    "lengthLabel": "Summary length",
-    "modelPlaceholder": "gpt-4-turbo (configurable)",
-    "modelHelper": "Choose your preferred model per tool in config/tools.config.json.",
-    "lengthIndicatorStart": "Concise",
+    "title": "HELOC Calculator",
+    "description": "Enter your information to calculate your maximum credit line and monthly payments.",
+    "modelLabel": "AI Model",
+    "modelPlaceholder": "GPT-4 Turbo",
+    "modelHelper": "Advanced AI model for accurate analysis",
+    "lengthLabel": "Summary Length",
+    "lengthIndicatorStart": "Brief",
     "lengthIndicatorEnd": "Detailed",
     "generate": "Generate",
-    "reset": "Clear",
-    "successTitle": "Summary ready",
-    "errorTitle": "Generation failed",
-    "errorFallback": "We could not generate a summary. Please try again later.",
-    "helperText": "Supports up to 4,000 characters. Add more context for better summaries.",
-    "loading": "Generating summary…",
-    "hints": [
-      "Requests enforce a minimum 600 ms loading state for UX consistency.",
-      "Update config/tools.config.json to map providers and models per tool.",
-      "Inject your own API keys (OpenAI, Azure, etc.) via environment variables."
-    ]
+    "loading": "Generating...",
+    "reset": "Reset",
+    "successTitle": "Success",
+    "errorTitle": "Error",
+    "errorFallback": "An error occurred. Please try again.",
+    "hints": []
   },
   "toolCatalog": {
-    "title": "Tool Catalogue",
-    "description": "Explore additional AI demos bundled with this template.",
+    "title": "Financial Tools",
+    "description": "Explore our suite of home equity and mortgage calculators.",
     "viewAll": "View all tools",
     "items": [
       {
-        "slug": "text-summarizer",
-        "title": "Text Summarizer",
-        "description": "Condense long-form content into concise summaries in seconds.",
+        "slug": "heloc-calculator",
+        "title": "HELOC Calculator",
+        "description": "Calculate your Home Equity Line of Credit with advanced analytics.",
         "tag": "Live",
-        "cta": "Try now",
+        "cta": "Calculate now",
         "status": "live"
-      },
-      {
-        "slug": "transcript-polisher",
-        "title": "Transcript Polisher",
-        "description": "Clean up meeting transcripts into publish-ready notes.",
-        "tag": "Coming soon",
-        "cta": "Preview",
-        "status": "coming_soon"
       }
     ]
   },
-  "examples": {
-    "title": "Example Use Cases",
-    "description": "Illustrative scenarios to validate the experience ahead of real integrations.",
+  "smartWays": {
+    "title": "Smart Ways to Use It",
+    "description": "From home upgrades to saving interest—how HELOC works for you.",
     "items": [
       {
-        "title": "Marketing copy",
-        "description": "Craft launch blurbs and press snippets ready for human polish."
+        "title": "Home Renovation",
+        "description": "First-time homebuyers using HELOC to fund kitchen remodels and bathroom upgrades with tax-deductible interest."
       },
       {
-        "title": "Product research",
-        "description": "Digest customer interviews into key takeaways."
+        "title": "Debt Consolidation",
+        "description": "Consolidate high-interest credit card debt into a lower-rate HELOC, potentially saving thousands in interest."
       },
       {
-        "title": "Newsletter recaps",
-        "description": "Transform long-form articles into shareable summaries."
+        "title": "Investment Property",
+        "description": "Real estate investors leveraging home equity to fund down payments on rental properties and expand portfolios."
+      },
+      {
+        "title": "Choosing the Right HELOC Product",
+        "description": "Compare fixed-rate vs. variable-rate HELOCs and find the best fit for your needs.",
+        "date": "2025-01-10"
+      },
+      {
+        "title": "HELOC vs. Cash-Out Refinance",
+        "description": "Detailed comparison to help you decide which option saves you more money.",
+        "date": "2025-01-05"
+      },
+      {
+        "title": "Complete Guide to Home Renovation with HELOC",
+        "description": "Step-by-step guide to funding your home improvement projects with tax-deductible interest.",
+        "date": "2024-12-20"
       }
     ]
   },
   "features": {
-    "title": "Foundation Features",
-    "description": "Ship confident MVPs with production-ready guardrails.",
+    "title": "Why Trust Our Tool",
+    "description": "Bank-grade logic and AI analysis to keep your finances safe.",
     "items": [
       {
-        "title": "Locale-aware routing",
-        "description": "Default English at root with Chinese at /zh, auto-detected and persisted."
+        "title": "Real-Time Calculation",
+        "description": "See results instantly as you type. No need to click calculate - results update automatically with debounced inputs."
       },
       {
-        "title": "SEO-ready metadata",
-        "description": "Title, description, keywords, canonical, and hreflang ready for production."
+        "title": "Risk Health Score",
+        "description": "Comprehensive 0-100 risk score based on LTV, DTI, and credit score analysis. Understand your financial position at a glance."
       },
       {
-        "title": "Scalable tool cards",
-        "description": "Configuration-driven layout ready to host future AI tasks and models."
+        "title": "Stress Test Simulator",
+        "description": "Visualize how rate increases and income changes affect your payments over 10 years with interactive charts."
+      },
+      {
+        "title": "Payoff Game Slider",
+        "description": "See exactly how extra monthly payments can save you thousands in interest and shorten your repayment period."
+      },
+      {
+        "title": "Multi-Language Support",
+        "description": "Available in English and Chinese with automatic language detection and seamless switching."
+      },
+      {
+        "title": "AI-Powered Insights",
+        "description": "Powered by advanced AI models fine-tuned through extensive optimization to deliver personalized financial recommendations tailored to your unique situation."
       }
     ]
   },
-  "blog": {
-    "title": "Latest Notes",
-    "description": "Content placeholders ready to swap in CMS-driven posts."
-  },
-  "links": {
-    "title": "Friendly Links",
+  "concernsHelp": {
+    "title": "Common Concerns & Help",
+    "description": "Worried about risks? Get honest answers to the questions banks won't ask.",
     "items": [
       {
-        "name": "Product Requirements",
-        "description": "Full PRD for reference.",
-        "href": "#"
+        "question": "What is a HELOC?",
+        "answer": "A Home Equity Line of Credit (HELOC) is a revolving credit line secured by your home's equity. It works like a credit card - you can borrow, repay, and borrow again during the draw period (typically 10 years), followed by a repayment period (typically 20 years)."
       },
       {
-        "name": "Design Snapshot",
-        "description": "Iterate on hero and navigation styling.",
-        "href": "#"
+        "question": "How is HELOC different from a Home Equity Loan?",
+        "answer": "A HELOC is a revolving line of credit with variable interest rates, while a Home Equity Loan is a lump sum with fixed rates. HELOCs offer more flexibility - you only pay interest on what you borrow, and you can access funds multiple times during the draw period."
+      },
+      {
+        "question": "How do you calculate the maximum credit line?",
+        "answer": "Maximum Credit Line = (Home Value × 85%) - Current Mortgage Balance. Most lenders allow you to borrow up to 85% of your home's value, minus what you still owe on your mortgage."
+      },
+      {
+        "question": "What are LTV and DTI?",
+        "answer": "LTV (Loan-to-Value) is the ratio of your total debt to home value. DTI (Debt-to-Income) is your monthly debt payments divided by monthly income. Lenders typically prefer LTV below 85% and DTI below 43%."
+      },
+      {
+        "question": "How is HELOC interest rate determined?",
+        "answer": "HELOC rates are typically Prime Rate + Margin. The Prime Rate fluctuates with market conditions (currently around 8.5%), and lenders add a margin (typically 0.5-2%) based on your credit score and financial profile."
+      },
+      {
+        "question": "What are the risks of using a HELOC?",
+        "answer": "Main risks include: variable interest rates that can increase your payments, using your home as collateral (risk of foreclosure if you can't pay), and the temptation to overspend. Always borrow responsibly and have a repayment plan."
+      },
+      {
+        "question": "Is HELOC interest tax-deductible?",
+        "answer": "Yes, but only if you use the funds to buy, build, or substantially improve your home (IRS Publication 936). Interest on funds used for other purposes (like debt consolidation or vacations) is not tax-deductible."
+      },
+      {
+        "question": "What are Draw Period and Repayment Period?",
+        "answer": "Draw Period (typically 10 years): You can borrow and repay flexibly, paying only interest. Repayment Period (typically 20 years): You can no longer borrow, and must repay both principal and interest with fixed monthly payments."
+      },
+      {
+        "question": "What if my report download failed or I lost the download link?",
+        "answer": "Don't worry! You can retrieve your report anytime using your Stripe Transaction ID. After payment, Stripe sends you an official receipt with a Transaction ID (format: pi_xxxxxxxxxxxxxxxxxxxxx). Visit our Retrieve Reports page, enter your Transaction ID, and you'll get a fresh download link valid for 24 hours. Your reports are safely stored and accessible whenever you need them."
+      },
+      {
+        "name": "Retrieve My Reports",
+        "description": "Lost your download link? Retrieve your reports using your Stripe Transaction ID.",
+        "href": "/en/heloc/retrieve"
+      },
+      {
+        "name": "Credit Score Guide",
+        "description": "Learn how to improve your credit score for better loan terms.",
+        "href": "https://www.myfico.com/credit-education/improve-your-credit-score"
+      },
+      {
+        "name": "Zillow Home Values",
+        "description": "Check your home's current market value and equity position.",
+        "href": "https://www.zillow.com"
+      },
+      {
+        "name": "Investopedia HELOC Guide",
+        "description": "Comprehensive educational resource about home equity lines of credit.",
+        "href": "https://www.investopedia.com/mortgage/heloc/"
+      },
+      {
+        "name": "IRS Publication 936",
+        "description": "Official IRS guidance on home mortgage interest deduction.",
+        "href": "https://www.irs.gov/publications/p936"
       }
     ]
   },
   "footer": {
-    "tagline": "AI Toolbox — built for rapid experimentation and scale.",
-    "copyright": "© {{year}} AI Toolbox. All rights reserved."
-  },
-  "roadmap": {
-    "title": "Phase Roadmap",
-    "phases": [
-      {
-        "name": "Phase 1",
-        "status": "In progress",
-        "description": "Deliver MVP with localization, SEO, and demo tool."
-      },
-      {
-        "name": "Phase 2",
-        "status": "Planned",
-        "description": "Add user accounts, billing, and analytics."
-      },
-      {
-        "name": "Phase 3",
-        "status": "Planned",
-        "description": "Expand content, knowledge base, and multilingual CMS."
-      }
-    ]
+    "tagline": "HELOC Calculator — Make smarter home equity decisions with confidence.",
+    "copyright": "© {{year}} HELOC Calculator. All rights reserved.",
+    "disclaimer": "Disclaimer: This tool and calculations are for estimation and educational purposes only. The figures provided do not constitute professional financial, legal, or tax advice. Actual HELOC terms are determined by lenders and may differ from estimates. Users should consult with qualified professionals before making any financial decisions."
   },
   "account": {
     "settings": {
       "title": "Account Settings",
-      "description": "Manage your profile information and notification preferences.",
-      "comingSoon": "More customization options are on the roadmap. Let us know what you would like to see next.",
+      "description": "Manage your profile and notification preferences.",
+      "comingSoon": "More features coming soon. Let us know what you'd like to see next.",
       "actions": {
         "updateProfile": "Update profile (coming soon)",
         "contactSupport": "Contact support"
       }
     },
     "billing": {
-      "title": "Subscription & Billing",
-      "description": "Upgrade your AI Toolbox experience and manage usage limits.",
+      "title": "Premium Features",
+      "description": "Upgrade to access PDF reports and advanced analytics.",
       "currentPlanLabel": "Current plan",
       "planFeaturesLabel": "Included features",
       "freeBadge": "Free",
-      "paidBadge": "Paid",
+      "paidBadge": "Premium",
       "statusLabel": "Status",
       "limits": {
-        "toolRunsPerMonth": "Tool runs per month"
+        "toolRunsPerMonth": "Calculations per month"
       },
       "actions": {
-        "upgrade": "Upgrade plan",
+        "upgrade": "Upgrade to Premium",
         "manage": "Manage subscription",
         "current": "Current plan",
         "processing": "Processing…",
@@ -200,7 +241,7 @@
         "checkoutError": "Unable to start checkout session."
       },
       "status": {
-        "TRIALING": "Trialing",
+        "TRIALING": "Trial",
         "ACTIVE": "Active",
         "PAST_DUE": "Past due",
         "CANCELED": "Canceled",
@@ -208,6 +249,32 @@
         "INCOMPLETE_EXPIRED": "Expired",
         "UNPAID": "Unpaid"
       }
+    }
+  },
+  "retrieve": {
+    "title": "Retrieve Your Reports",
+    "subtitle": "Enter your email to retrieve all your HELOC reports",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "submitButton": "Retrieve Reports",
+    "submitting": "Retrieving...",
+    "backToCalculator": "Back to Calculator",
+    "searchAnother": "Search Another Email",
+    "errors": {
+      "invalidEmail": "Please enter a valid email address",
+      "noReports": "No reports found for this email address",
+      "retrieveFailed": "Failed to retrieve reports",
+      "generalError": "An error occurred. Please try again."
+    },
+    "success": {
+      "found": "We found {count} report(s) for your email.",
+      "emailSent": "Download links have also been sent to your email."
+    },
+    "reportCard": {
+      "title": "Report #{number}",
+      "generated": "Generated:",
+      "calculationId": "Calculation ID:",
+      "downloadButton": "Download"
     }
   }
 }

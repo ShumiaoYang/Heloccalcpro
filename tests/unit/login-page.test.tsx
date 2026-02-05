@@ -22,7 +22,7 @@ describe('LoginPage', () => {
       </NextIntlClientProvider>,
     );
 
-    expect(screen.getByText('Sign in to your AI Toolbox account')).toBeInTheDocument();
+    expect(screen.getByText('Sign in to your HELOC Calculator account')).toBeInTheDocument();
     expect(screen.getByText('Continue with Google')).toBeInTheDocument();
   });
 

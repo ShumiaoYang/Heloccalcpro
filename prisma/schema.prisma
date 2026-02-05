@@ -7,44 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ToolRunStatus {
-  PENDING
-  SUCCESS
-  FAILED
-}
-
 model User {
-  id            String    @id @default(uuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  stripeCustomerId String? @unique
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  accounts Account[]
-  sessions Session[]
-  toolRuns ToolRun[]
-  subscriptions UserSubscription[]
+  id                String             @id @default(uuid())
+  name              String?
+  email             String?            @unique
+  emailVerified     DateTime?
+  image             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  stripeCustomerId  String?            @unique
+  accounts          Account[]
+  helocCalculations HelocCalculation[]
+  pdfPurchases      PdfPurchase[]
+  sessions          Session[]
+  toolRuns          ToolRun[]
+  subscriptions     UserSubscription[]
 }
 
 model Account {
-  id                 Int     @id @default(autoincrement())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String? @map("refresh_token")
-  access_token       String? @map("access_token")
-  expires_at         Int?    @map("expires_at")
-  token_type         String? @map("token_type")
-  scope              String?
-  id_token           String? @map("id_token")
-  session_state      String? @map("session_state")
+  id                   Int       @id @default(autoincrement())
+  userId               String
+  type                 String
+  provider             String
+  providerAccountId    String
+  refresh_token        String?   @map("refresh_token")
+  access_token         String?   @map("access_token")
+  expires_at           Int?      @map("expires_at")
+  token_type           String?   @map("token_type")
+  scope                String?
+  id_token             String?   @map("id_token")
+  session_state        String?   @map("session_state")
   access_token_expires DateTime?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -54,55 +48,42 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
   identifier String
-  token      String @unique
+  token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
 }
 
 model Tool {
-  id          String   @id @default(cuid())
-  slug        String   @unique
+  id          String    @id @default(cuid())
+  slug        String    @unique
   name        String
   description String?
   config      Json?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   runs        ToolRun[]
 }
 
 model ToolRun {
-  id        String         @id @default(cuid())
+  id        String        @id @default(cuid())
   toolId    String
   userId    String?
   input     Json
   output    Json?
-  status    ToolRunStatus  @default(PENDING)
-  createdAt DateTime       @default(now())
-
-  tool Tool @relation(fields: [toolId], references: [id])
-  user User? @relation(fields: [userId], references: [id])
+  status    ToolRunStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  tool      Tool          @relation(fields: [toolId], references: [id])
+  user      User?         @relation(fields: [userId], references: [id])
 
   @@index([toolId])
   @@index([userId])
-}
-
-enum SubscriptionStatus {
-  INCOMPLETE
-  INCOMPLETE_EXPIRED
-  TRIALING
-  ACTIVE
-  PAST_DUE
-  CANCELED
-  UNPAID
 }
 
 model SubscriptionPlan {
@@ -119,25 +100,23 @@ model SubscriptionPlan {
   metadata        Json?
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
-
   subscriptions   UserSubscription[]
 }
 
 model UserSubscription {
-  id                   String              @id @default(cuid())
+  id                   String             @id @default(cuid())
   userId               String
   planId               String
-  stripeSubscriptionId String?             @unique
+  stripeSubscriptionId String?            @unique
   stripeCustomerId     String?
   status               SubscriptionStatus
   currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean             @default(false)
+  cancelAtPeriodEnd    Boolean            @default(false)
   trialEndsAt          DateTime?
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([planId])
@@ -150,4 +129,102 @@ model PaymentEvent {
   type          String
   data          Json
   createdAt     DateTime @default(now())
+}
+
+model HelocCalculation {
+  id            String        @id @default(cuid())
+  userId        String?
+  inputs        Json
+  results       Json
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  scenario      ScenarioType?
+  aiAnalysisRaw Json?
+  version       String        @default("1.0")
+  user          User?         @relation(fields: [userId], references: [id])
+  pdfPurchases  PdfPurchase[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model EmailSubscription {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  subscribeType String
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
+  @@index([subscribeType])
+}
+
+model PdfPurchase {
+  id               String           @id @default(cuid())
+  userId           String?
+  email            String
+  stripePaymentId  String           @unique
+  stripeSessionId  String?
+  calculationId    String
+  amount           Int
+  currency         String           @default("usd")
+  status           PurchaseStatus   @default(PENDING)
+  pdfUrl           String?
+  r2Key            String?
+  r2Url            String?
+  pdfGeneratedAt   DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  aiAnalysisStatus AiAnalysisStatus @default(PENDING)
+  aiAnalysisError  String?
+  accessToken      String?          @unique
+  tokenExpiresAt   DateTime?
+  calculation      HelocCalculation @relation(fields: [calculationId], references: [id])
+  user             User?            @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([email])
+  @@index([stripePaymentId])
+  @@index([status])
+  @@index([r2Key])
+}
+
+enum ToolRunStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum SubscriptionStatus {
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+enum ScenarioType {
+  DEBT_CONSOLIDATION
+  HOME_RENOVATION
+  CREDIT_OPTIMIZATION
+  EMERGENCY_FUND
+  INVESTMENT
+}
+
+enum AiAnalysisStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum PurchaseStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
 }

@@ -1,213 +1,280 @@
 {
   "site": {
-    "name": "AI 工具箱",
-    "tagline": "几天内交付高完成度的 AI 演示站点。",
-    "description": "一个具备多语言、SEO 与可扩展工具框架的 Next.js 项目，为后续商业化打下基础。",
+    "name": "HELOC 计算器",
+    "tagline": "通过实时计算做出更明智的房屋净值决策。",
+    "description": "免费 HELOC 计算器，估算信用额度和月供。计算最大借款能力，模拟信用评分影响，通过 AI 分析风险。即时结果。",
     "loginCta": "登录",
-    "logoutCta": "退出登录",
+    "logoutCta": "退出",
     "toggleToEnglish": "切换到英文",
     "toggleToChinese": "切换到中文"
   },
   "login": {
     "meta": {
-      "title": "登录｜AI 工具箱",
-      "description": "登录以解锁即将上线的工具和早期体验。",
+      "title": "登录 | HELOC 计算器",
+      "description": "登录 HELOC 计算器以保存您的计算结果并访问高级功能。",
       "accessibility": "返回首页"
     },
     "backToHome": "返回首页",
-    "badgeLabel": "Early Access",
-    "title": "连接你的 AI 工具箱账号",
-    "description": "目前支持 Google 登录，后续会逐步开放更多身份提供商。如需定制套餐，请联系 <mailto>product@aitoolbox.com</mailto>。",
-    "ctaPrimary": "使用 Google 登录",
-    "ctaLoading": "正在跳转至 Google…",
-    "disclaimer": "继续操作即表示你同意我们的隐私政策和服务条款。",
-    "comingSoon": "即将开放",
+    "badgeLabel": "免费工具",
+    "title": "登录您的 HELOC 计算器账户",
+    "description": "目前我们支持 Google 登录。保存您的计算结果并随时访问历史记录。",
+    "ctaPrimary": "使用 Google 继续",
+    "ctaLoading": "正在跳转到 Google…",
+    "disclaimer": "继续即表示您同意我们的隐私政策和服务条款。",
+    "comingSoon": "即将推出",
     "highlights": [
       {
-        "title": "单点登录",
-        "description": "直接使用 Google 账号，无需额外密码即可快速上手。"
+        "title": "保存计算结果",
+        "description": "存储您的 HELOC 计算结果，随时比较不同方案。"
       },
       {
-        "title": "权限与订阅",
-        "description": "即将上线套餐与配额映射，帮助你安全管理生产用量。"
+        "title": "高级功能",
+        "description": "访问高级分析和可下载的 PDF 报告（即将推出）。"
       },
       {
-        "title": "快速迭代",
-        "description": "登录后可优先体验新工具、提交反馈并跟进路线图。"
+        "title": "利率提醒",
+        "description": "当 Prime Rate 变化影响您的 HELOC 条款时获得通知。"
       }
     ]
   },
   "hero": {
-    "badge": "MVP • 阶段一",
-    "title": "快速构建专业的 AI 工具体验",
-    "subtitle": "在稳定的 Next.js 基座上验证交互流程、SEO 结构与多语言能力。",
-    "primaryCta": "查看工具演示",
-    "secondaryCta": "查看路线图"
+    "badge": "免费 • 实时",
+    "title": "免费 HELOC 计算器：估算信用额度、月供与风险",
+    "subtitle": "计算您的最大借款能力，预测通胀调整后的月供，并模拟信用评分变化——一站式解决方案。",
+    "primaryCta": "立即计算",
+    "secondaryCta": "了解更多"
   },
   "tool": {
-    "title": "文本摘要演示",
-    "description": "将工具卡与服务端 API 相连，真实演示摘要推理的交互流程。",
-    "inputLabel": "输入内容",
-    "inputPlaceholder": "在此粘贴不超过 4,000 字符的文本……",
-    "modelLabel": "模型",
+    "title": "HELOC 计算器",
+    "description": "输入您的信息以计算最大信用额度和月供。",
+    "modelLabel": "AI 模型",
+    "modelPlaceholder": "GPT-4 Turbo",
+    "modelHelper": "先进的AI模型，提供准确分析",
     "lengthLabel": "摘要长度",
-    "modelPlaceholder": "gpt-4-turbo（可配置）",
-    "modelHelper": "可在 config/tools.config.json 为不同工具指定模型与提供方。",
-    "lengthIndicatorStart": "精简",
-    "lengthIndicatorEnd": "详尽",
+    "lengthIndicatorStart": "简短",
+    "lengthIndicatorEnd": "详细",
     "generate": "生成",
-    "reset": "清空",
-    "successTitle": "摘要已生成",
-    "errorTitle": "生成失败",
-    "errorFallback": "暂时无法返回摘要，请稍后重试。",
-    "helperText": "建议输入 4,000 字符以内的完整上下文，内容越清晰效果越好。",
-    "loading": "正在生成摘要…",
-    "hints": [
-      "交互默认保留 ≥600ms 的加载态，确保体验稳定。",
-      "可在 config/tools.config.json 中为不同工具映射模型与 provider。",
-      "通过环境变量注入 OpenAI/Azure 等 API Key，即可切换真实推理。"
-    ]
+    "loading": "生成中...",
+    "reset": "重置",
+    "successTitle": "成功",
+    "errorTitle": "错误",
+    "errorFallback": "发生错误，请重试。",
+    "hints": []
   },
   "toolCatalog": {
-    "title": "工具目录",
-    "description": "模板内置多种 AI 演示，可按需扩展或二次开发。",
-    "viewAll": "查看全部工具",
+    "title": "金融工具",
+    "description": "探索我们的房屋净值和抵押贷款计算器套件。",
+    "viewAll": "查看所有工具",
     "items": [
       {
-        "slug": "text-summarizer",
-        "title": "文本摘要",
-        "description": "将长篇内容快速浓缩为易读要点。",
-        "tag": "已上线",
-        "cta": "立即体验",
+        "slug": "heloc-calculator",
+        "title": "HELOC 计算器",
+        "description": "使用高级分析计算您的房屋净值信用额度。",
+        "tag": "在线",
+        "cta": "立即计算",
         "status": "live"
-      },
-      {
-        "slug": "transcript-polisher",
-        "title": "会议纪要润色",
-        "description": "将粗糙的语音转写整理成可分享的笔记。",
-        "tag": "敬请期待",
-        "cta": "敬请期待",
-        "status": "coming_soon"
       }
     ]
   },
-  "examples": {
-    "title": "场景示例",
-    "description": "供演示体验使用的典型场景，后续可替换为真实案例。",
+  "smartWays": {
+    "title": "聪明用法",
+    "description": "从装修增值到债务优化，看聪明人如何玩转房屋抵押贷款。",
     "items": [
       {
-        "title": "营销文案",
-        "description": "快速产出上线宣传语与媒体稿要点。"
+        "title": "房屋装修",
+        "description": "首次购房者使用 HELOC 资助厨房改造和浴室升级，享受可抵税利息。"
       },
       {
-        "title": "产品调研",
-        "description": "将用户访谈内容提炼为关键洞察。"
+        "title": "债务整合",
+        "description": "将高息信用卡债务整合到低利率 HELOC 中，可能节省数千美元利息。"
       },
       {
-        "title": "周报简报",
-        "description": "把长篇文章转化为易于分享的摘要。"
+        "title": "投资房产",
+        "description": "房地产投资者利用房屋净值为租赁物业首付提供资金并扩大投资组合。"
+      },
+      {
+        "title": "选择合适的 HELOC 产品",
+        "description": "比较固定利率与浮动利率 HELOC，找到最适合您需求的产品。",
+        "date": "2025-01-10"
+      },
+      {
+        "title": "HELOC 与现金再融资对比",
+        "description": "详细比较帮助您决定哪个选项能为您节省更多钱。",
+        "date": "2025-01-05"
+      },
+      {
+        "title": "使用 HELOC 进行房屋装修完整指南",
+        "description": "分步指南，教您如何使用可抵税利息为房屋改善项目提供资金。",
+        "date": "2024-12-20"
       }
     ]
   },
   "features": {
-    "title": "基础能力",
-    "description": "提供可直接上线的质量保障能力，支持快速扩展。",
+    "title": "选择我们",
+    "description": "基于银行级算法结合最新的AI智能深度分析为您保驾护航。",
     "items": [
       {
-        "title": "语言路由",
-        "description": "英文默认根路径，中文位于 /zh，可自动识别并持久化偏好。"
+        "title": "实时计算",
+        "description": "输入时即可看到结果。无需点击计算 - 结果会随着防抖输入自动更新。"
       },
       {
-        "title": "SEO 准备就绪",
-        "description": "Title、Description、Keywords、Canonical、Hreflang 全量输出。"
+        "title": "风险健康度评分",
+        "description": "基于 LTV、DTI 和信用评分分析的综合 0-100 风险评分。一目了然地了解您的财务状况。"
       },
       {
-        "title": "可扩展工具卡",
-        "description": "配置驱动的布局，便于接入更多 AI 任务与模型。"
+        "title": "压力测试模拟器",
+        "description": "通过交互式图表可视化利率上涨和收入变化如何影响您未来 10 年的还款。"
+      },
+      {
+        "title": "游戏化还款滑块",
+        "description": "准确了解额外的月供如何为您节省数千美元利息并缩短还款期限。"
+      },
+      {
+        "title": "多语言支持",
+        "description": "提供英文和中文版本，支持自动语言检测和无缝切换。"
+      },
+      {
+        "title": "AI 智能分析",
+        "description": "采用业界领先的 AI 模型，经过深度优化调教，为您的财务状况提供精准的个性化建议和风险评估。"
       }
     ]
   },
-  "blog": {
-    "title": "最新动态",
-    "description": "内容占位符，可与后续 CMS 数据对接。"
-  },
-  "links": {
-    "title": "友情链接",
+  "concernsHelp": {
+    "title": "避坑指南",
+    "description": "担心风险？害怕利息太高？您最担心的那些事，这里都有真话。",
     "items": [
       {
-        "name": "产品需求文档",
-        "description": "完整 PRD 供查阅。",
-        "href": "#"
+        "question": "什么是 HELOC？",
+        "answer": "房屋净值信用额度（HELOC）是一种以您的房屋净值为担保的循环信用额度。它的运作方式类似于信用卡 - 您可以在提取期（通常为 10 年）内借款、还款和再次借款，然后进入还款期（通常为 20 年）。"
       },
       {
-        "name": "设计快照",
-        "description": "用于迭代顶部和导航样式。",
-        "href": "#"
+        "question": "HELOC 与房屋净值贷款有什么区别？",
+        "answer": "HELOC 是具有浮动利率的循环信用额度，而房屋净值贷款是具有固定利率的一次性贷款。HELOC 提供更大的灵活性 - 您只需为借入的金额支付利息，并且可以在提取期内多次使用资金。"
+      },
+      {
+        "question": "如何计算最大信用额度？",
+        "answer": "最大信用额度 = （房屋价值 × 85%）- 当前抵押贷款余额。大多数贷款机构允许您借入房屋价值的 85%，减去您仍欠的抵押贷款金额。"
+      },
+      {
+        "question": "什么是 LTV 和 DTI？",
+        "answer": "LTV（贷款价值比）是您的总债务与房屋价值的比率。DTI（债务收入比）是您的月债务支付除以月收入。贷款机构通常希望 LTV 低于 85%，DTI 低于 43%。"
+      },
+      {
+        "question": "HELOC 利率如何确定？",
+        "answer": "HELOC 利率通常为 Prime Rate + 利差。Prime Rate 随市场条件波动（目前约为 8.5%），贷款机构根据您的信用评分和财务状况添加利差（通常为 0.5-2%）。"
+      },
+      {
+        "question": "使用 HELOC 有哪些风险？",
+        "answer": "主要风险包括：浮动利率可能增加您的还款额、使用您的房屋作为抵押品（如果无法还款则有丧失抵押品赎回权的风险）以及过度消费的诱惑。始终负责任地借款并制定还款计划。"
+      },
+      {
+        "question": "HELOC 利息可以抵税吗？",
+        "answer": "可以，但仅限于您使用资金购买、建造或大幅改善您的房屋（IRS 出版物 936）。用于其他目的（如债务整合或度假）的资金利息不可抵税。"
+      },
+      {
+        "question": "什么是提取期和还款期？",
+        "answer": "提取期（通常为 10 年）：您可以灵活地借款和还款，只需支付利息。还款期（通常为 20 年）：您不能再借款，必须以固定月供偿还本金和利息。"
+      },
+      {
+        "question": "如果报告下载失败或丢失了下载链接怎么办？",
+        "answer": "别担心！您可以随时使用 Stripe Transaction ID 找回您的报告。付款后，Stripe 会向您发送一份官方收据，上面有 Transaction ID（格式：pi_xxxxxxxxxxxxxxxxxxxxx）。访问我们的报告找回页面，输入您的 Transaction ID，即可获得有效期 24 小时的新下载链接。您的报告已安全存储，随时可以访问。"
+      },
+      {
+        "name": "找回我的报告",
+        "description": "丢失了下载链接？使用您的 Stripe Transaction ID 找回报告。",
+        "href": "/zh/heloc/retrieve"
+      },
+      {
+        "name": "信用评分指南",
+        "description": "了解如何提高信用评分以获得更好的贷款条件。",
+        "href": "https://www.myfico.com/credit-education/improve-your-credit-score"
+      },
+      {
+        "name": "Zillow 房屋价值",
+        "description": "查看您房屋的当前市场价值和净值状况。",
+        "href": "https://www.zillow.com"
+      },
+      {
+        "name": "Investopedia HELOC 指南",
+        "description": "关于房屋净值信用额度的综合教育资源。",
+        "href": "https://www.investopedia.com/mortgage/heloc/"
+      },
+      {
+        "name": "IRS 出版物 936",
+        "description": "IRS 关于房屋抵押贷款利息扣除的官方指南。",
+        "href": "https://www.irs.gov/publications/p936"
       }
     ]
   },
   "footer": {
-    "tagline": "AI 工具箱 —— 为快速试验与扩展而建。",
-    "copyright": "© {{year}} AI 工具箱。保留所有权利。"
-  },
-  "roadmap": {
-    "title": "阶段路线图",
-    "phases": [
-      {
-        "name": "阶段一",
-        "status": "进行中",
-        "description": "交付具有多语言、SEO 与工具演示的 MVP。"
-      },
-      {
-        "name": "阶段二",
-        "status": "规划中",
-        "description": "加入用户体系、计费与数据分析。"
-      },
-      {
-        "name": "阶段三",
-        "status": "规划中",
-        "description": "拓展内容体系、知识库与多语言 CMS。"
-      }
-    ]
+    "tagline": "HELOC 计算器 — 自信地做出更明智的房屋净值决策。",
+    "copyright": "© {{year}} HELOC 计算器。保留所有权利。",
+    "disclaimer": "免责声明：本工具和计算结果仅供估算和教育目的。提供的数字不构成专业财务、法律或税务建议。实际 HELOC 条款由贷款机构决定，可能与估算结果不同。用户在做出任何财务决策之前应咨询合格的专业人士。"
   },
   "account": {
     "settings": {
-      "title": "账号设置",
-      "description": "管理个人资料与通知偏好，后续还会开放更多自定义能力。",
-      "comingSoon": "更多个性化选项即将上线，欢迎反馈你的需求。",
+      "title": "账户设置",
+      "description": "管理您的个人资料和通知偏好。",
+      "comingSoon": "更多功能即将推出。告诉我们您希望看到什么。",
       "actions": {
-        "updateProfile": "更新资料（敬请期待）",
+        "updateProfile": "更新个人资料（即将推出）",
         "contactSupport": "联系支持"
       }
     },
     "billing": {
-      "title": "订阅与计费",
-      "description": "升级额度并管理 AI 工具箱的订阅状态。",
-      "currentPlanLabel": "当前套餐",
-      "planFeaturesLabel": "套餐包含",
-      "freeBadge": "免费版",
-      "paidBadge": "付费版",
+      "title": "高级功能",
+      "description": "升级以访问 PDF 报告和高级分析。",
+      "currentPlanLabel": "当前计划",
+      "planFeaturesLabel": "包含功能",
+      "freeBadge": "免费",
+      "paidBadge": "高级",
       "statusLabel": "状态",
       "limits": {
-        "toolRunsPerMonth": "每月可用次数"
+        "toolRunsPerMonth": "每月计算次数"
       },
       "actions": {
-        "upgrade": "升级套餐",
+        "upgrade": "升级到高级版",
         "manage": "管理订阅",
-        "current": "当前套餐",
+        "current": "当前计划",
         "processing": "处理中…",
-        "portalError": "无法打开订阅管理页面，请稍后再试。",
-        "checkoutError": "无法发起订阅，请稍后再试。"
+        "portalError": "无法打开计费门户。",
+        "checkoutError": "无法启动结账会话。"
       },
       "status": {
         "TRIALING": "试用中",
-        "ACTIVE": "已激活",
-        "PAST_DUE": "待支付",
+        "ACTIVE": "活跃",
+        "PAST_DUE": "逾期",
         "CANCELED": "已取消",
-        "INCOMPLETE": "待完成",
+        "INCOMPLETE": "未完成",
         "INCOMPLETE_EXPIRED": "已过期",
-        "UNPAID": "未支付"
+        "UNPAID": "未付款"
       }
+    }
+  },
+  "retrieve": {
+    "title": "找回您的报告",
+    "subtitle": "输入您的邮箱地址以找回所有 HELOC 报告",
+    "emailLabel": "邮箱地址",
+    "emailPlaceholder": "your@email.com",
+    "submitButton": "找回报告",
+    "submitting": "正在查询...",
+    "backToCalculator": "返回计算器",
+    "searchAnother": "查询其他邮箱",
+    "errors": {
+      "invalidEmail": "请输入有效的邮箱地址",
+      "noReports": "未找到该邮箱的报告",
+      "retrieveFailed": "找回报告失败",
+      "generalError": "发生错误，请重试"
+    },
+    "success": {
+      "found": "我们为您找到了 {count} 份报告。",
+      "emailSent": "下载链接已发送至您的邮箱。"
+    },
+    "reportCard": {
+      "title": "报告 #{number}",
+      "generated": "生成时间：",
+      "calculationId": "计算ID：",
+      "downloadButton": "下载"
     }
   }
 }

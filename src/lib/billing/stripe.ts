@@ -18,12 +18,12 @@ try {
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
 
-if (!stripeSecret && !stripeMockMode && process.env.NODE_ENV === 'production') {
-  throw new Error('STRIPE_SECRET_KEY 未配置，无法初始化 Stripe 客户端。');
-}
-
 if (!stripeSecret && !stripeMockMode) {
-  console.warn('[billing] STRIPE_SECRET_KEY 未配置，Stripe 客户端将以禁用模式运行。');
+  if (process.env.NODE_ENV === 'production') {
+    console.error('[billing] STRIPE_SECRET_KEY 未配置，Stripe 功能将不可用。');
+  } else {
+    console.warn('[billing] STRIPE_SECRET_KEY 未配置，Stripe 客户端将以禁用模式运行。');
+  }
 }
 
 export const stripe =

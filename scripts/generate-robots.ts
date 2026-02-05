@@ -14,7 +14,13 @@ function generateRobots() {
   const content = [
     'User-agent: *',
     'Allow: /',
+    '',
+    '# Disallow private pages',
     'Disallow: /api/',
+    'Disallow: /_next/',
+    'Disallow: /*/auth/',
+    'Disallow: /*/account/',
+    'Disallow: /*/heloc/payment/',
     '',
     `Sitemap: ${origin}/sitemap.xml`,
     '',

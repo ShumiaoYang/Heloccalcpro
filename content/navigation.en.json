@@ -1,9 +1,26 @@
 [
-  { "id": "hero", "href": "#hero", "label": "Overview" },
-  { "id": "tool", "href": "#tool", "label": "Tool" },
-  { "id": "examples", "href": "#examples", "label": "Examples" },
-  { "id": "features", "href": "#features", "label": "Features" },
-  { "id": "blog", "href": "#blog", "label": "Blog" },
-  { "id": "links", "href": "#links", "label": "Links" },
-  { "id": "roadmap", "href": "#roadmap", "label": "Roadmap" }
+  {
+    "id": "tool",
+    "href": "#tool",
+    "label": "Start My Estimate",
+    "subtitle": "See how much cash is hidden in your home in 30 seconds."
+  },
+  {
+    "id": "smart-ways",
+    "href": "#smart-ways",
+    "label": "Smart Ways to Use It",
+    "subtitle": "From home upgrades to saving interest—how HELOC works for you."
+  },
+  {
+    "id": "concerns-help",
+    "href": "#concerns-help",
+    "label": "Common Concerns & Help",
+    "subtitle": "Worried about risks? Get honest answers to the questions banks won't ask."
+  },
+  {
+    "id": "features",
+    "href": "#features",
+    "label": "Why Trust Our Tool",
+    "subtitle": "Bank-grade logic and AI analysis to keep your finances safe."
+  }
 ]

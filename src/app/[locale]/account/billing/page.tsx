@@ -22,7 +22,13 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps) {
   const { metadata } = getSeoMetadata('/account/billing', params.locale);
-  return metadata;
+  return {
+    ...metadata,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
 }
 
 export default async function BillingPage({ params }: PageProps) {

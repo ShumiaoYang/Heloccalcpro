@@ -1,9 +1,26 @@
 [
-  { "id": "hero", "href": "#hero", "label": "概览" },
-  { "id": "tool", "href": "#tool", "label": "工具" },
-  { "id": "examples", "href": "#examples", "label": "案例" },
-  { "id": "features", "href": "#features", "label": "能力" },
-  { "id": "blog", "href": "#blog", "label": "博客" },
-  { "id": "links", "href": "#links", "label": "友链" },
-  { "id": "roadmap", "href": "#roadmap", "label": "路线图" }
+  {
+    "id": "tool",
+    "href": "#tool",
+    "label": "开始计算",
+    "subtitle": "只需 30 秒，看看您的房子还能为您'变'出多少钱。"
+  },
+  {
+    "id": "smart-ways",
+    "href": "#smart-ways",
+    "label": "聪明用法",
+    "subtitle": "从装修增值到债务优化，看聪明人如何玩转房屋抵押贷款。"
+  },
+  {
+    "id": "concerns-help",
+    "href": "#concerns-help",
+    "label": "避坑指南",
+    "subtitle": "申请前必须知道的 5 件事，帮您绕开银行不会说的陷阱。"
+  },
+  {
+    "id": "features",
+    "href": "#features",
+    "label": "选择我们",
+    "subtitle": "基于银行级算法结合最新的AI智能深度分析为您保驾护航。"
+  }
 ]

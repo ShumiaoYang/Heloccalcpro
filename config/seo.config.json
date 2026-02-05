@@ -1,94 +1,66 @@
 ﻿{
   "global": {
     "en": {
-      "title": "AI Toolbox | Launch multilingual AI demos fast",
-      "description": "Production-ready Next.js starter for AI tools with localization, SEO, and extensible tool cards.",
-      "keywords": ["AI", "Next.js", "localization", "SEO", "toolbox"],
-      "canonical": "https://example.com/",
+      "title": "HELOC Calculator & AI Analysis | Credit Line, Payments & Risks",
+      "description": "Free HELOC calculator for credit line & payment estimates. Calculate max borrowing power, simulate credit score impact, and analyze risks with AI. Instant results.",
+      "keywords": ["heloc calculator", "heloc credit calculator", "heloc credit line calculator", "heloc borrowing power", "calculate heloc line of credit", "heloc payment calculator", "heloc payment calculator free", "heloc repayment calculator", "heloc calculator payment", "heloc loan calculator", "heloc loan payment calculator", "heloc risk analysis", "heloc loan amount"],
+      "canonical": "https://heloccalculator.pro/",
       "hreflang": {
-        "en": "https://example.com/",
-        "zh": "https://example.com/zh"
+        "en": "https://heloccalculator.pro/",
+        "zh": "https://heloccalculator.pro/zh"
       },
       "openGraph": {
         "type": "website",
-        "locale": "en_US"
+        "locale": "en_US",
+        "siteName": "HELOC Calculator",
+        "images": [{
+          "url": "https://heloccalculator.pro/og-image.png",
+          "width": 1200,
+          "height": 630,
+          "alt": "HELOC Calculator - Smart Home Equity Decisions"
+        }]
       },
       "twitter": {
-        "card": "summary_large_image"
+        "card": "summary_large_image",
+        "site": "@SaplingYang",
+        "creator": "@SaplingYang",
+        "images": ["https://heloccalculator.pro/og-image.png"]
       },
-      "heading": "AI Toolbox"
+      "heading": "HELOC Calculator"
     },
     "zh": {
-      "title": "AI 工具箱｜快速交付多语言 AI 演示站点",
-      "description": "面向 AI 工具的 Next.js 模板，内置多语言、SEO 与可扩展工具框架。",
-      "keywords": ["AI", "多语言", "SEO", "工具箱"],
-      "canonical": "https://example.com/zh",
+      "title": "HELOC 计算器与 AI 分析 | 信用额度、月供与风险评估",
+      "description": "免费 HELOC 计算器，估算信用额度和月供。计算最大借款能力，模拟信用评分影响，通过 AI 分析风险。即时结果。",
+      "keywords": ["heloc计算器", "heloc信用计算器", "heloc信用额度计算器", "heloc借款能力", "heloc月供计算器", "heloc免费计算器", "heloc还款计算器", "heloc风险分析", "heloc贷款计算器", "heloc贷款金额", "信用评分影响"],
+      "canonical": "https://heloccalculator.pro/zh",
       "hreflang": {
-        "en": "https://example.com/",
-        "zh": "https://example.com/zh"
+        "en": "https://heloccalculator.pro/",
+        "zh": "https://heloccalculator.pro/zh"
       },
       "openGraph": {
         "type": "website",
-        "locale": "zh_CN"
+        "locale": "zh_CN",
+        "siteName": "HELOC 计算器",
+        "images": [{
+          "url": "https://heloccalculator.pro/og-image.png",
+          "width": 1200,
+          "height": 630,
+          "alt": "HELOC 计算器 - 智能房屋净值决策工具"
+        }]
       },
       "twitter": {
-        "card": "summary_large_image"
+        "card": "summary_large_image",
+        "site": "@SaplingYang",
+        "creator": "@SaplingYang",
+        "images": ["https://heloccalculator.pro/og-image.png"]
       },
-      "heading": "AI 工具箱"
+      "heading": "HELOC 计算器"
     }
   },
   "pages": {
     "/": {
       "en": {},
       "zh": {}
-    },
-    "/tools": {
-      "en": {
-        "title": "AI Tools Catalogue | AI Toolbox",
-        "description": "Explore the demos bundled with AI Toolbox and extend them into production-ready workflows.",
-        "heading": "AI Tools"
-      },
-      "zh": {
-        "title": "AI 工具目录｜AI 工具箱",
-        "description": "浏览模板内置的 AI 演示，并按需扩展至实际业务场景。",
-        "heading": "AI 工具目录"
-      }
-    },
-    "/tools/text-summarizer": {
-      "en": {
-        "title": "Text Summarizer Demo | AI Toolbox",
-        "description": "Preview how the AI Toolbox handles summarization flows before connecting real inference.",
-        "heading": "Text Summarizer Demo"
-      },
-      "zh": {
-        "title": "文本摘要演示｜AI 工具箱",
-        "description": "先体验文本摘要流程，后续可接入真实推理服务。",
-        "heading": "文本摘要演示"
-      }
-    },
-    "/tools/idea-generator": {
-      "en": {
-        "title": "Idea Generator | AI Toolbox",
-        "description": "Brainstorm product ideas, taglines, and creative concepts directly in the browser.",
-        "heading": "Idea Generator"
-      },
-      "zh": {
-        "title": "灵感生成器｜AI 工具箱",
-        "description": "快速为产品、宣传或命名收集灵感点子。",
-        "heading": "灵感生成器"
-      }
-    },
-    "/tools/transcript-polisher": {
-      "en": {
-        "title": "Transcript Polisher | AI Toolbox",
-        "description": "Turn raw meeting transcripts into shareable, polished notes in minutes.",
-        "heading": "Transcript Polisher"
-      },
-      "zh": {
-        "title": "会议纪要润色｜AI 工具箱",
-        "description": "将粗糙语音转写整理成清晰可分享的会议纪要。",
-        "heading": "会议纪要润色"
-      }
     },
     "/account/billing": {
       "en": {
@@ -112,6 +84,68 @@
         "title": "账号设置｜AI 工具箱",
         "description": "查看账号信息并配置偏好设置。",
         "heading": "账号设置"
+      }
+    },
+    "/heloc/retrieve": {
+      "en": {
+        "title": "Retrieve Your Reports | HELOC Calculator",
+        "description": "Retrieve your HELOC financial reports using your Stripe Transaction ID. Access your saved reports anytime.",
+        "heading": "Retrieve Your Reports",
+        "canonical": "https://heloccalculator.pro/en/heloc/retrieve"
+      },
+      "zh": {
+        "title": "找回您的报告｜HELOC 计算器",
+        "description": "使用您的 Stripe Transaction ID 找回 HELOC 财务报告。随时访问您保存的报告。",
+        "heading": "找回您的报告",
+        "canonical": "https://heloccalculator.pro/zh/heloc/retrieve"
+      }
+    },
+    "/smart-ways-to-use-heloc": {
+      "en": {
+        "title": "Smart Ways to Use HELOC | Complete Guide to 5 Best Use Cases",
+        "description": "Discover 5 smart ways to use your Home Equity Line of Credit (HELOC): home renovations, debt consolidation, investment properties, education funding, and emergency reserves. Includes detailed case studies, risk warnings, and best practices.",
+        "keywords": ["HELOC uses", "home equity loan", "debt consolidation", "home renovation loan", "investment property", "HELOC strategies"],
+        "heading": "Smart Ways to Use Your HELOC",
+        "canonical": "https://heloccalculator.pro/en/smart-ways-to-use-heloc"
+      },
+      "zh": {
+        "title": "HELOC 聪明用法完整指南 | 5种最佳使用场景",
+        "description": "深入了解房屋净值信用额度(HELOC)的5种聪明用法：家庭装修、债务整合、投资房产、教育资金和应急储备。包含详细案例分析、风险提示和最佳实践建议。",
+        "keywords": ["HELOC用法", "房屋净值贷款", "债务整合", "家庭装修贷款", "投资房产", "HELOC策略"],
+        "heading": "HELOC 聪明用法完整指南",
+        "canonical": "https://heloccalculator.pro/zh/smart-ways-to-use-heloc"
+      }
+    },
+    "/heloc-concerns-and-risks": {
+      "en": {
+        "title": "HELOC Risks & Common Concerns | Complete Guide",
+        "description": "Understand the main risks of Home Equity Line of Credit (HELOC): interest rate fluctuations, repayment pressure, property value decline, credit score impact, and more. Includes detailed risk management strategies and FAQ.",
+        "keywords": ["HELOC risks", "home equity loan risks", "interest rate risk", "repayment pressure", "property depreciation", "HELOC dangers"],
+        "heading": "HELOC Risks & Common Concerns",
+        "canonical": "https://heloccalculator.pro/en/heloc-concerns-and-risks"
+      },
+      "zh": {
+        "title": "HELOC 风险与常见问题完整指南 | 避坑必读",
+        "description": "深入了解房屋净值信用额度(HELOC)的主要风险：利率波动、还款压力、房产价值下跌、信用评分影响等。包含详细的风险管理策略和常见问题解答。",
+        "keywords": ["HELOC风险", "房屋净值贷款风险", "利率风险", "还款压力", "房产贬值", "HELOC危险"],
+        "heading": "HELOC 风险与常见问题完整指南",
+        "canonical": "https://heloccalculator.pro/zh/heloc-concerns-and-risks"
+      }
+    },
+    "/heloc-calculator-features": {
+      "en": {
+        "title": "HELOC Calculator Features | Complete User Guide",
+        "description": "Explore all features of our HELOC Calculator: credit limit calculation, payment simulation, risk scoring system, stress testing, repayment planning, and more. Includes detailed calculation methods and usage tips.",
+        "keywords": ["HELOC calculator", "home equity calculation", "payment calculator", "risk scoring", "stress testing", "HELOC tools"],
+        "heading": "HELOC Calculator Features Explained",
+        "canonical": "https://heloccalculator.pro/en/heloc-calculator-features"
+      },
+      "zh": {
+        "title": "HELOC 计算器功能详解 | 完整使用指南",
+        "description": "深入了解 HELOC 计算器的所有功能：信用额度计算、月供模拟、风险评分系统、压力测试、还款计划等。包含详细的计算方法说明和使用技巧。",
+        "keywords": ["HELOC计算器", "房屋净值计算", "月供计算", "风险评分", "压力测试", "HELOC工具"],
+        "heading": "HELOC 计算器功能详解",
+        "canonical": "https://heloccalculator.pro/zh/heloc-calculator-features"
       }
     }
   }
