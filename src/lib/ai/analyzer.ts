@@ -86,20 +86,28 @@ export async function analyzeHeloc(
     console.error('OpenAI failed after retries, falling back to Gemini:', openaiError);
 
     // 配置Gemini备用引擎
-    // 如果使用聚合API（如apicore.ai），Gemini也通过OpenAI兼容接口调用
+    const geminiBaseUrl = process.env.GEMINI_BASE_URL;
     const geminiConfig = {
       apiKey: process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY_GPT5 || '',
       model: process.env.GEMINI_MODEL || 'gemini-pro',
+      baseUrl: geminiBaseUrl,
       temperature: parseFloat(process.env.GEMINI_TEMPERATURE || '0.7'),
       maxTokens: parseInt(process.env.GEMINI_MAX_TOKENS || '2000', 10),
     };
 
     try {
-      // 检查是否使用聚合API（通过OPENAI_BASE_URL判断）
-      if (openaiBaseUrl && openaiBaseUrl.includes('apicore')) {
+      // 判断 Gemini 使用哪种 API 方式
+      // 如果 GEMINI_BASE_URL 包含聚合 API 域名，使用 OpenAI 兼容接口
+      const isAggregatedApi = geminiBaseUrl && (
+        geminiBaseUrl.includes('apicore') ||
+        geminiBaseUrl.includes('openai')
+      );
+
+      if (isAggregatedApi) {
         console.log('[Gemini] Using aggregated API (OpenAI-compatible format)');
         // 使用OpenAI Provider调用Gemini模型（聚合API）
-        const geminiProviderViaOpenAI = new OpenAIProvider(geminiConfig, openaiEndpoint);
+        const geminiEndpoint = geminiBaseUrl || openaiEndpoint;
+        const geminiProviderViaOpenAI = new OpenAIProvider(geminiConfig, geminiEndpoint);
         return await callProviderWithRetry(
           geminiProviderViaOpenAI,
           calculatedData,

@@ -8,10 +8,14 @@ import type { AiAnalysis, CalculatedData, ScenarioType } from '@/types/heloc-ai'
 import { generatePrompt } from '../prompts';
 
 export class GeminiProvider extends AIProvider {
-  private apiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models';
+  private apiEndpoint: string;
 
   constructor(config: AIProviderConfig) {
     super(config);
+    // 使用配置的 baseUrl，如果没有则使用默认的 Google Gemini API
+    this.apiEndpoint = config.baseUrl
+      ? `${config.baseUrl}/models`
+      : 'https://generativelanguage.googleapis.com/v1beta/models';
   }
 
   async analyze(

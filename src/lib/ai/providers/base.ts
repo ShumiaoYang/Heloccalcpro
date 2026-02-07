@@ -8,6 +8,7 @@ import type { AiAnalysis, CalculatedData } from '@/types/heloc-ai';
 export interface AIProviderConfig {
   apiKey: string;
   model: string;
+  baseUrl?: string;
   temperature?: number;
   maxTokens?: number;
   timeout?: number;
