@@ -8,9 +8,12 @@
 
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
-// 本地PDF存储目录
-const LOCAL_PDF_DIR = path.join(process.cwd(), 'private', 'pdfs');
+// 本地PDF存储目录 - 使用 /tmp 目录以兼容 Vercel 无服务器环境
+const LOCAL_PDF_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'pdfs')
+  : path.join(process.cwd(), 'private', 'pdfs');
 
 /**
  * 确保本地PDF目录存在
