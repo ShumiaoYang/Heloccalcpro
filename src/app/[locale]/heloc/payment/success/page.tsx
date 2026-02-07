@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   },
 };
 
+// 禁用静态生成，因为页面依赖 URL 参数
+export const dynamic = 'force-dynamic';
+
 export default function PaymentSuccessPage() {
   return <PaymentSuccessPageClient />;
 }
