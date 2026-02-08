@@ -37,6 +37,15 @@ export default async function AccountSettingsPage({ params }: PageProps) {
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-12 lg:px-8">
       <header className="space-y-2">
+        <Link
+          href={`/${locale}`}
+          className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 transition mb-4"
+        >
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          {locale === 'zh' ? '返回首页' : 'Back to Home'}
+        </Link>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{settingsCopy.title}</h1>
         <p className="text-sm text-slate-600">{settingsCopy.description}</p>
       </header>
@@ -51,10 +60,10 @@ export default async function AccountSettingsPage({ params }: PageProps) {
         <h2 className="text-base font-semibold text-slate-900">{locale === 'zh' ? '需要帮助？' : 'Need help?'}</h2>
         <p className="mt-2">{settingsCopy.actions.contactSupport}</p>
         <Link
-          href="mailto:product@aitoolbox.com"
+          href="mailto:support@heloccalculator.pro"
           className="mt-3 inline-flex rounded-lg border border-sky-200 bg-white px-3 py-2 text-xs font-semibold text-sky-600 transition hover:border-sky-300 hover:text-sky-700"
         >
-          product@aitoolbox.com
+          support@heloccalculator.pro
         </Link>
       </section>
     </div>

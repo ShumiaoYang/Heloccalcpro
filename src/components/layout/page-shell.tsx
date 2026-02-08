@@ -473,6 +473,7 @@ function UserMenu({
             <span>{accountLabel}</span>
             <span aria-hidden>→</span>
           </Link>
+          {/* Temporarily hidden - Manage Plan menu item
           <Link
             href={billingHref}
             onClick={() => setOpen(false)}
@@ -481,6 +482,7 @@ function UserMenu({
             <span>{billingLabel}</span>
             <span aria-hidden>→</span>
           </Link>
+          */}
           <button
             type="button"
             onClick={() => {
