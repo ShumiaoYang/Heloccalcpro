@@ -34,11 +34,8 @@ function localizeRoutes(route: string): string[] {
     return [route];
   }
 
+  // Since localePrefix is 'always', all locales need prefix including default
   return locales.map((locale) => {
-    if (locale === defaultLocale) {
-      return route;
-    }
-
     if (route === '/') {
       return `/${locale}`;
     }

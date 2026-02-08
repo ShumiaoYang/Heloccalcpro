@@ -92,7 +92,12 @@ export function getSeoMetadata(pathname: string, locale: Locale): { metadata: Me
   const origin = normalizeOrigin(process.env.APP_DOMAIN);
   const entry = resolveEntry(pathname, locale);
 
-  const canonical = withOrigin(entry.canonical, origin);
+  // Build the actual URL path with locale prefix (since localePrefix is 'always')
+  const localizedPath = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
+
+  // Use entry.canonical if it's explicitly set, otherwise use the localized path
+  const canonicalPath = entry.canonical || localizedPath;
+  const canonical = withOrigin(canonicalPath, origin);
   const hreflang = mapLanguages(entry.hreflang, origin);
 
   const metadata: Metadata = {
