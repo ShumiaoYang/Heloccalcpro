@@ -47,7 +47,7 @@ export async function sendPdfDownloadEmail({
   to,
   downloadUrl,
   calculationId,
-  expiresIn = '24 hours',
+  expiresIn = '7 days',
   pdfBuffer,
 }: PdfDownloadEmailParams): Promise<void> {
   if (!transporter) {
