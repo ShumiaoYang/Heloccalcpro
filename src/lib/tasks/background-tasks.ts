@@ -74,7 +74,7 @@ async function sendEmailWithRetry(
         to: email,
         downloadUrl,
         calculationId,
-        expiresIn: '24 hours',
+        expiresIn: '7 days',
         pdfBuffer,
       });
       console.log(`[Background] Email sent successfully on attempt ${attempt}`);
