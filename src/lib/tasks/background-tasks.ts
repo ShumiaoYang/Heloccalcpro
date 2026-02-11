@@ -56,6 +56,7 @@ async function uploadToR2WithRetry(
  * @param email - 收件人邮箱
  * @param downloadUrl - 下载链接
  * @param calculationId - 计算ID
+ * @param pdfBuffer - PDF buffer (作为附件)
  * @param maxRetries - 最大重试次数（默认3次）
  * @returns 是否发送成功
  */
@@ -63,6 +64,7 @@ async function sendEmailWithRetry(
   email: string,
   downloadUrl: string,
   calculationId: string,
+  pdfBuffer: Buffer,
   maxRetries: number = 3
 ): Promise<boolean> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -73,6 +75,7 @@ async function sendEmailWithRetry(
         downloadUrl,
         calculationId,
         expiresIn: '24 hours',
+        pdfBuffer,
       });
       console.log(`[Background] Email sent successfully on attempt ${attempt}`);
       return true;
@@ -128,8 +131,8 @@ export async function processBackgroundTasks(
       });
       console.log(`[Background] Database updated with R2 URL`);
 
-      // 步骤4：发送邮件（带重试）
-      await sendEmailWithRetry(email, signedUrl, calculationId);
+      // 步骤4：发送邮件（带重试，包含PDF附件）
+      await sendEmailWithRetry(email, signedUrl, calculationId, pdfBuffer);
 
       // 步骤5：删除本地文件
       const deleted = deleteLocalPdf(calculationId);

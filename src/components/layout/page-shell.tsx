@@ -255,6 +255,7 @@ export default function PageShell({
 function Logo({ siteName }: { siteName: string }) {
   return (
     <div className="flex items-center gap-2">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/icon.svg" alt="HELOC Calculator" className="h-8 w-8" />
       <span className="text-3xl font-bold leading-none">
         <span className="text-[#5B21B6]">HELOC</span>

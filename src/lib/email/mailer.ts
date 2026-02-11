@@ -37,6 +37,7 @@ interface PdfDownloadEmailParams {
   downloadUrl: string;
   calculationId: string;
   expiresIn?: string;
+  pdfBuffer?: Buffer;
 }
 
 /**
@@ -47,6 +48,7 @@ export async function sendPdfDownloadEmail({
   downloadUrl,
   calculationId,
   expiresIn = '24 hours',
+  pdfBuffer,
 }: PdfDownloadEmailParams): Promise<void> {
   if (!transporter) {
     console.warn('[Email] SMTP not configured, skipping email send');
@@ -63,6 +65,11 @@ export async function sendPdfDownloadEmail({
       from: process.env.SMTP_FROM || 'HELOC Calculator <noreply@heloccalculator.pro>',
       to,
       subject: 'Your HELOC Financial Report is Ready',
+      attachments: pdfBuffer ? [{
+        filename: `heloc-report-${calculationId}.pdf`,
+        content: pdfBuffer,
+        contentType: 'application/pdf',
+      }] : [],
       html: `
         <!DOCTYPE html>
         <html>
@@ -85,11 +92,13 @@ export async function sendPdfDownloadEmail({
             <div class="content">
               <p>Hello,</p>
               <p>Thank you for using our HELOC Calculator. Your personalized financial report has been generated and is ready for download.</p>
+              ${pdfBuffer ? '<p><strong>📎 Your report is attached to this email as a PDF file.</strong></p>' : ''}
               <p style="text-align: center;">
-                <a href="${downloadUrl}" class="button">Download Your Report</a>
+                <a href="${downloadUrl}" class="button">${pdfBuffer ? 'Download Backup Copy' : 'Download Your Report'}</a>
               </p>
               <p><strong>Important:</strong></p>
               <ul>
+                ${pdfBuffer ? '<li>Your report is attached to this email for immediate access</li>' : ''}
                 <li>This download link will expire in ${expiresIn}</li>
                 <li>Report ID: <code>${calculationId}</code></li>
                 <li>If you need to download again, visit our <a href="${process.env.APP_DOMAIN}/en/heloc/retrieve">Retrieve Report</a> page</li>
