@@ -151,17 +151,16 @@ export async function processBackgroundTasks(
  * 触发后台任务（不等待完成）
  * 使用 setTimeout 确保任务在后台异步执行
  */
-export function triggerBackgroundTasks(
+export async function triggerBackgroundTasks(
   calculationId: string,
   email: string,
   pdfBuffer: Buffer
-): void {
-  // 使用 setTimeout 0 确保任务在下一个事件循环中执行
-  setTimeout(() => {
-    processBackgroundTasks(calculationId, email, pdfBuffer).catch(error => {
-      console.error(`[Background] Unhandled error in background tasks:`, error);
-    });
-  }, 0);
-
+): Promise<void> {
   console.log(`[Background] Background tasks triggered for calculation: ${calculationId}`);
+
+  try {
+    await processBackgroundTasks(calculationId, email, pdfBuffer);
+  } catch (error) {
+    console.error(`[Background] Unhandled error in background tasks:`, error);
+  }
 }

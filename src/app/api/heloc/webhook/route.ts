@@ -189,7 +189,7 @@ export async function POST(req: NextRequest) {
 
         // Trigger background tasks (R2 upload + email)
         console.log('[Webhook] Triggering background tasks...');
-        triggerBackgroundTasks(calculationId, email, pdfBuffer);
+        await triggerBackgroundTasks(calculationId, email, pdfBuffer);
 
         console.log('[Webhook] PDF generated successfully');
       } catch (error) {
