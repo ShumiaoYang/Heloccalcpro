@@ -56,6 +56,7 @@ async function uploadToR2WithRetry(
  * @param email - 收件人邮箱
  * @param downloadUrl - 下载链接
  * @param calculationId - 计算ID
+ * @param pdfBuffer - PDF buffer (作为附件)
  * @param maxRetries - 最大重试次数（默认3次）
  * @returns 是否发送成功
  */
@@ -63,6 +64,7 @@ async function sendEmailWithRetry(
   email: string,
   downloadUrl: string,
   calculationId: string,
+  pdfBuffer: Buffer,
   maxRetries: number = 3
 ): Promise<boolean> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -72,7 +74,8 @@ async function sendEmailWithRetry(
         to: email,
         downloadUrl,
         calculationId,
-        expiresIn: '24 hours',
+        expiresIn: '7 days',
+        pdfBuffer,
       });
       console.log(`[Background] Email sent successfully on attempt ${attempt}`);
       return true;
@@ -128,8 +131,8 @@ export async function processBackgroundTasks(
       });
       console.log(`[Background] Database updated with R2 URL`);
 
-      // 步骤4：发送邮件（带重试）
-      await sendEmailWithRetry(email, signedUrl, calculationId);
+      // 步骤4：发送邮件（带重试，包含PDF附件）
+      await sendEmailWithRetry(email, signedUrl, calculationId, pdfBuffer);
 
       // 步骤5：删除本地文件
       const deleted = deleteLocalPdf(calculationId);
@@ -151,17 +154,16 @@ export async function processBackgroundTasks(
  * 触发后台任务（不等待完成）
  * 使用 setTimeout 确保任务在后台异步执行
  */
-export function triggerBackgroundTasks(
+export async function triggerBackgroundTasks(
   calculationId: string,
   email: string,
   pdfBuffer: Buffer
-): void {
-  // 使用 setTimeout 0 确保任务在下一个事件循环中执行
-  setTimeout(() => {
-    processBackgroundTasks(calculationId, email, pdfBuffer).catch(error => {
-      console.error(`[Background] Unhandled error in background tasks:`, error);
-    });
-  }, 0);
-
+): Promise<void> {
   console.log(`[Background] Background tasks triggered for calculation: ${calculationId}`);
+
+  try {
+    await processBackgroundTasks(calculationId, email, pdfBuffer);
+  } catch (error) {
+    console.error(`[Background] Unhandled error in background tasks:`, error);
+  }
 }

@@ -1,42 +1,19 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Check if SMTP is configured
-const isSMTPConfigured = !!(
-  process.env.SMTP_HOST &&
-  process.env.SMTP_USER &&
-  process.env.SMTP_PASSWORD
-);
-
-// Create transporter with connection pool and timeout settings
-const transporter = isSMTPConfigured
-  ? nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-      // Connection pool settings
-      pool: true,
-      maxConnections: 5,
-      maxMessages: 100,
-      // Timeout settings (in milliseconds)
-      connectionTimeout: 60000, // 60 seconds
-      greetingTimeout: 30000,   // 30 seconds
-      socketTimeout: 60000,     // 60 seconds
-      // Retry settings
-      tls: {
-        rejectUnauthorized: false, // For self-signed certificates
-      },
-    })
+// Initialize Resend client
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
   : null;
+
+// Check if email service is configured
+const isEmailConfigured = !!process.env.RESEND_API_KEY;
 
 interface PdfDownloadEmailParams {
   to: string;
   downloadUrl: string;
   calculationId: string;
   expiresIn?: string;
+  pdfBuffer?: Buffer;
 }
 
 /**
@@ -46,23 +23,25 @@ export async function sendPdfDownloadEmail({
   to,
   downloadUrl,
   calculationId,
-  expiresIn = '24 hours',
+  expiresIn = '7 days',
+  pdfBuffer,
 }: PdfDownloadEmailParams): Promise<void> {
-  if (!transporter) {
-    console.warn('[Email] SMTP not configured, skipping email send');
+  if (!resend) {
+    console.warn('[Email] Resend not configured, skipping email send');
     return;
   }
 
   try {
-    // Verify connection before sending
-    console.log('[Email] Verifying SMTP connection...');
-    await transporter.verify();
-    console.log('[Email] SMTP connection verified');
+    console.log('[Email] Sending email via Resend...');
 
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || 'HELOC Calculator <noreply@heloccalculator.pro>',
+    await resend.emails.send({
+      from: process.env.RESEND_FROM || 'HELOC Calculator <support@heloccalculator.pro>',
       to,
       subject: 'Your HELOC Financial Report is Ready',
+      attachments: pdfBuffer ? [{
+        filename: `heloc-report-${calculationId}.pdf`,
+        content: pdfBuffer,
+      }] : [],
       html: `
         <!DOCTYPE html>
         <html>
@@ -85,11 +64,13 @@ export async function sendPdfDownloadEmail({
             <div class="content">
               <p>Hello,</p>
               <p>Thank you for using our HELOC Calculator. Your personalized financial report has been generated and is ready for download.</p>
+              ${pdfBuffer ? '<p><strong>📎 Your report is attached to this email as a PDF file.</strong></p>' : ''}
               <p style="text-align: center;">
-                <a href="${downloadUrl}" class="button">Download Your Report</a>
+                <a href="${downloadUrl}" class="button">${pdfBuffer ? 'Download Backup Copy' : 'Download Your Report'}</a>
               </p>
               <p><strong>Important:</strong></p>
               <ul>
+                ${pdfBuffer ? '<li>Your report is attached to this email for immediate access</li>' : ''}
                 <li>This download link will expire in ${expiresIn}</li>
                 <li>Report ID: <code>${calculationId}</code></li>
                 <li>If you need to download again, visit our <a href="${process.env.APP_DOMAIN}/en/heloc/retrieve">Retrieve Report</a> page</li>
@@ -129,8 +110,8 @@ export async function sendRetrieveReportsEmail({
   to,
   reports,
 }: RetrieveReportsEmailParams): Promise<void> {
-  if (!transporter) {
-    console.warn('[Email] SMTP not configured, skipping email send');
+  if (!resend) {
+    console.warn('[Email] Resend not configured, skipping email send');
     return;
   }
 
@@ -149,13 +130,10 @@ export async function sendRetrieveReportsEmail({
     .join('');
 
   try {
-    // Verify connection before sending
-    console.log('[Email] Verifying SMTP connection...');
-    await transporter.verify();
-    console.log('[Email] SMTP connection verified');
+    console.log('[Email] Sending retrieve reports email via Resend...');
 
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || 'HELOC Calculator <noreply@heloccalculator.pro>',
+    await resend.emails.send({
+      from: process.env.RESEND_FROM || 'HELOC Calculator <support@heloccalculator.pro>',
       to,
       subject: `Your HELOC Reports (${reports.length} found)`,
       html: `
@@ -216,5 +194,5 @@ export async function sendRetrieveReportsEmail({
  * Check if email service is available
  */
 export function isEmailAvailable(): boolean {
-  return isSMTPConfigured;
+  return isEmailConfigured;
 }

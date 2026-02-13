@@ -301,7 +301,7 @@ async function generatePdfInBackground(
         to: email,
         downloadUrl: signedUrl,
         calculationId,
-        expiresIn: '24 hours',
+        expiresIn: '7 days',
       });
       console.log('[PDF Generation] Email sent successfully');
     } catch (emailError) {

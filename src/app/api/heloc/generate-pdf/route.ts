@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
 
     // Trigger background tasks (R2 upload + email) without waiting
     console.log('[PDF Generation] Triggering background tasks...');
-    triggerBackgroundTasks(calculationId, email, pdfBuffer);
+    await triggerBackgroundTasks(calculationId, email, pdfBuffer);
 
     console.log('[PDF Generation] Success! Returning immediately');
 
