@@ -4,6 +4,7 @@ import { Inter, Noto_Sans_SC, JetBrains_Mono, Dancing_Script } from 'next/font/g
 import './globals.css';
 import AuthSessionProvider from '@/components/providers/session-provider';
 import { GoogleAnalytics } from '@/lib/analytics/google-analytics';
+import { StructuredData } from '@/components/seo/structured-data';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,6 +48,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <StructuredData type="website" />
+      </head>
       <body className={`${inter.variable} ${notoSans.variable} ${jetbrainsMono.variable} ${dancingScript.variable} antialiased`}>
         {gaId && <GoogleAnalytics measurementId={gaId} />}
         <AuthSessionProvider>{children}</AuthSessionProvider>
