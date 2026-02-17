@@ -110,7 +110,7 @@ export function StructuredData({
   };
 
   // 根据页面类型选择合适的schema
-  let schemas = [organizationSchema, websiteSchema, breadcrumbSchema];
+  const schemas: any[] = [organizationSchema, websiteSchema, breadcrumbSchema];
 
   if (type === 'calculator') {
     schemas.push(webApplicationSchema, financialProductSchema);
