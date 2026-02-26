@@ -74,4 +74,4 @@ tempfix
 
 # submodule
 docs/internal/
-scripts
+scripts/generate-cert.js

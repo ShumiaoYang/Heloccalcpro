@@ -13,8 +13,10 @@ const LOCALE_ROUTES = [
   { path: '/heloc-calculator-features', priority: 0.9, changefreq: 'weekly' },
 ];
 
-// Routes without locale prefix (global routes) - currently none for public pages
-const GLOBAL_ROUTES: Array<{ path: string; priority: number; changefreq: string }> = [];
+// Routes without locale prefix (global routes)
+const GLOBAL_ROUTES: Array<{ path: string; priority: number; changefreq: string }> = [
+  { path: '/', priority: 1.0, changefreq: 'daily' }, // 添加根路径
+];
 
 const localeAware = new Set(LOCALE_ROUTES.map(r => r.path));
 
