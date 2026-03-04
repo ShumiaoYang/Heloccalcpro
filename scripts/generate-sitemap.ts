@@ -14,9 +14,8 @@ const LOCALE_ROUTES = [
 ];
 
 // Routes without locale prefix (global routes)
-const GLOBAL_ROUTES: Array<{ path: string; priority: number; changefreq: string }> = [
-  { path: '/', priority: 1.0, changefreq: 'daily' }, // 添加根路径
-];
+// Note: Root path (/) is a redirect to /en, so we don't include it in sitemap
+const GLOBAL_ROUTES: Array<{ path: string; priority: number; changefreq: string }> = [];
 
 const localeAware = new Set(LOCALE_ROUTES.map(r => r.path));
 
