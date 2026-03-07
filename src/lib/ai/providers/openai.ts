@@ -6,6 +6,7 @@
 import { AIProvider, AIProviderConfig } from './base';
 import type { AiAnalysis, CalculatedData, ScenarioType } from '@/types/heloc-ai';
 import { generatePrompt } from '../prompts';
+import { getSystemRolePrompt, getUserPromptV3 } from '../prompts/base';
 
 export class OpenAIProvider extends AIProvider {
   private apiEndpoint: string;
@@ -20,25 +21,31 @@ export class OpenAIProvider extends AIProvider {
     calculatedData: CalculatedData,
     userInputs: Record<string, any>
   ): Promise<AiAnalysis> {
-    const scenario = userInputs.scenario as ScenarioType;
+    const systemRole = getSystemRolePrompt();
+    const userMessage = getUserPromptV3({ calculatedData, userInputs });
 
-    // 如果没有scenario，使用默认场景（债务整合）
-    if (!scenario) {
-      console.warn('No scenario provided, using DEBT_CONSOLIDATION as default');
-      userInputs.scenario = 'DEBT_CONSOLIDATION';
+    const response = await this.callOpenAI(systemRole, userMessage);
+
+    // Clean markdown code blocks if present
+    let cleanedResponse = response.trim();
+    if (cleanedResponse.startsWith('```json')) {
+      cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (cleanedResponse.startsWith('```')) {
+      cleanedResponse = cleanedResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
     }
 
-    // 生成Prompt
-    const prompt = generatePrompt(userInputs.scenario, {
-      calculatedData,
-      userInputs,
-    });
+    // Parse JSON response
+    const parsed = JSON.parse(cleanedResponse);
 
-    // 调用OpenAI API
-    const response = await this.callOpenAI(prompt.systemRole, prompt.userMessage);
-
-    // 解析并验证响应
-    return this.parseResponse(response);
+    return {
+      summary: parsed.executiveBrief || '',
+      diagnostic: parsed.bankEvaluation?.dtiInsight || '',
+      strategy: parsed.goalAnalysis?.advisorNote || '',
+      actionPlan: parsed.bankReadiness || [],
+      tips: [],
+      // v3.0 structured data
+      v3Report: parsed,
+    };
   }
 
   async healthCheck(): Promise<boolean> {

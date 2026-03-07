@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const {
       email,
       calculationData,
-      calculatedData, // New: Complete calculated data from frontend
+      calculatedData,
       // Step 1 data
       amountNeeded,
       scenario,
@@ -36,6 +36,8 @@ export async function POST(req: NextRequest) {
       monthlyDebt,
       propertyType,
       occupancy,
+      subjectHousingPayment,
+      otherMonthlyDebt,
       // Step 3 data
       creditCardLimit,
       creditCardBalance,
@@ -64,12 +66,12 @@ export async function POST(req: NextRequest) {
       data: {
         inputs: {
           ...calculationData.inputs,
-          // Add Step 1 data
+          // Step 1 data
           amountNeeded,
           scenario,
           renovationDuration,
           renovationType,
-          // Add Step 2 data
+          // Step 2 data
           homeValue,
           mortgageBalance,
           creditScore,
@@ -77,10 +79,12 @@ export async function POST(req: NextRequest) {
           monthlyDebt,
           propertyType,
           occupancy,
-          // Add Step 3 data
+          subjectHousingPayment,
+          otherMonthlyDebt,
+          // Step 3 data
           creditCardLimit,
           creditCardBalance,
-          // Add calculated data (core metrics and scenario metrics)
+          // Calculated data
           calculatedData,
         },
         results: calculationData.results,
@@ -161,8 +165,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Checkout error:', error);
+    console.error('Error details:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: 'Failed to create checkout session', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

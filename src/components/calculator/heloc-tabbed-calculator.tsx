@@ -6,6 +6,7 @@ import HelocPaymentCalculator from './heloc-payment-calculator';
 import HelocFooter from './HelocFooter';
 import PdfReportCTA from './PdfReportCTA';
 import { calculateCredit } from '@/lib/heloc/credit-calculator';
+import { PropertyType, OccupancyType } from '@/lib/heloc/types';
 
 type TabType = 'credit' | 'payment';
 
@@ -18,6 +19,12 @@ export default function HelocTabbedCalculator() {
   const [creditScore, setCreditScore] = useState(740);
   const [desiredLTV, setDesiredLTV] = useState(80);
   const [utilizationRatio, setUtilizationRatio] = useState(30);
+
+  // v3.0 新增字段
+  const [propertyType, setPropertyType] = useState<PropertyType>('Single-family');
+  const [occupancyType, setOccupancyType] = useState<OccupancyType>('Primary residence');
+  const [subjectHousingPayment, setSubjectHousingPayment] = useState(2500);
+  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState(0);
 
   // Payment Plan parameters (page-level state)
   const [primeRate, setPrimeRate] = useState(7.5);
@@ -34,12 +41,22 @@ export default function HelocTabbedCalculator() {
     creditScore: number;
     desiredLTV: number;
     utilizationRatio: number;
+    propertyType: PropertyType;
+    occupancyType: OccupancyType;
+    annualIncome: number;
+    subjectHousingPayment: number;
+    otherMonthlyDebt: number;
   }) => {
     setHomeValue(values.homeValue);
     setMortgageBalance(values.mortgageBalance);
     setCreditScore(values.creditScore);
     setDesiredLTV(values.desiredLTV);
     setUtilizationRatio(values.utilizationRatio);
+    setPropertyType(values.propertyType);
+    setOccupancyType(values.occupancyType);
+    setAnnualIncome(values.annualIncome);
+    setSubjectHousingPayment(values.subjectHousingPayment);
+    setOtherMonthlyDebt(values.otherMonthlyDebt);
   }, []);
 
   const handlePaymentValuesChange = useCallback((values: {
@@ -144,7 +161,6 @@ export default function HelocTabbedCalculator() {
       <PdfReportCTA
         isOpen={showPdfModal}
         onClose={() => setShowPdfModal(false)}
-        // Pass page-level parameters directly
         homeValue={homeValue}
         mortgageBalance={mortgageBalance}
         creditScore={creditScore}
@@ -154,6 +170,10 @@ export default function HelocTabbedCalculator() {
         margin={margin}
         availableAmount={availableAmount}
         maxHelocAmount={creditResult?.maxHelocAmount || 0}
+        propertyType={propertyType}
+        occupancyType={occupancyType}
+        subjectHousingPayment={subjectHousingPayment}
+        otherMonthlyDebt={otherMonthlyDebt}
       />
     </>
   );

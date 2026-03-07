@@ -210,8 +210,6 @@ export default function HelocPaymentCalculator({
     <div className="space-y-6">
       {/* Basic Inputs */}
       <div className="space-y-4">
-
-          {/* Three inputs in one row */}
           <div className="flex flex-wrap items-center gap-6">
             {/* Draw Amount */}
             <div className="flex items-center gap-2">
@@ -228,38 +226,33 @@ export default function HelocPaymentCalculator({
               </div>
             </div>
 
-            {/* Prime Rate */}
+            {/* Income Growth */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Prime Rate:</label>
-              <div className="relative" style={{ width: '100px' }}>
-                <input
-                  type="number"
-                  value={primeRate}
-                  onChange={(e) => setPrimeRate(e.target.value)}
-                  placeholder="7.5"
-                  step="0.1"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pr-7 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">%</span>
-              </div>
+              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Income Growth:</label>
+              <select
+                value={incomeGrowth}
+                onChange={(e) => setIncomeGrowth(e.target.value as keyof typeof INCOME_GROWTH_PRESETS)}
+                className="rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                style={{ width: '160px' }}
+              >
+                <option value="conservative">Conservative (2%)</option>
+                <option value="moderate">Moderate (3%)</option>
+                <option value="aggressive">Aggressive (5%)</option>
+              </select>
             </div>
 
-            {/* Margin Slider */}
+            {/* Economic Outlook */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Margin:</label>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                step="0.1"
-                value={margin}
-                onChange={(e) => setMargin(parseFloat(e.target.value))}
-                className="accent-emerald-500"
+              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Economic Outlook:</label>
+              <select
+                value={inflation}
+                onChange={(e) => setInflation(e.target.value as keyof typeof INFLATION_PRESETS)}
+                className="rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
                 style={{ width: '180px' }}
-              />
-              <span className="font-mono text-base font-semibold text-emerald-600 whitespace-nowrap">
-                {margin.toFixed(1)}%
-              </span>
+              >
+                <option value="mild">Mild Inflation (0.5%)</option>
+                <option value="high">High Inflation (3%)</option>
+              </select>
             </div>
           </div>
         </div>
@@ -290,10 +283,10 @@ export default function HelocPaymentCalculator({
           </div>
         )}
 
-        {/* Chart and Advanced Options - Side by side on large screens */}
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.5fr,1fr]">
+        {/* Chart and Info Card */}
+        <div className="mt-6 space-y-6">
           {/* Chart */}
-          <div>
+          <div className="w-full overflow-hidden">
             <PaymentTimelineChart
               timeline={burdenRatioTimeline || paymentTimeline}
               showBurdenRatio={burdenRatioTimeline !== null}
@@ -301,80 +294,14 @@ export default function HelocPaymentCalculator({
             />
           </div>
 
-          {/* Advanced Options */}
-          <div className="flex flex-col">
-            {/* Advanced Options - Always Visible */}
-            <div className="space-y-4 rounded-xl border border-emerald-200 bg-emerald-50/30 p-4">
-              <h3 className="text-sm font-semibold text-emerald-900">Advanced Options</h3>
-
-              <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-slate-700">Current Annual Income</label>
-                    <div className="relative mt-1.5">
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-500">$</span>
-                      <input
-                        type="number"
-                        value={annualIncome}
-                        onChange={(e) => setAnnualIncome(e.target.value)}
-                        placeholder="100000"
-                        className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-slate-700">Monthly Debt Payments</label>
-                    <div className="relative mt-1.5">
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-500">$</span>
-                      <input
-                        type="number"
-                        value={monthlyDebt}
-                        onChange={(e) => setMonthlyDebt(e.target.value)}
-                        placeholder="2000"
-                        className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="income-growth" className="text-xs font-medium text-slate-700">
-                      Income Growth
-                    </label>
-                    <select
-                      id="income-growth"
-                      value={incomeGrowth}
-                      onChange={(e) => setIncomeGrowth(e.target.value as keyof typeof INCOME_GROWTH_PRESETS)}
-                      className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                    >
-                      <option value="conservative">Conservative (2%)</option>
-                      <option value="moderate">Moderate (3%)</option>
-                      <option value="aggressive">Aggressive (5%)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="inflation" className="text-xs font-medium text-slate-700">
-                      Economic Outlook
-                    </label>
-                    <select
-                      id="inflation"
-                      value={inflation}
-                      onChange={(e) => setInflation(e.target.value as keyof typeof INFLATION_PRESETS)}
-                      className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                    >
-                      <option value="mild">Mild Inflation (0.5%)</option>
-                      <option value="high">High Inflation (3%)</option>
-                    </select>
-                  </div>
-                </div>
-
-              <div className="rounded-lg border border-emerald-300 bg-white p-3 text-xs text-slate-700">
-                <p className="font-medium text-emerald-800">What does this show?</p>
-                <p className="mt-1.5 leading-relaxed">
-                  The burden ratio line shows how your payment feels over time, accounting for your income growth and inflation.
-                  A declining ratio means the payment becomes easier to afford as your income grows.
-                </p>
-              </div>
+          {/* Info Card */}
+          <div className="w-full">
+            <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-4">
+              <p className="font-medium text-emerald-900">What does this show?</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                The burden ratio line shows how your payment feels over time, accounting for your income growth and inflation.
+                A declining ratio means the payment becomes easier to afford as your income grows.
+              </p>
             </div>
           </div>
         </div>

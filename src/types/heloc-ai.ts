@@ -11,7 +11,7 @@ export type ScenarioType =
   | 'debt_consolidation'
   | 'home_renovation'
   | 'credit_optimization'
-  | 'emergency_fund'
+  | 'contingent_liquidity'
   | 'investment';
 
 // ============================================
@@ -53,7 +53,7 @@ export interface CreditOptimizationMetrics {
   utilizationDrop: number;
 }
 
-export interface EmergencyFundMetrics {
+export interface ContingentLiquidityMetrics {
   /** Months of Expenses Covered */
   monthsCovered: number;
   /** Available Liquidity ($) */
@@ -71,7 +71,7 @@ export type ScenarioMetrics =
   | DebtConsolidationMetrics
   | HomeRenovationMetrics
   | CreditOptimizationMetrics
-  | EmergencyFundMetrics
+  | ContingentLiquidityMetrics
   | InvestmentMetrics;
 
 export interface CalculatedData {
@@ -100,22 +100,54 @@ export interface ActionItem {
 }
 
 export interface AiAnalysis {
-  /** Executive Summary - 执行摘要结论 */
+  /** v3.0: Structured Report Data */
+  v3Report?: {
+    executiveBrief: string;
+    goalAnalysis: {
+      economicImpact: string;
+      advisorNote: string;
+    };
+    bankEvaluation: {
+      cltvInsight: string;
+      dtiInsight: string;
+      marginInsight: string;
+    };
+    riskDashboard: {
+      dtiLabel: string;
+      cltvLabel: string;
+      dtiColor: 'green' | 'yellow' | 'red';
+      cltvColor: 'green' | 'yellow' | 'red';
+    };
+    lifetimeRoadmap: {
+      drawPeriodView: string;
+      repaymentPeriodView: string;
+      paymentShockWarning: string;
+    };
+    lifecyclePersonalized: string;
+    stressTest: {
+      rateHikeImpact: string;
+      advisorTip: string;
+    };
+    bankReadiness: string[];
+    specialRecommendation: string;
+  };
+
+  /** Executive Summary (向后兼容) */
   summary: string;
 
-  /** Diagnostic - 针对 DTI/CLTV 的风险诊断 */
+  /** Diagnostic (向后兼容) */
   diagnostic: string;
 
-  /** Strategy - 针对特定场景的专家建议 */
+  /** Strategy (向后兼容) */
   strategy: string;
 
-  /** Action Plan - 行动建议列表 (3-5条) - 支持旧格式(string[])和新格式(ActionItem[]) */
+  /** Action Plan (向后兼容) */
   actionPlan: (string | ActionItem)[];
 
-  /** Tips - 提示信息 */
+  /** Tips (向后兼容) */
   tips: Tip[];
 
-  /** Stress Test Commentary - 压力测试点评 (可选) */
+  /** Stress Test Commentary (向后兼容) */
   stressTestCommentary?: string;
 }
 

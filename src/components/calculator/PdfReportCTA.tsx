@@ -15,10 +15,10 @@ import {
   calculateDebtConsolidation,
   calculateHomeRenovation,
   calculateCreditOptimization,
-  calculateEmergencyFund,
+  calculateContingentLiquidity,
   calculateInvestment,
 } from '@/lib/heloc/scenario-calculator';
-import type { ScenarioType } from '@/types/heloc-ai';
+import type { ScenarioType, PropertyType, OccupancyType } from '@/types/heloc-ai';
 
 interface FinancialData {
   homeValue: number;
@@ -31,7 +31,6 @@ interface FinancialData {
 interface PdfReportCTAProps {
   isOpen: boolean;
   onClose: () => void;
-  // Page-level parameters (directly from HelocTabbedCalculator)
   homeValue: number;
   mortgageBalance: number;
   creditScore: number;
@@ -41,6 +40,10 @@ interface PdfReportCTAProps {
   margin: number;
   availableAmount: number;
   maxHelocAmount: number;
+  propertyType: PropertyType;
+  occupancyType: OccupancyType;
+  subjectHousingPayment: number;
+  otherMonthlyDebt: number;
 }
 
 type Scenario =
@@ -61,7 +64,11 @@ export default function PdfReportCTA({
   primeRate: propPrimeRate,
   margin: propMargin,
   availableAmount,
-  maxHelocAmount
+  maxHelocAmount,
+  propertyType: propPropertyType,
+  occupancyType: propOccupancyType,
+  subjectHousingPayment: propSubjectHousingPayment,
+  otherMonthlyDebt: propOtherMonthlyDebt
 }: PdfReportCTAProps) {
   // Multi-step state
   const [currentStep, setCurrentStep] = useState(1);
@@ -81,9 +88,10 @@ export default function PdfReportCTA({
   const [mortgageBalance, setMortgageBalance] = useState(propMortgageBalance);
   const [creditScore, setCreditScore] = useState(propCreditScore);
   const [annualIncome, setAnnualIncome] = useState(propAnnualIncome);
-  const [monthlyDebt, setMonthlyDebt] = useState(propMonthlyDebt);
-  const [propertyType, setPropertyType] = useState('single_family');
-  const [occupancy, setOccupancy] = useState('primary');
+  const [propertyType, setPropertyType] = useState(propPropertyType);
+  const [occupancy, setOccupancy] = useState(propOccupancyType);
+  const [housingPayment, setHousingPayment] = useState(propSubjectHousingPayment);
+  const [otherDebt, setOtherDebt] = useState(propOtherMonthlyDebt);
 
   // Step 3: Scenario Details
   const [creditCardLimit, setCreditCardLimit] = useState('');
@@ -100,9 +108,12 @@ export default function PdfReportCTA({
       setMortgageBalance(propMortgageBalance);
       setCreditScore(propCreditScore);
       setAnnualIncome(propAnnualIncome);
-      setMonthlyDebt(propMonthlyDebt);
+      setPropertyType(propPropertyType);
+      setOccupancy(propOccupancyType);
+      setHousingPayment(propSubjectHousingPayment);
+      setOtherDebt(propOtherMonthlyDebt);
     }
-  }, [isOpen, propHomeValue, propMortgageBalance, propCreditScore, propAnnualIncome, propMonthlyDebt]);
+  }, [isOpen, propHomeValue, propMortgageBalance, propCreditScore, propAnnualIncome, propPropertyType, propOccupancyType, propSubjectHousingPayment, propOtherMonthlyDebt]);
 
   if (!isOpen) return null;
 
@@ -188,6 +199,7 @@ export default function PdfReportCTA({
       const helocRate = calculateHelocRate(propPrimeRate, propMargin);
 
       // Calculate core metrics using Step 2 local state (user may have adjusted)
+      const monthlyDebt = housingPayment + otherDebt;
       const cltv = calculateCLTV(homeValue, mortgageBalance, helocAmount);
       const drawPeriodPayment = calculateInterestOnlyPayment(helocAmount, helocRate);
       const dti = calculateDTI(annualIncome, monthlyDebt, drawPeriodPayment);
@@ -237,8 +249,8 @@ export default function PdfReportCTA({
             creditCardLimit: parseFloat(creditCardLimit) || 0,
           });
           break;
-        case 'emergency_fund':
-          scenarioMetrics = calculateEmergencyFund({
+        case 'contingent_liquidity':
+          scenarioMetrics = calculateContingentLiquidity({
             ...baseInput,
             monthlyExpenses: monthlyDebt, // Use monthlyDebt as proxy for expenses
           });
@@ -288,14 +300,16 @@ export default function PdfReportCTA({
           scenario,
           renovationDuration: scenario === 'home_renovation' ? parseInt(renovationDuration) : undefined,
           renovationType: scenario === 'home_renovation' ? renovationType : undefined,
-          // Step 2 data (use local state - user may have adjusted)
+          // Step 2 data
           homeValue: homeValue,
           mortgageBalance: mortgageBalance,
           creditScore: creditScore,
           annualIncome: annualIncome,
-          monthlyDebt: monthlyDebt,
+          monthlyDebt: housingPayment + otherDebt,
           propertyType,
           occupancy,
+          subjectHousingPayment: housingPayment,
+          otherMonthlyDebt: otherDebt,
           // Step 3 data
           creditCardLimit: scenario !== 'home_renovation' ? parseFloat(creditCardLimit) : undefined,
           creditCardBalance: scenario !== 'home_renovation' ? parseFloat(creditCardBalance) : undefined,
@@ -310,6 +324,7 @@ export default function PdfReportCTA({
         setError(data.error || 'Failed to create checkout session');
       }
     } catch (err) {
+      console.error('Purchase error:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -416,7 +431,7 @@ export default function PdfReportCTA({
                   <option value="home_renovation">Home Renovation</option>
                   <option value="debt_consolidation">Debt Consolidation</option>
                   <option value="credit_optimization">Credit/Asset Optimization</option>
-                  <option value="emergency_fund">Emergency Fund</option>
+                  <option value="contingent_liquidity">Contingent Liquidity</option>
                   <option value="investment">Investment/Other</option>
                 </select>
               </div>
@@ -460,6 +475,26 @@ export default function PdfReportCTA({
                 />
 
                 <SliderWithValue
+                  label="Housing Payment"
+                  value={housingPayment}
+                  min={0}
+                  max={10000}
+                  step={100}
+                  onChange={setHousingPayment}
+                  formatValue={formatCurrency}
+                />
+
+                <SliderWithValue
+                  label="Other Debt"
+                  value={otherDebt}
+                  min={0}
+                  max={10000}
+                  step={100}
+                  onChange={setOtherDebt}
+                  formatValue={formatCurrency}
+                />
+
+                <SliderWithValue
                   label="Credit Score"
                   value={creditScore}
                   min={300}
@@ -475,16 +510,6 @@ export default function PdfReportCTA({
                   max={500000}
                   step={5000}
                   onChange={setAnnualIncome}
-                  formatValue={formatCurrency}
-                />
-
-                <SliderWithValue
-                  label="Monthly Debt Payments"
-                  value={monthlyDebt}
-                  min={0}
-                  max={10000}
-                  step={100}
-                  onChange={setMonthlyDebt}
                   formatValue={formatCurrency}
                 />
               </div>
