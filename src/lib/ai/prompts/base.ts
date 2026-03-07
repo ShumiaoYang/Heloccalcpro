@@ -161,8 +161,6 @@ export function getUserPromptV3(context: PromptContext): string {
 - Effective Rate: ${coreMetrics.helocRate?.toFixed(2) || '0'}%
 - CLTV Result: ${coreMetrics.cltv?.toFixed(1) || '0'}%
 - Bank's Stress Test DTI: ${coreMetrics.dti?.toFixed(2) || '0'}%
-- Risk Score: ${calculatedData.riskScore || 'N/A'}
-- Risk Level: ${calculatedData.riskLevel || 'N/A'}
 
 ## Payment Analysis
 - Utilization Ratio: ${userInputs.utilizationRatio || 50}%

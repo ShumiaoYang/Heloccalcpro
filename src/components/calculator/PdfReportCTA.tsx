@@ -523,13 +523,14 @@ export default function PdfReportCTA({
                   </label>
                   <select
                     value={propertyType}
-                    onChange={(e) => setPropertyType(e.target.value)}
+                    onChange={(e) => setPropertyType(e.target.value as PropertyType)}
                     className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    <option value="single_family">Single Family</option>
-                    <option value="condo">Condo</option>
-                    <option value="townhouse">Townhouse</option>
-                    <option value="multi_family">Multi-family</option>
+                    <option value="Single-family">Single Family</option>
+                    <option value="Condo">Condo</option>
+                    <option value="Townhouse">Townhouse</option>
+                    <option value="Multi-family">Multi-family</option>
+                    <option value="Manufactured">Manufactured</option>
                   </select>
                 </div>
 
@@ -539,12 +540,12 @@ export default function PdfReportCTA({
                   </label>
                   <select
                     value={occupancy}
-                    onChange={(e) => setOccupancy(e.target.value)}
+                    onChange={(e) => setOccupancy(e.target.value as OccupancyType)}
                     className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    <option value="primary">Primary Residence</option>
-                    <option value="second_home">Second Home</option>
-                    <option value="investment">Investment</option>
+                    <option value="Primary residence">Primary Residence</option>
+                    <option value="Second home">Second Home</option>
+                    <option value="Investment property">Investment</option>
                   </select>
                 </div>
               </div>

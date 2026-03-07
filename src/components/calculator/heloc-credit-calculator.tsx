@@ -125,7 +125,7 @@ export default function HelocCreditCalculator({
   const availableAmount = useMemo(() => {
     if (!creditResult) return 0;
     // Use approvedCreditLimit instead of maxHelocAmount
-    const limit = 'approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : creditResult.maxHelocAmount;
+    const limit = 'approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount;
     return Math.round(limit * (utilizationRatio / 100) / 1000) * 1000;
   }, [creditResult, utilizationRatio]);
 
@@ -351,7 +351,7 @@ export default function HelocCreditCalculator({
         {/* Row 1: Max HELOC Amount */}
         <ResultCard
           label="Maximum HELOC Amount"
-          value={creditResult ? `$${Math.round(('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : creditResult.maxHelocAmount) / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '$0'}
+          value={creditResult ? `$${Math.round(('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '$0'}
           description="Approved credit line"
           highlight
         />
