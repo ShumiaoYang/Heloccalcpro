@@ -51,7 +51,7 @@ type Scenario =
   | 'home_renovation'
   | 'debt_consolidation'
   | 'credit_optimization'
-  | 'emergency_fund'
+  | 'contingent_liquidity'
   | 'investment';
 
 export default function PdfReportCTA({
