@@ -18,7 +18,7 @@ export default function HelocTabbedCalculator() {
   const [mortgageBalance, setMortgageBalance] = useState(350000);
   const [creditScore, setCreditScore] = useState(740);
   const [desiredLTV, setDesiredLTV] = useState(80);
-  const [utilizationRatio, setUtilizationRatio] = useState(30);
+  const [utilizationRatio, setUtilizationRatio] = useState(45);
 
   // v3.0 新增字段
   const [propertyType, setPropertyType] = useState<PropertyType>('Single-family');

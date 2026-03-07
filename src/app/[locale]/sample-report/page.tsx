@@ -68,8 +68,8 @@ export default function SampleReportPage({ params }: PageProps) {
           <div className="max-w-3xl mx-auto">
             <p className="text-lg text-slate-700 leading-relaxed">
               {isZh
-                ? '在这份8页样本中，我们发现了45.65%的DTI高风险警告和业主未注意到的每月-$166现金流漏洞。然后我们制定了一个20年生存策略，将他们的财务状况扭转为盈利。这就是你只需$4.99就能获得的深度分析。'
-                : 'In this 8-page sample, we caught a 45.65% DTI High-Risk warning and a -$166 monthly cash flow leak that the owner hadn\'t noticed. We then mapped out a 20-year survival strategy to flip their finances into the green. This is the level of depth you get for just $4.99.'
+                ? '在这份8页样本中，我们发现了45.65%的DTI高风险警告和业主未注意到的每月-$208现金流漏洞。然后我们制定了一个20年生存策略，将他们的财务状况扭转为盈利。这就是你只需$4.99就能获得的深度分析。'
+                : 'In this 8-page sample, we caught a 45.65% DTI High-Risk warning and a -$208 monthly cash flow leak that the owner hadn\'t noticed. We then mapped out a 20-year survival strategy to flip their finances into the green. This is the level of depth you get for just $4.99.'
               }
             </p>
           </div>
