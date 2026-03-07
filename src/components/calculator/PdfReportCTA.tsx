@@ -18,7 +18,8 @@ import {
   calculateContingentLiquidity,
   calculateInvestment,
 } from '@/lib/heloc/scenario-calculator';
-import type { ScenarioType, PropertyType, OccupancyType } from '@/types/heloc-ai';
+import type { ScenarioType } from '@/types/heloc-ai';
+import type { PropertyType, OccupancyType } from '@/lib/heloc/types';
 
 interface FinancialData {
   homeValue: number;

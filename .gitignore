@@ -75,3 +75,4 @@ tempfix
 # submodule
 docs/internal/
 scripts/generate-cert.js
+tests/manual/
