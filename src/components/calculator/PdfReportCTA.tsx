@@ -658,7 +658,7 @@ export default function PdfReportCTA({
                   disabled={loading}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-stone-400 text-white font-semibold py-2 px-4 text-sm rounded-lg transition-colors"
                 >
-                  {loading ? 'Processing...' : 'Generate AI Analysis & Pay $2.99'}
+                  {loading ? 'Processing...' : 'Generate AI Analysis & Pay $4.99'}
                 </button>
               </div>
 

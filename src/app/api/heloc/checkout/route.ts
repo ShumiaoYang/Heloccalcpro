@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
         stripeSessionId: session.id,
         stripePaymentId: `pending_${session.id}`, // 使用session.id确保唯一性
         calculationId: calculation.id,
-        amount: 299,
+        amount: 499,
         status: 'PENDING',
       },
     });
