@@ -21,41 +21,72 @@ export interface PromptTemplate {
 }
 
 /**
- * 生成系统角色Prompt - 共情式、第二人称风格
+ * 生成系统角色Prompt - v3.0 结构化报告
  */
 export function getSystemRolePrompt(): string {
-  return `### Role
-You are a Senior US Mortgage & Personal Finance Advisor with 20 years of experience. You specialize in helping families use Home Equity (HELOC) to achieve their dreams while maintaining financial security.
+  return `# Role
 
-### Core Philosophy
-- **Empathy First**: You understand that debt, interest, and home equity are not just numbers—they represent the user's home, security, and future plans.
-- **Narrative Wisdom**: You don't just state "what" is happening; you explain "why" it matters and "how" it feels.
-- **Supportive Tone**: Always use second-person ("You", "Your"). Be encouraging but brutally honest about risks.
+You are a senior U.S. Household Financial Advisor. Generate a structured HELOC Analysis Report.
 
-### Communication Style
-- Use conversational, warm language (e.g., "Your home equity is a powerful asset...")
-- Acknowledge the user's goals with empathy (e.g., "It's exciting that you're planning to...")
-- When discussing risks, use concerned but helpful tone (e.g., "We want to be careful..." instead of "Risk is high")
-- Translate financial concepts into life impact (e.g., "$51.77 increase—roughly the cost of a family dinner out")
+# Voice and Tone
 
-### Task
-Analyze the user's HELOC data and provide a structured JSON report following this narrative flow:
-1. **Executive Summary**: Start by acknowledging the user's goal and situation
-2. **Diagnostic**: Explain CLTV and DTI in context of their security, not just thresholds
-3. **Strategy**: Provide scenario-specific guidance that feels like a roadmap, not orders
-4. **Action Plan**: Give steps with clear reasoning ("Why it matters")
-5. **Tips**: Share insider knowledge and critical warnings with explanations
+- Professional but Warm
+- Candid and Observant
+- U.S. Consumer Centric
+- Write as if personally reviewing their case, not auto-generated
 
-### Constraints
-- Language: Professional Financial English with warmth
-- Output Format: Strict JSON only (no markdown, no extra text)
-- Tone: Expert, conversational, direct, and caring
+# Output Format
 
-IMPORTANT: You must respond with ONLY valid JSON format. Do not include any markdown, explanations, or text outside the JSON structure.`;
+Output ONLY valid JSON with this structure:
+{
+  "executiveBrief": "3-4 sentence warm summary. Start with natural advisor opening like 'I've carefully reviewed your financial snapshot...' or 'Looking at your equity position...' or 'Let's dive into your roadmap for [goal]...'. NEVER use 'Dear Client' or 'Welcome, Client'. Write as if personally reviewing their case.",
+  "goalAnalysis": {
+    "economicImpact": "2-3 sentences explaining the financial impact of their goal",
+    "advisorNote": "1-2 sentences with actionable recommendation"
+  },
+  "bankEvaluation": {
+    "cltvInsight": "2-3 sentences explaining CLTV in plain language",
+    "dtiInsight": "2-3 sentences on cash flow resilience. Note: This is the bank's standard measure of repayment resilience",
+    "marginInsight": "2-3 sentences on credit pricing factors"
+  },
+  "riskDashboard": {
+    "dtiLabel": "Healthy|Caution|High Risk based on DTI value",
+    "cltvLabel": "Healthy|Caution|High Risk based on CLTV value",
+    "dtiColor": "green if DTI<35%, yellow if 35-43%, red if >43%",
+    "cltvColor": "green if CLTV<80%, yellow if 80-90%, red if >90%"
+  },
+  "lifetimeRoadmap": {
+    "drawPeriodView": "2-3 sentences on years 1-10 strategy",
+    "repaymentPeriodView": "2-3 sentences on years 11-30 planning",
+    "paymentShockWarning": "2 sentences warning about payment jump with specific dollar impact"
+  },
+  "lifecyclePersonalized": "2-3 paragraphs (8-12 sentences total) analyzing their 20-year journey. MUST mention inflation assumptions and income growth projections. Discuss financial evolution over time.",
+  "stressTest": {
+    "rateHikeImpact": "2-3 sentences explaining +2% rate scenario with dollar impact",
+    "advisorTip": "1-2 sentences with specific mitigation strategy"
+  },
+  "bankReadiness": [
+    "checklist item 1",
+    "checklist item 2",
+    "checklist item 3",
+    "checklist item 4"
+  ],
+  "specialRecommendation": "2 paragraphs with specific tactical advice tailored to their situation. Include actionable strategies like '90-day spending fast', credit score improvement tactics, or debt paydown priorities. Be specific and practical."
+}
+
+# Risk Score Interpretation
+
+When discussing risk metrics, always include this explanation: "This score reflects how your leverage, cash flow pressure, and potential payment shock interact under our professional risk model."
+
+Risk Score Guide:
+- 0-30: Low risk, strong financial position
+- 31-60: Moderate risk, manageable with proper planning
+- 61-100: Higher risk, requires careful strategy and monitoring`;
 }
 
 /**
- * 获取输出JSON Schema
+ * 获取输出JSON Schema (已废弃，v3.0 使用 Markdown)
+ * @deprecated v3.0 不再使用 JSON schema，改为生成 Markdown 报告
  */
 export function getOutputSchema(): Record<string, any> {
   return {
@@ -105,5 +136,44 @@ export function getOutputSchema(): Record<string, any> {
       },
     },
   };
+}
+
+/**
+ * v3.0: 生成 User Prompt（Markdown 报告模板）
+ */
+export function getUserPromptV3(context: PromptContext): string {
+  const { calculatedData, userInputs } = context;
+  const { coreMetrics, scenarioMetrics } = calculatedData;
+
+  return `Generate a HELOC Analysis Report using the following data:
+
+## User Profile
+- Primary Goal: ${userInputs.scenario || 'General'}
+- Annual Income: $${userInputs.annualIncome?.toLocaleString() || '0'}
+- Credit Score: ${userInputs.creditScore || 'N/A'}
+- Income Growth Assumption: ${userInputs.incomeGrowthAssumption || '3%'}
+- Economic Outlook: ${userInputs.economicOutlook || 'Mild Inflation'}
+
+## Financial Metrics
+- Home Value: $${userInputs.homeValue?.toLocaleString() || '0'}
+- Mortgage Balance: $${userInputs.mortgageBalance?.toLocaleString() || '0'}
+- Approved Credit Limit: $${coreMetrics.maxLimit?.toLocaleString() || '0'}
+- Effective Rate: ${coreMetrics.helocRate?.toFixed(2) || '0'}%
+- CLTV Result: ${coreMetrics.cltv?.toFixed(1) || '0'}%
+- Bank's Stress Test DTI: ${coreMetrics.dti?.toFixed(2) || '0'}%
+
+## Payment Analysis
+- Utilization Ratio: ${userInputs.utilizationRatio || 50}%
+- Draw Period: ${userInputs.drawPeriodYears || 10} years
+- Repayment Period: ${userInputs.repaymentPeriodYears || 20} years
+- Draw Period Monthly Payment (Interest-Only): $${Math.round(coreMetrics.maxLimit * coreMetrics.helocRate / 100 / 12)}
+- Repayment Period Monthly Payment (Principal + Interest): $${Math.round((coreMetrics.maxLimit / 240) + (coreMetrics.maxLimit * coreMetrics.helocRate / 100 / 12))}
+- Payment Shock (Monthly Increase): $${Math.round(coreMetrics.maxLimit / 240)}
+- Monthly Savings: $${coreMetrics.monthlySavings?.toLocaleString() || '0'}
+
+## Scenario Benefits
+${JSON.stringify(scenarioMetrics, null, 2)}
+
+Generate the complete Markdown report following the v3.0 template structure with 8 sections.`;
 }
 

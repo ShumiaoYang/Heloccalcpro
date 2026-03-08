@@ -26,6 +26,22 @@ export interface PdfData {
     name?: string;
     email?: string;
   };
+
+  // v3.0 新增字段
+  v3Metrics?: {
+    approved_credit_limit: number;
+    effective_rate: number;
+    final_margin: number;
+    loan_size_adjustment: number;
+    floor_rate: number;
+    payment_shock_amount: number;
+    payment_shock_ratio: number;
+    underwriting_dti: number;
+    post_approval_cltv: number;
+    utilization_ratio: number;
+    income_growth_assumption: number;
+    economic_outlook: string;
+  };
 }
 
 /**

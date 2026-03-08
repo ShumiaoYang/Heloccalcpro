@@ -8,6 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAccessToken } from '@/lib/pdf/token-manager';
+
+export const dynamic = 'force-dynamic';
 import { prisma } from '@/lib/prisma';
 import { localPdfExists, readLocalPdf, getLocalPdfFilename } from '@/lib/storage/local-storage';
 import { getSignedDownloadUrl } from '@/lib/storage/r2-client';

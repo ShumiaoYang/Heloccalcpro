@@ -10,10 +10,21 @@ export default function HelocFooter({ onGetReportClick }: HelocFooterProps) {
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         {/* Left side - CTA text */}
         <div className="text-center sm:text-left">
-          <p className="text-base font-semibold text-slate-800 sm:text-lg">
-            Ready to Decide? Get Your AI-Powered Financial Strategy for{' '}
-            <span className="text-emerald-600">$2.99</span>
+          <p className="text-base font-semibold text-slate-800 sm:text-lg mb-2">
+            New Site Special: Get the <span className="line-through text-slate-500">$29.90</span> Professional Strategy Report.
           </p>
+          <p className="text-base font-semibold text-slate-800 sm:text-lg mb-2">
+            Everything you need to KNOW and AVOID for just{' '}
+            <span className="text-emerald-600 font-bold">$4.99</span> today.
+          </p>
+          <a
+            href="/en/sample-report"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:text-blue-800 underline"
+          >
+            [View a Sample 8-Page Strategy Report (PDF)]
+          </a>
         </div>
 
         {/* Right side - Button */}

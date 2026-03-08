@@ -4,11 +4,11 @@
  */
 
 import type { PromptContext } from './base';
-import type { EmergencyFundMetrics } from '@/types/heloc-ai';
+import type { ContingentLiquidityMetrics } from '@/types/heloc-ai';
 
 export function getEmergencyFundPrompt(context: PromptContext): string {
   const { calculatedData, userInputs } = context;
-  const metrics = calculatedData.scenarioMetrics as EmergencyFundMetrics;
+  const metrics = calculatedData.scenarioMetrics as ContingentLiquidityMetrics;
 
   return `It's wise that you're thinking about financial security. Let's explore how your HELOC can serve as a safety net.
 

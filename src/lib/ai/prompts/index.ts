@@ -9,7 +9,7 @@ import { getSystemRolePrompt, getOutputSchema } from './base';
 import { getDebtConsolidationPrompt } from './debt-consolidation';
 import { getHomeRenovationPrompt } from './home-renovation';
 import { getCreditOptimizationPrompt } from './credit-optimization';
-import { getEmergencyFundPrompt } from './emergency-fund';
+import { getContingentLiquidityPrompt } from './contingent-liquidity';
 import { getInvestmentPrompt } from './investment';
 
 /**
@@ -34,8 +34,8 @@ export function generatePrompt(
     case 'credit_optimization':
       userMessage = getCreditOptimizationPrompt(context);
       break;
-    case 'emergency_fund':
-      userMessage = getEmergencyFundPrompt(context);
+    case 'contingent_liquidity':
+      userMessage = getContingentLiquidityPrompt(context);
       break;
     case 'investment':
       userMessage = getInvestmentPrompt(context);
@@ -58,7 +58,7 @@ export {
   getDebtConsolidationPrompt,
   getHomeRenovationPrompt,
   getCreditOptimizationPrompt,
-  getEmergencyFundPrompt,
+  getContingentLiquidityPrompt,
   getInvestmentPrompt,
   getSystemRolePrompt,
   getOutputSchema,

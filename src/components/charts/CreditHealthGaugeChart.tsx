@@ -117,19 +117,19 @@ export default function CreditHealthGaugeChart({
   return (
     <div ref={containerRef} className="relative w-full" style={{ maxWidth: '250px', margin: '0 auto' }}>
       <canvas ref={canvasRef} />
-      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ top: '40%' }}>
-        <div className="font-mono text-4xl font-bold text-primary-900">
+      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ top: '35%' }}>
+        <div className="font-mono text-3xl font-bold text-primary-900">
           {roundedHealthScore}
         </div>
-        <div className={`mt-1 text-xs font-semibold ${healthLevel.color}`}>
+        <div className={`mt-0.5 text-xs font-semibold ${healthLevel.color}`}>
           {healthLevel.text}
         </div>
       </div>
       {label && (
-        <div className="mt-2 text-center text-sm font-medium text-slate-600">{label}</div>
+        <div className="mt-4 text-center text-xs font-medium text-slate-600">{label}</div>
       )}
       {currentScore !== roundedHealthScore && (
-        <div className="mt-3 text-center text-xs text-slate-500">
+        <div className="mt-2 text-center text-xs text-slate-500">
           Current: {currentScore} → After HELOC: {roundedHealthScore}
         </div>
       )}

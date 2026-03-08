@@ -8,7 +8,7 @@ import type {
   DebtConsolidationMetrics,
   HomeRenovationMetrics,
   CreditOptimizationMetrics,
-  EmergencyFundMetrics,
+  ContingentLiquidityMetrics,
   InvestmentMetrics,
 } from '@/types/heloc-ai';
 
@@ -30,7 +30,8 @@ export interface BaseScenarioInput {
 export interface DebtConsolidationInput extends BaseScenarioInput {
   creditCardBalance: number;
   creditCardLimit: number;
-  // 假设信用卡利率基于信用分数
+  upfrontCosts?: number; // 一次性费用（评估费、关闭费等）
+  annualFees?: number; // 年费
 }
 
 export interface HomeRenovationInput extends BaseScenarioInput {
@@ -44,7 +45,7 @@ export interface CreditOptimizationInput extends BaseScenarioInput {
   creditCardLimit: number;
 }
 
-export interface EmergencyFundInput extends BaseScenarioInput {
+export interface ContingentLiquidityInput extends BaseScenarioInput {
   monthlyExpenses: number;
 }
 
@@ -93,12 +94,14 @@ export function calculateDebtConsolidation(
 ): DebtConsolidationMetrics {
   const creditCardRate = estimateCreditCardRate(input.creditScore);
   const helocRate = input.helocRate;
+  const upfrontCosts = input.upfrontCosts || 0;
+  const annualFees = input.annualFees || 0;
 
   // 计算信用卡月利息
   const creditCardMonthlyRate = creditCardRate / 100 / 12;
   const creditCardMonthlyInterest = input.creditCardBalance * creditCardMonthlyRate;
 
-  // 计算HELOC月利息（如果用HELOC还清信用卡）
+  // 计算HELOC月利息
   const helocMonthlyRate = helocRate / 100 / 12;
   const helocMonthlyInterest = input.creditCardBalance * helocMonthlyRate;
 
@@ -106,26 +109,23 @@ export function calculateDebtConsolidation(
   const monthlySavings = creditCardMonthlyInterest - helocMonthlyInterest;
 
   // 年度节省
-  const annualSavings = monthlySavings * 12;
+  const annualInterestSavings = monthlySavings * 12;
 
-  // 假设5年还款期，计算总节省
-  const totalSavings = annualSavings * 5;
+  // 净节省计算（扣除费用）
+  const netSavingsYear1 = annualInterestSavings - upfrontCosts - annualFees;
+  const netSavingsYear3 = annualInterestSavings * 3 - upfrontCosts - annualFees * 3;
+  const netSavingsYear5 = annualInterestSavings * 5 - upfrontCosts - annualFees * 5;
 
-  // 计算还款时间缩短（假设每月固定还款）
-  const monthlyPayment = input.creditCardBalance * 0.03; // 假设最低还款3%
-
-  // 信用卡还款月数（复利计算）
+  // 计算还款时间缩短
+  const monthlyPayment = input.creditCardBalance * 0.03;
   const ccMonths = Math.log(1 / (1 - creditCardMonthlyRate * input.creditCardBalance / monthlyPayment))
     / Math.log(1 + creditCardMonthlyRate);
-
-  // HELOC还款月数
   const helocMonths = Math.log(1 / (1 - helocMonthlyRate * input.creditCardBalance / monthlyPayment))
     / Math.log(1 + helocMonthlyRate);
-
   const payoffMonthsReduced = Math.max(0, Math.round(ccMonths - helocMonths));
 
   return {
-    interestSaved: Math.round(totalSavings),
+    interestSaved: Math.round(netSavingsYear5),
     payoffMonthsReduced,
   };
 }
@@ -160,34 +160,33 @@ export function calculateHomeRenovation(
 export function calculateCreditOptimization(
   input: CreditOptimizationInput
 ): CreditOptimizationMetrics {
-  // 当前信用利用率
+  // 当前信用卡利用率
   const currentUtilization = (input.creditCardBalance / input.creditCardLimit) * 100;
 
-  // HELOC带来的信用额度提升
-  const creditLimitBoost = input.helocLimit;
+  // 使用HELOC还清部分信用卡后的余额
+  const payoffByHELOC = Math.min(input.helocLimit, input.creditCardBalance);
+  const remainingCardBalance = Math.max(0, input.creditCardBalance - payoffByHELOC);
 
-  // 新的总信用额度
-  const newTotalLimit = input.creditCardLimit + creditLimitBoost;
-
-  // 新的信用利用率（假设用HELOC还清部分信用卡）
-  const newUtilization = (input.creditCardBalance / newTotalLimit) * 100;
+  // 还清后的信用卡利用率（不混入HELOC额度）
+  const newUtilization = (remainingCardBalance / input.creditCardLimit) * 100;
 
   // 利用率下降
   const utilizationDrop = currentUtilization - newUtilization;
 
   return {
-    creditLimitBoost: Math.round(creditLimitBoost),
-    utilizationDrop: Math.round(utilizationDrop * 10) / 10, // 保留1位小数
+    creditLimitBoost: Math.round(payoffByHELOC),
+    utilizationDrop: Math.round(utilizationDrop * 10) / 10,
   };
 }
 
 /**
- * 应急基金场景计算
+ * 应急流动性场景计算
  * 分析HELOC作为应急资金的覆盖能力
+ * 注意：HELOC额度可能被冻结/缩减，不应作为唯一应急资金来源
  */
-export function calculateEmergencyFund(
-  input: EmergencyFundInput
-): EmergencyFundMetrics {
+export function calculateContingentLiquidity(
+  input: ContingentLiquidityInput
+): ContingentLiquidityMetrics {
   // HELOC可用额度
   const availableLiquidity = input.helocLimit;
 

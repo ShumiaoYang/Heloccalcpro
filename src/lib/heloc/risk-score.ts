@@ -11,6 +11,8 @@
  * - Credit_Weight = ((850 - Credit Score) / 550) × 25%
  */
 
+import { PropertyType, OccupancyType } from './types';
+
 export interface RiskScoreBreakdown {
   totalScore: number;
   ltvScore: number;
@@ -225,4 +227,208 @@ export function getCreditScoreRating(creditScore: number): {
     color: 'text-red-600',
     description: 'May not qualify',
   };
+}
+
+// ===== v3.0 Enhanced Risk Scoring =====
+
+/**
+ * v3.0 风险评分明细
+ */
+export interface RiskScoreV3Breakdown {
+  totalScore: number;
+  riskLevel: 'low' | 'medium' | 'elevated' | 'high';
+  penalties: {
+    cltvPenalty: number;
+    dtiPenalty: number;
+    ficoPenalty: number;
+    paymentShockPenalty: number;
+    collateralPenalty: number;
+  };
+}
+
+/**
+ * 计算 CLTV Penalty（基于 modeledCLTV）
+ * v3.0 规范：基于实际使用后的 CLTV 扣分
+ */
+export function calculateCltvPenalty(modeledCLTV: number): number {
+  if (modeledCLTV <= 60) return 0;
+  if (modeledCLTV <= 70) return 5;
+  if (modeledCLTV <= 80) return 10;
+  if (modeledCLTV <= 85) return 15;
+  if (modeledCLTV <= 90) return 20;
+  return 30; // >90%
+}
+
+/**
+ * 计算 DTI Penalty（基于 modeledCurrentDTI）
+ * v3.0 规范：基于实际使用后的 DTI 扣分
+ */
+export function calculateDtiPenalty(modeledCurrentDTI: number): number {
+  const dtiPercent = modeledCurrentDTI * 100; // 转换为百分比
+  if (dtiPercent <= 36) return 0;
+  if (dtiPercent <= 43) return 5;
+  if (dtiPercent <= 50) return 10;
+  return 20; // >50%
+}
+
+/**
+ * 计算 FICO Penalty（信用分扣分）
+ * v3.0 规范：信用分越低扣分越高
+ */
+export function calculateFicoPenalty(creditScore: number): number {
+  if (creditScore >= 760) return 0;
+  if (creditScore >= 720) return 5;
+  if (creditScore >= 680) return 10;
+  if (creditScore >= 640) return 15;
+  return 25; // <640
+}
+
+/**
+ * 计算 Payment Shock Penalty
+ * v3.0 规范：≤2%:0分, 2-4%:6分, 4-6%:12分, 6-8%:18分, >8%:25分
+ * @param paymentShockRatio - Payment Shock / 月收入 (as decimal)
+ */
+export function calculatePaymentShockPenalty(paymentShockRatio: number): number {
+  const shockPercent = paymentShockRatio * 100;
+  if (shockPercent <= 2) return 0;
+  if (shockPercent <= 4) return 6;
+  if (shockPercent <= 6) return 12;
+  if (shockPercent <= 8) return 18;
+  return 25; // >8%
+}
+
+/**
+ * 计算 Collateral Penalty（抵押物风险扣分）
+ * v3.0 规范：基于房产类型和用途的综合风险
+ */
+export function calculateCollateralPenalty(
+  propertyType: PropertyType = 'Single-family',
+  occupancyType: OccupancyType = 'Primary residence'
+): number {
+  let penalty = 0;
+
+  // 房产类型扣分
+  switch (propertyType) {
+    case 'Single-family':
+    case 'Townhouse':
+      penalty += 0;
+      break;
+    case 'Condo':
+      penalty += 3;
+      break;
+    case 'Multi-family':
+      penalty += 5;
+      break;
+    case 'Manufactured':
+      penalty += 10;
+      break;
+  }
+
+  // 房屋用途扣分
+  switch (occupancyType) {
+    case 'Primary residence':
+      penalty += 0;
+      break;
+    case 'Second home':
+      penalty += 3;
+      break;
+    case 'Investment property':
+      penalty += 5;
+      break;
+  }
+
+  return penalty;
+}
+
+/**
+ * 计算 v3.0 风险评分
+ * 基础分100分，根据5个维度扣分
+ * v3.0 规范：≥80(Low), 60-79(Medium), 40-59(Elevated), <40(High)
+ */
+export function calculateRiskScoreV3(params: {
+  modeledCLTV: number; // 实际使用后的 CLTV (as percentage)
+  modeledCurrentDTI: number; // 实际使用后的 DTI (as decimal)
+  creditScore: number;
+  paymentShockRatio: number; // Payment Shock / 月收入 (as decimal)
+  propertyType?: PropertyType;
+  occupancyType?: OccupancyType;
+}): RiskScoreV3Breakdown {
+  const {
+    modeledCLTV,
+    modeledCurrentDTI,
+    creditScore,
+    paymentShockRatio,
+    propertyType = 'Single-family',
+    occupancyType = 'Primary residence',
+  } = params;
+
+  // 计算5个维度的扣分
+  const cltvPenalty = calculateCltvPenalty(modeledCLTV);
+  const dtiPenalty = calculateDtiPenalty(modeledCurrentDTI);
+  const ficoPenalty = calculateFicoPenalty(creditScore);
+  const paymentShockPenalty = calculatePaymentShockPenalty(paymentShockRatio);
+  const collateralPenalty = calculateCollateralPenalty(propertyType, occupancyType);
+
+  // 总扣分
+  const totalPenalty =
+    cltvPenalty + dtiPenalty + ficoPenalty + paymentShockPenalty + collateralPenalty;
+
+  // 最终得分
+  const totalScore = Math.max(0, Math.min(100, 100 - totalPenalty));
+
+  // 风险等级（v3.0 新阈值：4个等级）
+  let riskLevel: 'low' | 'medium' | 'elevated' | 'high';
+  if (totalScore >= 80) {
+    riskLevel = 'low';
+  } else if (totalScore >= 60) {
+    riskLevel = 'medium';
+  } else if (totalScore >= 40) {
+    riskLevel = 'elevated';
+  } else {
+    riskLevel = 'high';
+  }
+
+  return {
+    totalScore: Math.round(totalScore),
+    riskLevel,
+    penalties: {
+      cltvPenalty,
+      dtiPenalty,
+      ficoPenalty,
+      paymentShockPenalty,
+      collateralPenalty,
+    },
+  };
+}
+
+/**
+ * 获取 v3.0 风险等级描述
+ */
+export function getRiskLevelV3Description(riskLevel: 'low' | 'medium' | 'elevated' | 'high'): string {
+  switch (riskLevel) {
+    case 'low':
+      return 'Excellent financial health. Strong approval likelihood with competitive terms.';
+    case 'medium':
+      return 'Good financial position. Should qualify with standard terms.';
+    case 'elevated':
+      return 'Moderate risk. May face higher rates or lower approval amounts. Consider improving equity or debt ratios.';
+    case 'high':
+      return 'Significant risk factors. Focus on reducing debt, building equity, or improving credit before applying.';
+  }
+}
+
+/**
+ * 获取 v3.0 风险等级颜色
+ */
+export function getRiskLevelV3Color(riskLevel: 'low' | 'medium' | 'elevated' | 'high'): string {
+  switch (riskLevel) {
+    case 'low':
+      return 'text-green-600';
+    case 'medium':
+      return 'text-emerald-600';
+    case 'elevated':
+      return 'text-yellow-600';
+    case 'high':
+      return 'text-red-600';
+  }
 }
