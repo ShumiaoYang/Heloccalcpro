@@ -121,10 +121,8 @@ export default function SampleReportPage() {
         homeValue={defaultValues.homeValue}
         mortgageBalance={defaultValues.mortgageBalance}
         creditScore={defaultValues.creditScore}
-        desiredLTV={defaultValues.desiredLTV}
         propertyType={defaultValues.propertyType}
         occupancyType={defaultValues.occupancyType}
-        utilizationRatio={defaultValues.utilizationRatio}
         primeRate={defaultValues.primeRate}
         margin={defaultValues.margin}
         annualIncome={defaultValues.annualIncome}
