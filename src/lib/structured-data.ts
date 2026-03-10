@@ -36,14 +36,7 @@ export function getWebApplicationSchema() {
     description: 'Free HELOC calculator for credit line & payment estimates. Calculate max borrowing power, simulate credit score impact, and analyze risks with AI',
     url: 'https://heloccalculator.pro',
     browserRequirements: 'Requires JavaScript. Requires HTML5.',
-    softwareVersion: '1.0',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      ratingCount: '127',
-      bestRating: '5',
-      worstRating: '1'
-    }
+    softwareVersion: '1.0'
   };
 }
 

@@ -145,6 +145,22 @@
         "heading": "HELOC 计算器功能详解",
         "canonical": "/zh/heloc-calculator-features"
       }
+    },
+    "/about": {
+      "en": {
+        "title": "About Us | HELOC Calculator Pro",
+        "description": "Meet Sapling Yang, Core Banking System Architect with 20 years of experience. Learn how enterprise-grade banking precision powers our HELOC calculator.",
+        "keywords": ["about HELOC calculator", "core banking architect", "HELOC tool creator", "banking system expert"],
+        "heading": "About HELOC Calculator Pro",
+        "canonical": "/en/about"
+      },
+      "zh": {
+        "title": "关于我们 | HELOC Calculator Pro",
+        "description": "认识 Sapling Yang，拥有20年经验的核心银行系统架构师。了解企业级银行精准度如何驱动我们的 HELOC 计算器。",
+        "keywords": ["关于HELOC计算器", "核心银行架构师", "HELOC工具创建者", "银行系统专家"],
+        "heading": "关于 HELOC Calculator Pro",
+        "canonical": "/zh/about"
+      }
     }
   }
 }
