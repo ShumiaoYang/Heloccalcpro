@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Calculator, TrendingUp, Shield, FileText } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
+import ArchitectNote from '@/components/content/ArchitectNote';
 
 type PageProps = {
   params: { locale: Locale };
@@ -136,9 +137,8 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
           {/* Section 1: Credit Calculator */}
           <section id="credit-calculator" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <Calculator className="h-7 w-7 text-emerald-600" />
-                {isZh ? '1. 信用额度计算器' : '1. Credit Limit Calculator'}
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                {isZh ? '银行如何计算我的 HELOC 最大借款额度？' : 'How Do Banks Calculate My Maximum HELOC Borrowing Limit?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -289,6 +289,13 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                   </p>
                 </div>
 
+                <ArchitectNote isZh={isZh}>
+                  {isZh
+                    ? '在我设计核心银行系统的 HELOC 审批引擎时，CLTV Cap 和 DTI 的双重约束是风控的核心。银行内部称之为"双闸门机制"（Dual-Gate Mechanism）——即使你的房屋净值充足（CLTV 通过），如果月供负担过重（DTI 不通过），系统也会自动降低批准额度。这确保了借款人不会因过度借贷而陷入财务困境。'
+                    : 'When I designed the HELOC approval engine for core banking systems, the dual constraint of CLTV Cap and DTI was the core of risk control. Banks internally call this the "Dual-Gate Mechanism"—even if your home equity is sufficient (CLTV passes), if the payment burden is too heavy (DTI fails), the system automatically reduces the approved limit. This ensures borrowers don\'t fall into financial distress from over-borrowing.'
+                  }
+                </ArchitectNote>
+
                 <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
                   {isZh ? '计算结果解读' : 'Understanding Results'}
                 </h3>
@@ -327,9 +334,8 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
           {/* Section 2: Payment Calculator */}
           <section id="payment-calculator" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <TrendingUp className="h-7 w-7 text-emerald-600" />
-                {isZh ? '2. 月供计算器' : '2. Payment Calculator'}
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                {isZh ? '从提款期到还款期，我的月供会增加多少？' : 'How Much Will My Payment Increase from Draw Period to Repayment Period?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -404,9 +410,8 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
           {/* Section 3: Risk Scoring */}
           <section id="risk-scoring" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <Shield className="h-7 w-7 text-emerald-600" />
-                {isZh ? '3. 风险评分系统' : '3. Risk Scoring System'}
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                {isZh ? '风险评分低于 60 分意味着什么？' : 'What Does a Risk Score Below 60 Mean?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -470,9 +475,8 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
           {/* Section 4: Stress Testing */}
           <section id="stress-testing" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <FileText className="h-7 w-7 text-emerald-600" />
-                {isZh ? '4. 压力测试功能' : '4. Stress Testing Feature'}
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                {isZh ? '压力测试能帮我避免哪些财务风险？' : 'What Financial Risks Can Stress Testing Help Me Avoid?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -517,6 +521,13 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                     <li>• {isZh ? '保持应急储备金至少 6 个月月供' : 'Maintain emergency fund of at least 6 months of payments'}</li>
                   </ul>
                 </div>
+
+                <ArchitectNote isZh={isZh}>
+                  {isZh
+                    ? '在银行的风控系统中，压力测试是贷款审批的必经环节。我们会模拟"3-Sigma 事件"（极端情况）——比如利率在 12 个月内上升 3%，或借款人收入下降 20%。如果在这些极端场景下，借款人的 DTI 超过 50% 或 CLTV 超过 95%，系统会自动标记为"高风险"并降低批准额度。我们的计算器复刻了这套逻辑，让你在申请前就能看到银行眼中的风险。'
+                    : 'In banking risk control systems, stress testing is a mandatory step in loan approval. We simulate "3-Sigma Events" (extreme scenarios)—such as rates rising 3% within 12 months, or borrower income dropping 20%. If under these extreme scenarios the borrower\'s DTI exceeds 50% or CLTV exceeds 95%, the system automatically flags as "high risk" and reduces approved limit. Our calculator replicates this logic, letting you see the risk through the bank\'s eyes before applying.'
+                  }
+                </ArchitectNote>
               </div>
             </div>
           </section>
