@@ -180,7 +180,7 @@ export function ArticleSchema({
   description,
   datePublished,
   dateModified,
-  author = 'HELOC Calculator Team',
+  author = 'Sapling Yang',
   image,
 }: ArticleSchemaProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_DOMAIN || 'https://heloccalculator.pro';
@@ -194,8 +194,13 @@ export function ArticleSchema({
     datePublished: datePublished,
     dateModified: dateModified || datePublished,
     author: {
-      '@type': 'Organization',
+      '@type': 'Person',
       name: author,
+      jobTitle: 'Core Banking System Architect and PMP',
+      sameAs: [
+        'https://twitter.com/SaplingYang',
+        'https://github.com/saplingyang'
+      ]
     },
     publisher: {
       '@type': 'Organization',
