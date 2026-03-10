@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
+import ArchitectNote from '@/components/content/ArchitectNote';
 
 type PageProps = {
   params: { locale: Locale };
@@ -96,7 +97,7 @@ export default function SmartWaysPage({ params }: PageProps) {
           <section id="home-renovation" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                {isZh ? '1. 家庭装修与改造' : '1. Home Renovation & Improvement'}
+                {isZh ? '使用 HELOC 进行家庭装修比个人贷款或信用卡划算吗？' : 'Is Using HELOC for Home Renovation Cheaper Than Personal Loans or Credit Cards?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -108,7 +109,7 @@ export default function SmartWaysPage({ params }: PageProps) {
                 </p>
 
                 <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
-                  {isZh ? '为什么选择 HELOC 进行装修？' : 'Why Use HELOC for Renovations?'}
+                  {isZh ? 'HELOC 装修贷款的利率能比信用卡低多少？' : 'How Much Lower Are HELOC Rates Compared to Credit Cards for Renovations?'}
                 </h3>
                 <ul className="space-y-3 list-disc list-inside">
                   <li>
@@ -121,8 +122,8 @@ export default function SmartWaysPage({ params }: PageProps) {
                   <li>
                     <strong>{isZh ? '税收优惠：' : 'Tax Benefits: '}</strong>
                     {isZh
-                      ? '如果装修用于"实质性改善"房产，HELOC 利息可能可以抵税（请咨询税务顾问）。'
-                      : 'If renovations "substantially improve" your property, HELOC interest may be tax-deductible (consult a tax advisor).'
+                      ? '根据美国国税局（IRS）的第 936 号出版物（Publication 936）规定，只有当 HELOC 资金用于购买、建造或实质性改善作为担保的房屋时，利息才可以抵扣。这意味着厨房改造、增加卧室等项目的利息可以抵税，但用于度假或偿还信用卡债务的资金利息不可抵税。'
+                      : 'According to the IRS Publication 936, HELOC interest is only tax-deductible when funds are used to buy, build, or substantially improve the home that secures the loan. This means kitchen remodels and room additions qualify, but funds used for vacations or paying off credit cards do not.'
                     }
                   </li>
                   <li>
@@ -209,7 +210,7 @@ export default function SmartWaysPage({ params }: PageProps) {
           <section id="debt-consolidation" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                {isZh ? '2. 高息债务整合' : '2. High-Interest Debt Consolidation'}
+                {isZh ? '用 HELOC 整合信用卡债务每年能节省多少利息？' : 'How Much Interest Can I Save Annually by Consolidating Credit Card Debt with HELOC?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -221,7 +222,7 @@ export default function SmartWaysPage({ params }: PageProps) {
                 </p>
 
                 <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
-                  {isZh ? '债务整合的优势' : 'Benefits of Debt Consolidation'}
+                  {isZh ? '为什么 HELOC 的 7% 利率比信用卡的 22% 更划算？' : 'Why Is HELOC\'s 7% Rate Better Than Credit Card\'s 22%?'}
                 </h3>
                 <ul className="space-y-3 list-disc list-inside">
                   <li>
@@ -275,7 +276,111 @@ export default function SmartWaysPage({ params }: PageProps) {
                 </div>
 
                 <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
-                  {isZh ? '适合整合的债务类型' : 'Suitable Debt Types for Consolidation'}
+                  {isZh ? '融资方式对比：HELOC vs. 信用卡 vs. 个人贷款' : 'Financing Comparison: HELOC vs. Credit Cards vs. Personal Loans'}
+                </h3>
+
+                <div className="overflow-x-auto my-6">
+                  <table className="w-full border-collapse border border-slate-300 text-sm">
+                    <thead>
+                      <tr className="bg-slate-100">
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-slate-900">
+                          {isZh ? '对比维度' : 'Comparison Factor'}
+                        </th>
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-emerald-900">
+                          HELOC
+                        </th>
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-slate-900">
+                          {isZh ? '信用卡' : 'Credit Cards'}
+                        </th>
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-slate-900">
+                          {isZh ? '个人贷款' : 'Personal Loans'}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '平均利率范围' : 'Average Rate Range'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900 font-semibold">
+                          6-9%
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          18-25%
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          10-15%
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '还款灵活性' : 'Repayment Flexibility'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900">
+                          {isZh ? '高（提款期仅付息）' : 'High (interest-only draw)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '高（最低还款）' : 'High (minimum payment)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '低（固定月供）' : 'Low (fixed payment)'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '抵押要求' : 'Collateral Required'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900">
+                          {isZh ? '是（房屋）' : 'Yes (home)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '否' : 'No'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '否' : 'No'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '利息抵税资格' : 'Tax-Deductible Interest'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900">
+                          {isZh ? '是（符合条件）' : 'Yes (if qualified)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '否' : 'No'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '否' : 'No'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '$30,000 债务年利息' : 'Annual Interest on $30K'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900 font-bold">
+                          $2,250
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-red-700 font-semibold">
+                          $5,800
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          $3,600
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <ArchitectNote isZh={isZh}>
+                  {isZh
+                    ? '在我开发核心银行系统时，我们的债务整合模块会自动计算"有效年利率差"（Effective Rate Spread）。银行内部将 HELOC 债务整合视为"风险转移"（Risk Transfer）——从无抵押高息债务转为有抵押低息债务。这也是为什么银行愿意提供较低利率的原因：你的房屋作为抵押品大幅降低了银行的违约风险。但请记住，这也意味着如果无法还款，你可能失去房屋。'
+                    : 'When I developed core banking systems, our debt consolidation module automatically calculated the "Effective Rate Spread." Banks internally view HELOC debt consolidation as "Risk Transfer" — from unsecured high-rate debt to secured low-rate debt. This is why banks offer lower rates: your home as collateral significantly reduces the bank\'s default risk. But remember, this also means you could lose your home if you can\'t repay.'
+                  }
+                </ArchitectNote>
+
+                <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
+                  {isZh ? '哪些类型的债务最适合用 HELOC 整合？' : 'Which Types of Debt Are Best Suited for HELOC Consolidation?'}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3 p-4 border border-slate-200 rounded-lg">

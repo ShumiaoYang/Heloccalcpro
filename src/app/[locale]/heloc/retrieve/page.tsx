@@ -8,7 +8,13 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps) {
   const { metadata } = getSeoMetadata('/heloc/retrieve', params.locale);
-  return metadata;
+  return {
+    ...metadata,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
 }
 
 export default function RetrieveReportPage({ params }: PageProps) {

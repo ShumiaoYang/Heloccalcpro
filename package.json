@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:https": "node server-https.mjs",
-    "build": "npm run generate:sitemap && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -33,7 +33,6 @@
     "format": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
     "prepare": "node -e \"const { execSync } = require('child_process'); const skip = process.env.VERCEL === '1' || process.env.SKIP_PLAYWRIGHT_INSTALL === '1'; if (skip) { console.log('Skipping Playwright install during prepare script'); process.exit(0); } execSync('npx playwright install --with-deps', { stdio: 'inherit' });\"",
-    "generate:sitemap": "tsx scripts/generate-sitemap.ts",
     "generate:robots": "tsx scripts/generate-robots.ts",
     "generate:cert": "node scripts/generate-cert.js",
     "prisma:generate": "prisma generate",

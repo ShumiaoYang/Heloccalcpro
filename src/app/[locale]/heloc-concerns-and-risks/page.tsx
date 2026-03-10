@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, AlertTriangle, TrendingDown, Home, CreditCard, DollarSign } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
+import ArchitectNote from '@/components/content/ArchitectNote';
 
 type PageProps = {
   params: { locale: Locale };
@@ -138,9 +139,8 @@ export default function ConcernsRisksPage({ params }: PageProps) {
           {/* Section 1: Interest Rate Risk */}
           <section id="interest-rate-risk" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <TrendingDown className="h-7 w-7 text-red-600" />
-                {isZh ? '1. 利率波动风险' : '1. Interest Rate Fluctuation Risk'}
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                {isZh ? '当美联储加息时，我的 HELOC 月供会增加多少？' : 'How Much Will My HELOC Payment Increase When the Fed Raises Rates?'}
               </h2>
 
               <div className="space-y-6 text-slate-700 leading-relaxed">
@@ -195,12 +195,12 @@ export default function ConcernsRisksPage({ params }: PageProps) {
                 </div>
 
                 <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
-                  {isZh ? '历史利率波动回顾' : 'Historical Rate Fluctuation Review'}
+                  {isZh ? 'Prime Rate 在过去 20 年波动了多少？' : 'How Much Has Prime Rate Fluctuated Over the Past 20 Years?'}
                 </h3>
                 <p>
                   {isZh
-                    ? '回顾过去 20 年，Prime Rate 经历了剧烈波动：'
-                    : 'Looking back over the past 20 years, Prime Rate has experienced dramatic fluctuations:'
+                    ? '据美联储（Federal Reserve）公布的宏观经济数据显示，Prime Rate 在过去 20 年间经历了剧烈波动：'
+                    : 'According to macroeconomic data published by the Federal Reserve, Prime Rate has experienced dramatic fluctuations over the past 20 years:'
                   }
                 </p>
                 <ul className="space-y-2 list-disc list-inside mt-4">
@@ -241,6 +241,92 @@ export default function ConcernsRisksPage({ params }: PageProps) {
                     </ul>
                   </div>
                 </div>
+
+                <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
+                  {isZh ? 'HELOC 可变利率 vs. 固定利率贷款对比' : 'HELOC Variable Rate vs. Fixed-Rate Loan Comparison'}
+                </h3>
+
+                <div className="overflow-x-auto my-6">
+                  <table className="w-full border-collapse border border-slate-300 text-sm">
+                    <thead>
+                      <tr className="bg-slate-100">
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-slate-900">
+                          {isZh ? '对比维度' : 'Comparison Factor'}
+                        </th>
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-slate-900">
+                          {isZh ? 'HELOC（可变利率）' : 'HELOC (Variable Rate)'}
+                        </th>
+                        <th className="border border-slate-300 px-4 py-3 text-left font-semibold text-emerald-900">
+                          {isZh ? '固定利率贷款' : 'Fixed-Rate Loan'}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '利率稳定性' : 'Rate Stability'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-red-700">
+                          {isZh ? '随市场波动' : 'Fluctuates with market'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900 font-semibold">
+                          {isZh ? '锁定不变' : 'Locked in'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '初始利率' : 'Initial Rate'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900 font-semibold">
+                          {isZh ? '通常较低（6-9%）' : 'Usually lower (6-9%)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '通常较高（7-10%）' : 'Usually higher (7-10%)'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '月供可预测性' : 'Payment Predictability'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-red-700">
+                          {isZh ? '低（每月可能变化）' : 'Low (may change monthly)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900 font-semibold">
+                          {isZh ? '高（固定月供）' : 'High (fixed payment)'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '利率上升风险' : 'Rate Increase Risk'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-red-700 font-semibold">
+                          {isZh ? '高（无上限或有限上限）' : 'High (no cap or limited cap)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900">
+                          {isZh ? '无（已锁定）' : 'None (locked in)'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-slate-300 px-4 py-3 font-medium text-slate-900">
+                          {isZh ? '灵活性' : 'Flexibility'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 bg-emerald-50 text-emerald-900 font-semibold">
+                          {isZh ? '高（按需提款）' : 'High (draw as needed)'}
+                        </td>
+                        <td className="border border-slate-300 px-4 py-3 text-slate-700">
+                          {isZh ? '低（一次性放款）' : 'Low (lump sum)'}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <ArchitectNote isZh={isZh}>
+                  {isZh
+                    ? '在我开发核心银行系统时，我们的压力测试算法（Stress-test Algorithms）对 HELOC 的"提款期"（Draw Period）到"还款期"（Repayment Period）的转换期给予了最高风险权重。银行知道这是违约率激增的临界点（Payment Shock）。这也是为什么我们的计算器强制要求模拟这一利率跃升场景——千万不要只看前 10 年的利息支出。'
+                    : 'When I developed core banking systems, our stress-test algorithms assigned the highest risk weight to the transition from HELOC\'s Draw Period to Repayment Period. Banks know this is the critical point where default rates surge (Payment Shock). This is why our calculator mandates simulating this rate jump scenario—never focus only on the first 10 years of interest payments.'
+                  }
+                </ArchitectNote>
 
                 <h3 className="text-xl font-semibold text-slate-900 mt-8 mb-4">
                   {isZh ? '如何应对利率风险？' : 'How to Manage Interest Rate Risk?'}
