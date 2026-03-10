@@ -148,8 +148,14 @@ export default function PageShell({
   const billingHref = `/${locale}/account/billing` as BillingHref;
 
   const handleNavigate = (href: string) => {
-    scrollToAnchor(href);
-    updateHash(href);
+    // Check if it's an anchor link (starts with #) or a page link
+    if (href.startsWith('#')) {
+      scrollToAnchor(href);
+      updateHash(href);
+    } else {
+      // For page links, use Next.js navigation
+      window.location.href = `/${locale}${href}`;
+    }
     setMobileOpen(false);
   };
 

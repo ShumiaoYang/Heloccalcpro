@@ -61,13 +61,20 @@ function mapLanguages(hreflang: HrefLangMap | undefined, origin: string): HrefLa
   if (!hreflang) {
     return undefined;
   }
-  return Object.entries(hreflang).reduce<HrefLangMap>((acc, [lang, link]) => {
+  const mapped = Object.entries(hreflang).reduce<HrefLangMap>((acc, [lang, link]) => {
     const updated = withOrigin(link, origin);
     if (updated) {
       acc[lang] = updated;
     }
     return acc;
   }, {});
+
+  // Add x-default pointing to English version
+  if (mapped['en']) {
+    mapped['x-default'] = mapped['en'];
+  }
+
+  return mapped;
 }
 
 function resolveEntry(pathname: string, locale: Locale): SeoEntry {

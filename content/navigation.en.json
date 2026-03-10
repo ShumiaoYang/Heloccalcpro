@@ -22,5 +22,11 @@
     "href": "#features",
     "label": "Why Trust Our Tool",
     "subtitle": "Bank-grade logic and AI analysis to keep your finances safe."
+  },
+  {
+    "id": "about",
+    "href": "/about",
+    "label": "About Us",
+    "subtitle": "Meet the core banking architect behind this tool."
   }
 ]

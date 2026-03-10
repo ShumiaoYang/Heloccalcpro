@@ -22,5 +22,11 @@
     "href": "#features",
     "label": "选择我们",
     "subtitle": "基于银行级算法结合最新的AI智能深度分析为您保驾护航。"
+  },
+  {
+    "id": "about",
+    "href": "/about",
+    "label": "关于我们",
+    "subtitle": "认识打造这款工具的核心银行系统架构师。"
   }
 ]
