@@ -352,7 +352,7 @@ export default function HelocCreditCalculator({
         <ResultCard
           label="Maximum HELOC Amount"
           value={creditResult ? `$${Math.round(('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '$0'}
-          description="Approved credit line"
+          description="💡 Note: Remember, a HELOC is essentially a home-secured credit card. Borrow rationally."
           highlight
         />
 

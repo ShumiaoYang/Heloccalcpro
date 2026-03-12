@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { submitToIndexNow } from '@/lib/indexnow';
 import sitemap from '@/app/sitemap';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const sitemapEntries = sitemap();
