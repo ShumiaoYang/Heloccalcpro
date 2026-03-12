@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft, AlertTriangle, TrendingDown, Home, CreditCard, DollarSign } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
+import { ArticleSchema } from '@/components/seo/structured-data';
+import { getSeoMetadata } from '@/lib/seo';
 
 type PageProps = {
   params: { locale: Locale };
@@ -10,28 +12,27 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = params;
+  const isZh = locale === 'zh';
 
-  if (locale === 'zh') {
-    return {
-      title: 'HELOC 风险与常见问题完整指南 | 避坑必读',
-      description: '深入了解房屋净值信用额度(HELOC)的主要风险：利率波动、还款压力、房产价值下跌、信用评分影响等。包含详细的风险管理策略和常见问题解答。',
-      keywords: 'HELOC风险, 房屋净值贷款风险, 利率风险, 还款压力, 房产贬值',
-      openGraph: {
-        title: 'HELOC 风险与常见问题完整指南',
-        description: '了解风险，做出明智决策',
-        type: 'article',
-      },
-    };
-  }
+  const title = isZh ? 'HELOC 风险与常见问题完整指南 | 避坑必读' : 'HELOC Risks & Common Concerns | Complete Guide';
+  const description = isZh
+    ? '深入了解房屋净值信用额度(HELOC)的主要风险：利率波动、还款压力、房产价值下跌、信用评分影响等。包含详细的风险管理策略和常见问题解答。'
+    : 'Understand the main risks of Home Equity Line of Credit (HELOC): interest rate fluctuations, repayment pressure, property value decline, credit score impact, and more. Includes detailed risk management strategies and FAQ.';
+
+  const { metadata: baseMetadata } = getSeoMetadata('/heloc-concerns-and-risks', locale);
 
   return {
-    title: 'HELOC Risks & Common Concerns | Complete Guide',
-    description: 'Understand the main risks of Home Equity Line of Credit (HELOC): interest rate fluctuations, repayment pressure, property value decline, credit score impact, and more. Includes detailed risk management strategies and FAQ.',
-    keywords: 'HELOC risks, home equity loan risks, interest rate risk, repayment pressure, property depreciation',
+    ...baseMetadata,
+    title,
+    description,
+    keywords: isZh ? 'HELOC风险, 房屋净值贷款风险, 利率风险, 还款压力, 房产贬值' : 'HELOC risks, home equity loan risks, interest rate risk, repayment pressure, property depreciation',
     openGraph: {
-      title: 'HELOC Risks & Common Concerns | Complete Guide',
-      description: 'Understand the risks, make informed decisions',
+      ...baseMetadata.openGraph,
+      title,
+      description,
       type: 'article',
+      publishedTime: '2026-03-12',
+      authors: ['Sapling Yang'],
     },
   };
 }
@@ -42,6 +43,14 @@ export default function ConcernsRisksPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
+      <ArticleSchema
+        title={isZh ? 'HELOC 风险与常见问题完整指南' : 'HELOC Risks & Common Concerns'}
+        description={isZh
+          ? '深入了解房屋净值信用额度(HELOC)的主要风险：利率波动、还款压力、房产价值下跌、信用评分影响等。'
+          : 'Understand the main risks of Home Equity Line of Credit (HELOC): interest rate fluctuations, repayment pressure, property value decline, credit score impact, and more.'}
+        datePublished="2026-03-12"
+        author="Sapling Yang"
+      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">

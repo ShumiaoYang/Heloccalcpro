@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
+import { ArticleSchema } from '@/components/seo/structured-data';
+import { getSeoMetadata } from '@/lib/seo';
 
 type PageProps = {
   params: { locale: Locale };
@@ -10,28 +12,27 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = params;
+  const isZh = locale === 'zh';
 
-  if (locale === 'zh') {
-    return {
-      title: 'HELOC 聪明用法完整指南 | 5种最佳使用场景',
-      description: '深入了解房屋净值信用额度(HELOC)的5种聪明用法：家庭装修、债务整合、投资房产、教育资金和应急储备。包含详细案例分析、风险提示和最佳实践建议。',
-      keywords: 'HELOC用法, 房屋净值贷款, 债务整合, 家庭装修贷款, 投资房产',
-      openGraph: {
-        title: 'HELOC 聪明用法完整指南',
-        description: '5种最佳使用场景，帮你充分利用房屋净值',
-        type: 'article',
-      },
-    };
-  }
+  const title = isZh ? 'HELOC 聪明用法完整指南 | 5种最佳使用场景' : 'Smart Ways to Use HELOC | Complete Guide to 5 Best Use Cases';
+  const description = isZh
+    ? '深入了解房屋净值信用额度(HELOC)的5种聪明用法：家庭装修、债务整合、投资房产、教育资金和应急储备。包含详细案例分析、风险提示和最佳实践建议。'
+    : 'Discover 5 smart ways to use your Home Equity Line of Credit (HELOC): home renovations, debt consolidation, investment properties, education funding, and emergency reserves. Includes detailed case studies, risk warnings, and best practices.';
+
+  const { metadata: baseMetadata } = getSeoMetadata('/smart-ways-to-use-heloc', locale);
 
   return {
-    title: 'Smart Ways to Use HELOC | Complete Guide to 5 Best Use Cases',
-    description: 'Discover 5 smart ways to use your Home Equity Line of Credit (HELOC): home renovations, debt consolidation, investment properties, education funding, and emergency reserves. Includes detailed case studies, risk warnings, and best practices.',
-    keywords: 'HELOC uses, home equity loan, debt consolidation, home renovation loan, investment property',
+    ...baseMetadata,
+    title,
+    description,
+    keywords: isZh ? 'HELOC用法, 房屋净值贷款, 债务整合, 家庭装修贷款, 投资房产' : 'HELOC uses, home equity loan, debt consolidation, home renovation loan, investment property',
     openGraph: {
-      title: 'Smart Ways to Use HELOC | Complete Guide',
-      description: '5 best use cases to maximize your home equity',
+      ...baseMetadata.openGraph,
+      title,
+      description,
       type: 'article',
+      publishedTime: '2026-03-12',
+      authors: ['Sapling Yang'],
     },
   };
 }
@@ -42,6 +43,14 @@ export default function SmartWaysPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
+      <ArticleSchema
+        title={isZh ? 'HELOC 聪明用法完整指南' : 'Smart Ways to Use HELOC'}
+        description={isZh
+          ? '深入了解房屋净值信用额度(HELOC)的5种聪明用法：家庭装修、债务整合、投资房产、教育资金和应急储备。'
+          : 'Discover 5 smart ways to use your Home Equity Line of Credit (HELOC): home renovations, debt consolidation, investment properties, education funding, and emergency reserves.'}
+        datePublished="2026-03-12"
+        author="Sapling Yang"
+      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
@@ -423,6 +432,12 @@ export default function SmartWaysPage({ params }: PageProps) {
                     <li>• {isZh ? '不要将无担保债务（信用卡）转换为有担保债务（HELOC）后继续挥霍' : 'Don\'t convert unsecured debt (credit cards) to secured debt (HELOC) and continue overspending'}</li>
                     <li>• {isZh ? '确保有稳定收入和应急基金，避免还款困难' : 'Ensure stable income and emergency fund to avoid repayment difficulties'}</li>
                   </ul>
+                  <p className="mt-4 text-sm text-red-900">
+                    {isZh ? '💡 想了解更多风险管理策略？阅读我们的' : '💡 Want to learn more about risk management? Read our'}{' '}
+                    <Link href={`/${locale}/heloc-concerns-and-risks`} className="font-semibold underline hover:text-red-700">
+                      {isZh ? 'HELOC 风险完整指南' : 'complete HELOC risks guide'}
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>
@@ -433,6 +448,34 @@ export default function SmartWaysPage({ params }: PageProps) {
             <p className="text-slate-600 mb-4">
               {isZh ? '更多内容正在完善中...' : 'More content coming soon...'}
             </p>
+          </div>
+
+          {/* Related Articles */}
+          <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-8">
+            <h3 className="text-2xl font-bold text-slate-900 mb-6">
+              {isZh ? '相关文章' : 'Related Articles'}
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <Link href={`/${locale}/heloc-concerns-and-risks`} className="group p-4 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition">
+                <h4 className="font-semibold text-slate-900 group-hover:text-emerald-600 mb-2">
+                  {isZh ? 'HELOC 风险与常见问题' : 'HELOC Risks & Common Concerns'}
+                </h4>
+                <p className="text-sm text-slate-600">
+                  {isZh ? '了解利率波动、还款压力等关键风险' : 'Understand interest rate risks, repayment pressure, and more'}
+                </p>
+              </Link>
+              <Link href={`/${locale}/heloc-calculator-features`} className="group p-4 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition">
+                <h4 className="font-semibold text-slate-900 group-hover:text-emerald-600 mb-2">
+                  {isZh ? 'HELOC 计算器功能详解' : 'HELOC Calculator Features'}
+                </h4>
+                <p className="text-sm text-slate-600">
+                  {isZh ? '探索我们专业计算器的所有功能' : 'Explore all features of our professional calculator'}
+                </p>
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center py-8">
             <Link
               href={`/${locale}#smart-ways`}
               className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition"

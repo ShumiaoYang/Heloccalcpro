@@ -175,6 +175,29 @@ export default function AboutPage({ params: { locale } }: Props) {
 
           <hr className="border-stone-200 my-10" />
 
+          {/* Strong CTA Section */}
+          <div className="mb-10 rounded-2xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-50 to-white p-8 text-center">
+            <h3 className="text-2xl font-bold text-slate-900 mb-4">
+              {isZh ? '准备好查看你的真实数据了吗？' : 'Ready to See Your Numbers?'}
+            </h3>
+            <p className="text-lg text-slate-700 mb-6 max-w-2xl mx-auto">
+              {isZh
+                ? '不要把你的房屋净值决策交给黑盒。使用我用银行级算法打造的计算器，只需30秒，无需注册，即可获得你的专属压力测试报告。'
+                : 'Don\'t leave your home equity decisions to a black box. Use the calculator I built with bank-grade algorithms. Get your personalized stress test report in 30 seconds—no registration required.'}
+            </p>
+            <a
+              href={`/${locale}/#calculator`}
+              className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-emerald-700 hover:shadow-xl"
+            >
+              {isZh ? '启动免费计算器 🚀' : 'Launch Free Calculator 🚀'}
+            </a>
+            <p className="mt-4 text-sm text-slate-600">
+              {isZh ? '✓ 完全免费  ✓ 无需注册  ✓ 银行级精度' : '✓ Completely Free  ✓ No Registration  ✓ Bank-Grade Precision'}
+            </p>
+          </div>
+
+          <hr className="border-stone-200 my-10" />
+
           <div className="grid md:grid-cols-2 gap-8 mb-10">
             <section>
               <h2 className="text-lg font-semibold text-stone-900 mb-4">

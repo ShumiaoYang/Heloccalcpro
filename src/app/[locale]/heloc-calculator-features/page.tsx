@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft, Calculator, TrendingUp, Shield, FileText } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
+import { ArticleSchema } from '@/components/seo/structured-data';
+import { getSeoMetadata } from '@/lib/seo';
 
 type PageProps = {
   params: { locale: Locale };
@@ -10,28 +12,27 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = params;
+  const isZh = locale === 'zh';
 
-  if (locale === 'zh') {
-    return {
-      title: 'HELOC 计算器功能详解 | 完整使用指南',
-      description: '深入了解 HELOC 计算器的所有功能：信用额度计算、月供模拟、风险评分系统、压力测试、还款计划等。包含详细的计算方法说明和使用技巧。',
-      keywords: 'HELOC计算器, 房屋净值计算, 月供计算, 风险评分, 压力测试',
-      openGraph: {
-        title: 'HELOC 计算器功能详解',
-        description: '了解如何使用我们的专业计算器',
-        type: 'article',
-      },
-    };
-  }
+  const title = isZh ? 'HELOC 计算器功能详解 | 完整使用指南' : 'HELOC Calculator Features | Complete User Guide';
+  const description = isZh
+    ? '深入了解 HELOC 计算器的所有功能：信用额度计算、月供模拟、风险评分系统、压力测试、还款计划等。包含详细的计算方法说明和使用技巧。'
+    : 'Explore all features of our HELOC Calculator: credit limit calculation, payment simulation, risk scoring system, stress testing, repayment planning, and more. Includes detailed calculation methods and usage tips.';
+
+  const { metadata: baseMetadata } = getSeoMetadata('/heloc-calculator-features', locale);
 
   return {
-    title: 'HELOC Calculator Features | Complete User Guide',
-    description: 'Explore all features of our HELOC Calculator: credit limit calculation, payment simulation, risk scoring system, stress testing, repayment planning, and more. Includes detailed calculation methods and usage tips.',
-    keywords: 'HELOC calculator, home equity calculation, payment calculator, risk scoring, stress testing',
+    ...baseMetadata,
+    title,
+    description,
+    keywords: isZh ? 'HELOC计算器, 房屋净值计算, 月供计算, 风险评分, 压力测试' : 'HELOC calculator, home equity calculation, payment calculator, risk scoring, stress testing',
     openGraph: {
-      title: 'HELOC Calculator Features | Complete Guide',
-      description: 'Learn how to use our professional calculator',
+      ...baseMetadata.openGraph,
+      title,
+      description,
       type: 'article',
+      publishedTime: '2026-03-12',
+      authors: ['Sapling Yang'],
     },
   };
 }
@@ -42,6 +43,14 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
+      <ArticleSchema
+        title={isZh ? 'HELOC 计算器功能详解' : 'HELOC Calculator Features'}
+        description={isZh
+          ? '深入了解 HELOC 计算器的所有功能：信用额度计算、月供模拟、风险评分系统、压力测试、还款计划等。'
+          : 'Explore all features of our HELOC Calculator: credit limit calculation, payment simulation, risk scoring system, stress testing, repayment planning, and more.'}
+        datePublished="2026-03-12"
+        author="Sapling Yang"
+      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
