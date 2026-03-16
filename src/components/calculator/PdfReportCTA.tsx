@@ -101,6 +101,10 @@ export default function PdfReportCTA({
   // UI state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isFreePromo, setIsFreePromo] = useState(false);
+  const [purchaseId, setPurchaseId] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   // Sync props to Step 2 local state when modal opens or props change
   useEffect(() => {
@@ -115,6 +119,31 @@ export default function PdfReportCTA({
       setOtherDebt(propOtherMonthlyDebt);
     }
   }, [isOpen, propHomeValue, propMortgageBalance, propCreditScore, propAnnualIncome, propPropertyType, propOccupancyType, propSubjectHousingPayment, propOtherMonthlyDebt]);
+
+  // Poll for PDF generation status
+  useEffect(() => {
+    if (!isGenerating || !purchaseId) return;
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/heloc/purchase-status/${purchaseId}`);
+        const data = await response.json();
+
+        if (data.status === 'COMPLETED' && data.pdfUrl) {
+          setIsGenerating(false);
+          setPdfUrl(data.pdfUrl);
+          clearInterval(pollInterval);
+
+          // Auto download PDF
+          window.open(data.pdfUrl, '_blank');
+        }
+      } catch (error) {
+        console.error('Failed to check status:', error);
+      }
+    }, 3000); // Check every 3 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [isGenerating, purchaseId]);
 
   if (!isOpen) return null;
 
@@ -319,7 +348,14 @@ export default function PdfReportCTA({
 
       const data = await response.json();
 
-      if (data.url) {
+      if (data.isFreePromo) {
+        // Free promo user - show generating state
+        setIsFreePromo(true);
+        setIsGenerating(true);
+        setPurchaseId(data.purchaseId);
+        setLoading(false);
+      } else if (data.url) {
+        // Regular paid user - redirect to Stripe
         window.location.href = data.url;
       } else {
         setError(data.error || 'Failed to create checkout session');
@@ -646,26 +682,82 @@ export default function PdfReportCTA({
 
               {error && <p className="text-red-600 text-xs">{error}</p>}
 
-              <div className="flex gap-2">
-                <button
-                  onClick={handleBack}
-                  className="flex-1 bg-stone-200 hover:bg-stone-300 text-stone-700 font-semibold py-2 px-4 text-sm rounded-lg transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={handlePurchase}
-                  disabled={loading}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-stone-400 text-white font-semibold py-2 px-4 text-sm rounded-lg transition-colors"
-                >
-                  {loading ? 'Processing...' : 'Generate AI Analysis & Pay $4.99'}
-                </button>
-              </div>
+              {isGenerating ? (
+                <div className="bg-emerald-50 border-2 border-emerald-500 rounded-lg p-6 text-center">
+                  <div className="text-4xl mb-3">🎉</div>
+                  <h3 className="text-xl font-bold text-emerald-900 mb-2">
+                    Congratulations!
+                  </h3>
+                  <p className="text-emerald-800 mb-4">
+                    You are one of the first 50 Product Hunt users. Your premium report is on us!
+                  </p>
+                  <div className="flex items-center justify-center gap-2 text-emerald-700">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-700"></div>
+                    <span>Generating your report...</span>
+                  </div>
+                  <p className="text-sm text-emerald-600 mt-3">
+                    Your report will be sent to <strong>{email}</strong> shortly.
+                  </p>
+                  <button
+                    onClick={onClose}
+                    className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : isFreePromo ? (
+                <div className="bg-emerald-50 border-2 border-emerald-500 rounded-lg p-6 text-center">
+                  <div className="text-4xl mb-3">✅</div>
+                  <h3 className="text-xl font-bold text-emerald-900 mb-2">
+                    Report Generated!
+                  </h3>
+                  <p className="text-emerald-800 mb-4">
+                    Your premium HELOC report has been sent to <strong>{email}</strong>
+                  </p>
+                  <p className="text-sm text-emerald-600 mb-4">
+                    The download should start automatically. If not, click the button below.
+                  </p>
+                  {pdfUrl && (
+                    <a
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mb-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                    >
+                      Download Report
+                    </a>
+                  )}
+                  <button
+                    onClick={onClose}
+                    className="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleBack}
+                      className="flex-1 bg-stone-200 hover:bg-stone-300 text-stone-700 font-semibold py-2 px-4 text-sm rounded-lg transition-colors"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handlePurchase}
+                      disabled={loading}
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-stone-400 text-white font-semibold py-2 px-4 text-sm rounded-lg transition-colors"
+                    >
+                      {loading ? 'Processing...' : 'Generate AI Analysis & Pay $4.99'}
+                    </button>
+                  </div>
 
-              {/* Trust Badge */}
-              <p className="text-center text-xs text-stone-500 mt-1">
-                🔒 Secure payment powered by Stripe
-              </p>
+                  {/* Trust Badge */}
+                  <p className="text-center text-xs text-stone-500 mt-1">
+                    🔒 Secure payment powered by Stripe
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>
