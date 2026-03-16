@@ -92,8 +92,46 @@ export async function POST(req: NextRequest) {
     });
     console.log('Calculation saved with ID:', calculation.id);
 
-    // 2. Create Stripe Checkout Session (or mock session)
-    console.log('Step 2: Creating Checkout Session...');
+    // 2. Check free promo eligibility (First 50 users)
+    console.log('Step 2: Checking free promo eligibility...');
+    const freePromoCount = await prisma.pdfPurchase.count({
+      where: { isFreePromo: true },
+    });
+    console.log('Free promo count:', freePromoCount);
+
+    const isFreePromoEligible = freePromoCount < 50;
+
+    if (isFreePromoEligible) {
+      console.log('[FREE PROMO] User is eligible! Skipping Stripe...');
+
+      // Create free purchase record
+      const freePurchase = await prisma.pdfPurchase.create({
+        data: {
+          email,
+          stripeSessionId: `free_promo_${Date.now()}_${calculation.id}`,
+          stripePaymentId: `free_promo_${calculation.id}`,
+          calculationId: calculation.id,
+          amount: 0,
+          status: 'PENDING',
+          isFreePromo: true,
+        },
+      });
+
+      // Generate PDF immediately
+      console.log('[FREE PROMO] Triggering PDF generation...');
+      generatePdfInBackground(calculation.id, email, calculatedData).catch(error => {
+        console.error('[FREE PROMO] PDF generation failed:', error);
+      });
+
+      return NextResponse.json({
+        isFreePromo: true,
+        message: 'Congratulations! You are one of the first 50 Product Hunt users.',
+        purchaseId: freePurchase.id
+      });
+    }
+
+    // 3. Create Stripe Checkout Session (or mock session)
+    console.log('Step 3: Creating Checkout Session...');
     console.log('Mock Mode:', stripeMockMode);
     console.log('Using Price ID:', process.env.STRIPE_PRICE_HELOC_REPORT);
 
@@ -140,7 +178,7 @@ export async function POST(req: NextRequest) {
       console.log('Stripe session created:', session.id);
     }
 
-    // 3. Create pending purchase record
+    // 4. Create pending purchase record
     await prisma.pdfPurchase.create({
       data: {
         email,
@@ -152,7 +190,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 4. In mock mode, trigger PDF generation immediately
+    // 5. In mock mode, trigger PDF generation immediately
     if (stripeMockMode) {
       console.log('[MOCK MODE] Triggering PDF generation in background...');
 
