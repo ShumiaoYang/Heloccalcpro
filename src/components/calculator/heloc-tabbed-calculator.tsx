@@ -14,8 +14,8 @@ export default function HelocTabbedCalculator() {
   const [activeTab, setActiveTab] = useState<TabType>('credit');
 
   // Credit Line parameters (page-level state)
-  const [homeValue, setHomeValue] = useState(500000);
-  const [mortgageBalance, setMortgageBalance] = useState(350000);
+  const [homeValue, setHomeValue] = useState(600000);
+  const [mortgageBalance, setMortgageBalance] = useState(300000);
   const [creditScore, setCreditScore] = useState(740);
   const [desiredLTV, setDesiredLTV] = useState(80);
   const [utilizationRatio, setUtilizationRatio] = useState(45);
