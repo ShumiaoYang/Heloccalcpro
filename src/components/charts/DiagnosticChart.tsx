@@ -13,7 +13,7 @@ import {
   Filler,
   ScatterController
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Chart } from 'react-chartjs-2';
 import { calculateCreditDTILimit } from '@/lib/heloc/core-metrics';
 
 ChartJS.register(
@@ -235,7 +235,7 @@ export default function DiagnosticChart({
         <p className="text-xs text-slate-500 mt-1">Find your bottleneck: Cash Flow (Green) vs. Equity (Purple)</p>
       </div>
       <div className="w-full h-full pt-12">
-        <Line data={chartData} options={options} />
+        <Chart type="scatter" data={chartData} options={options} />
       </div>
     </div>
   );
