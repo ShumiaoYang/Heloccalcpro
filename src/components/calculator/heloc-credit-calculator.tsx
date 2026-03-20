@@ -10,11 +10,11 @@ import { calculateCredit, calculateApprovedCreditLimit, getMaxLTVByCredit } from
 import { PropertyType, OccupancyType, DebtDetail } from '@/lib/heloc/types';
 
 // Default values
-const DEFAULT_HOME_VALUE = 500000;
-const DEFAULT_MORTGAGE_BALANCE = 350000;
+const DEFAULT_HOME_VALUE = 600000;
+const DEFAULT_MORTGAGE_BALANCE = 300000;
 const DEFAULT_CREDIT_SCORE = 740;
 const DEFAULT_DESIRED_LTV = 85;
-const DEFAULT_UTILIZATION_RATIO = 45;
+const DEFAULT_UTILIZATION_RATIO = 40;
 
 interface HelocCreditCalculatorProps {
   initialHomeValue?: number;
@@ -55,9 +55,9 @@ export default function HelocCreditCalculator({
   // v3.0 fields
   const [propertyType, setPropertyType] = useState<PropertyType>('Single-family');
   const [occupancyType, setOccupancyType] = useState<OccupancyType>('Primary residence');
-  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState<string>('0');
+  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState<string>('950');
   const [annualIncome, setAnnualIncome] = useState<string>('120000');
-  const [subjectHousingPayment, setSubjectHousingPayment] = useState<string>('2500');
+  const [subjectHousingPayment, setSubjectHousingPayment] = useState<string>('2800');
   
   const [showDebtCalculator, setShowDebtCalculator] = useState(false);
   const [showMortgageCalc, setShowMortgageCalc] = useState(false);
