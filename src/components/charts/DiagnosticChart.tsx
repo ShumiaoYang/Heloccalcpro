@@ -210,11 +210,11 @@ export default function DiagnosticChart({
         caretPadding: 15,
         callbacks: {
           label: function(context: any) {
-            if (context.dataset.label.includes('Hidden_Annual')) return null;
-            
+            if (context.dataset.label.includes('Hidden_Annual')) return '';
+
             const xVal = context.parsed.x;
             const yVal = context.parsed.y;
-            
+
             if (context.dataset.label === 'You are here') {
               return [
                 `Monthly Income: $${Math.round(xVal).toLocaleString()}`,

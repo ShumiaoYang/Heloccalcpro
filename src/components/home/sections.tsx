@@ -44,6 +44,7 @@ export function ToolSection({ content, locale }: ToolSectionProps) {
     <section id="tool" className="section-spacing">
       <HelocTabbedCalculator />
       <div className="mt-12 flex justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <a
           href="https://www.producthunt.com/products/heloc-calculator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-heloc-calculator-2-0"
           target="_blank"
