@@ -23,6 +23,7 @@
     "dev": "next dev",
     "dev:https": "node server-https.mjs",
     "build": "prisma generate && prisma migrate deploy && next build",
+    "build:local": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
