@@ -5,15 +5,16 @@ import { useDebounce } from '@/lib/hooks/useDebounce';
 import CreditHealthGaugeChart from '@/components/charts/CreditHealthGaugeChart';
 import MortgageBalanceCalculator from './MortgageBalanceCalculator';
 import DebtCalculatorDialog from './DebtCalculatorDialog';
+import DiagnosticChart from '@/components/charts/DiagnosticChart';
 import { calculateCredit, calculateApprovedCreditLimit, getMaxLTVByCredit } from '@/lib/heloc/credit-calculator';
 import { PropertyType, OccupancyType, DebtDetail } from '@/lib/heloc/types';
 
 // Default values
-const DEFAULT_HOME_VALUE = 500000;
-const DEFAULT_MORTGAGE_BALANCE = 350000;
+const DEFAULT_HOME_VALUE = 600000;
+const DEFAULT_MORTGAGE_BALANCE = 300000;
 const DEFAULT_CREDIT_SCORE = 740;
 const DEFAULT_DESIRED_LTV = 85;
-const DEFAULT_UTILIZATION_RATIO = 45;
+const DEFAULT_UTILIZATION_RATIO = 40;
 
 interface HelocCreditCalculatorProps {
   initialHomeValue?: number;
@@ -43,54 +44,33 @@ export default function HelocCreditCalculator({
   initialUtilizationRatio,
   onValuesChange
 }: HelocCreditCalculatorProps) {
-  // Input states (internal, for immediate UI feedback)
-  const [homeValue, setHomeValue] = useState<string>(
-    initialHomeValue?.toString() || DEFAULT_HOME_VALUE.toString()
-  );
-  const [mortgageBalance, setMortgageBalance] = useState<string>(
-    initialMortgageBalance?.toString() || DEFAULT_MORTGAGE_BALANCE.toString()
-  );
-  const [creditScore, setCreditScore] = useState<string>(
-    initialCreditScore?.toString() || DEFAULT_CREDIT_SCORE.toString()
-  );
-  const [desiredLTV, setDesiredLTV] = useState<number>(
-    initialDesiredLTV || DEFAULT_DESIRED_LTV
-  );
-  const [utilizationRatio, setUtilizationRatio] = useState<number>(
-    initialUtilizationRatio || DEFAULT_UTILIZATION_RATIO
-  );
+  
+  // Input states
+  const [homeValue, setHomeValue] = useState<string>(initialHomeValue?.toString() || DEFAULT_HOME_VALUE.toString());
+  const [mortgageBalance, setMortgageBalance] = useState<string>(initialMortgageBalance?.toString() || DEFAULT_MORTGAGE_BALANCE.toString());
+  const [creditScore, setCreditScore] = useState<string>(initialCreditScore?.toString() || DEFAULT_CREDIT_SCORE.toString());
+  const [desiredLTV, setDesiredLTV] = useState<number>(initialDesiredLTV || DEFAULT_DESIRED_LTV);
+  const [utilizationRatio, setUtilizationRatio] = useState<number>(initialUtilizationRatio || DEFAULT_UTILIZATION_RATIO);
 
-  // v3.0 新增字段状态
+  // v3.0 fields
   const [propertyType, setPropertyType] = useState<PropertyType>('Single-family');
   const [occupancyType, setOccupancyType] = useState<OccupancyType>('Primary residence');
-  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState<string>('0');
+  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState<string>('950');
   const [annualIncome, setAnnualIncome] = useState<string>('120000');
-  const [subjectHousingPayment, setSubjectHousingPayment] = useState<string>('2500');
+  const [subjectHousingPayment, setSubjectHousingPayment] = useState<string>('2800');
+  
   const [showDebtCalculator, setShowDebtCalculator] = useState(false);
-
-  // Controlled handler for utilization ratio to prevent unnecessary updates
-  const handleUtilizationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value);
-
-    setUtilizationRatio(prev => {
-      // Only update if value actually changed
-      if (prev !== newValue) {
-        return newValue;
-      }
-      return prev;
-    });
-  }, []);
-
-  // Mortgage calculator modal state
   const [showMortgageCalc, setShowMortgageCalc] = useState(false);
-
-  // Track previous values to prevent unnecessary updates
   const prevDataRef = useRef<string>('');
 
-  // Debounce inputs
   const debouncedHomeValue = useDebounce(homeValue, 300);
   const debouncedMortgageBalance = useDebounce(mortgageBalance, 300);
   const debouncedCreditScore = useDebounce(creditScore, 300);
+
+  const handleUtilizationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseFloat(e.target.value);
+    setUtilizationRatio(prev => (prev !== newValue ? newValue : prev));
+  }, []);
 
   // Calculate credit result
   const creditResult = useMemo(() => {
@@ -101,9 +81,7 @@ export default function HelocCreditCalculator({
     const debt = parseFloat(otherMonthlyDebt) || 0;
     const housing = parseFloat(subjectHousingPayment) || 0;
 
-    if (home <= 0 || credit < 300 || credit > 850) {
-      return null;
-    }
+    if (home <= 0 || credit < 300 || credit > 850) return null;
 
     try {
       return calculateApprovedCreditLimit({
@@ -121,10 +99,9 @@ export default function HelocCreditCalculator({
     }
   }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, desiredLTV, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment]);
 
-  // Calculate available amount based on utilization ratio
+  // Calculate available amount
   const availableAmount = useMemo(() => {
     if (!creditResult) return 0;
-    // Use approvedCreditLimit instead of maxHelocAmount
     const limit = 'approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount;
     return Math.round(limit * (utilizationRatio / 100) / 1000) * 1000;
   }, [creditResult, utilizationRatio]);
@@ -133,26 +110,14 @@ export default function HelocCreditCalculator({
   const creditScoreImpact = useMemo(() => {
     const hardInquiry = 5;
     const newAccount = 5;
-    const utilizationPenalty =
-      utilizationRatio < 50 ? 0 :
-      utilizationRatio >= 80 ? 70 :
-      35;
-
+    const utilizationPenalty = utilizationRatio < 50 ? 0 : utilizationRatio >= 80 ? 70 : 35;
     return hardInquiry + newAccount + utilizationPenalty;
   }, [utilizationRatio]);
 
-  // Calculate health score
   const healthScore = useMemo(() => {
     const credit = parseFloat(debouncedCreditScore) || 0;
     return credit - creditScoreImpact;
   }, [debouncedCreditScore, creditScoreImpact]);
-
-  // Get max allowed LTV
-  const maxAllowedLTV = useMemo(() => {
-    const credit = parseFloat(debouncedCreditScore) || 0;
-    if (credit < 300 || credit > 850) return 90;
-    return getMaxLTVByCredit(credit);
-  }, [debouncedCreditScore]);
 
   // Notify parent component when debounced values change
   useEffect(() => {
@@ -182,283 +147,216 @@ export default function HelocCreditCalculator({
         });
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, desiredLTV, utilizationRatio, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment]);
+  }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, desiredLTV, utilizationRatio, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment, onValuesChange]);
 
-  const handleMortgageConfirm = (balance: number) => {
-    setMortgageBalance(balance.toString());
-  };
-
-  // v3.0: 债务计算器回调
-  const handleDebtCalculatorApply = (totalDebt: number, detail: DebtDetail) => {
-    setOtherMonthlyDebt(totalDebt.toString());
-  };
+  const handleMortgageConfirm = (balance: number) => setMortgageBalance(balance.toString());
+  const handleDebtCalculatorApply = (totalDebt: number) => setOtherMonthlyDebt(totalDebt.toString());
 
   return (
     <div className="space-y-6">
-      {/* Input Parameters */}
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-start gap-6">
-          {/* Home Value */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Home Value:</label>
-            <div className="relative" style={{ width: '140px' }}>
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
-              <input
-                type="number"
-                value={homeValue}
-                onChange={(e) => setHomeValue(e.target.value)}
-                placeholder="500000"
-                className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              />
+      
+      {/* ========================================================= */}
+      {/* 顶层：控制台 (The Control Panel) */}
+      {/* ========================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        
+        {/* Assets Group */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Property Details</h3>
+          <div className="space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Home Value</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
+                  <input type="number" value={homeValue} onChange={(e) => setHomeValue(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Mortgage Balance</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
+                  <input type="number" value={mortgageBalance} onChange={(e) => setMortgageBalance(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none" />
+                </div>
+                <button type="button" onClick={() => setShowMortgageCalc(true)} className="text-left text-[11px] font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors mt-0.5">
+                  Forget Your Mortgage Balance?
+                </button>
+              </div>
+          </div>
+        </div>
+
+        {/* Cash Flow Group */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Cash Flow (DTI)</h3>
+          <div className="space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Annual Income</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
+                  <input type="number" value={annualIncome} onChange={(e) => setAnnualIncome(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Housing Payment</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
+                  <input type="number" value={subjectHousingPayment} onChange={(e) => setSubjectHousingPayment(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Other Debt</label>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">$</span>
+                      <input type="number" value={otherMonthlyDebt} onChange={(e) => setOtherMonthlyDebt(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white p-2 pl-7 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none" />
+                  </div>
+                  <button onClick={() => setShowDebtCalculator(true)} type="button" className="shrink-0 rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-emerald-600 hover:bg-emerald-100 transition-colors" title="Open Debt Calculator">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+          </div>
+        </div>
+
+        {/* Credit & Terms Group */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Credit & Property Profile</h3>
+          <div className="space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Credit Score</label>
+                <input type="number" value={creditScore} onChange={(e) => setCreditScore(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Property Type</label>
+                <select value={propertyType} onChange={(e) => setPropertyType(e.target.value as PropertyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+                  <option value="Single-family">Single-family</option>
+                  <option value="Townhouse">Townhouse</option>
+                  <option value="Condo">Condo</option>
+                  <option value="Multi-family">Multi-family</option>
+                  <option value="Manufactured">Manufactured</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Occupancy</label>
+                <select value={occupancyType} onChange={(e) => setOccupancyType(e.target.value as OccupancyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+                  <option value="Primary residence">Primary</option>
+                  <option value="Second home">Second Home</option>
+                  <option value="Investment property">Investment</option>
+                </select>
+              </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ========================================================= */}
+      {/* 中层：视觉沙盘 (Diagnostic Chart) */}
+      {/* ========================================================= */}
+      <div className={`transition-opacity duration-500 ${!creditResult ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
+        <DiagnosticChart
+          annualIncome={parseFloat(annualIncome) || 0}
+          totalMonthlyDebt={(parseFloat(otherMonthlyDebt) || 0) + (parseFloat(subjectHousingPayment) || 0)}
+          homeValue={parseFloat(debouncedHomeValue) || 0}
+          mortgageBalance={parseFloat(debouncedMortgageBalance) || 0}
+          currentApprovedLimit={creditResult ? ('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) : 0}
+          cltvCap={creditResult ? (creditResult as any).cltvCap : 85}
+          creditScore={parseFloat(debouncedCreditScore) || 740}
+          projectedCLTV={creditResult ? (creditResult as any).projectedLTV : 0}
+        />
+      </div>
+
+      {/* ========================================================= */}
+      {/* 底层：两大金柱 (The Two Pillars: Money & Risk) */}
+      {/* ========================================================= */}
+      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${!creditResult ? 'hidden' : ''}`}>
+
+        {/* Pillar 1: Money (Left) */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between h-full">
+          <div>
+            <div className="text-xs font-bold tracking-widest text-slate-400 uppercase">Bank Approved Limit</div>
+            <div className="text-4xl md:text-5xl font-black text-slate-900 mt-2 tracking-tight">
+              ${creditResult ? Math.round(('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) / 1000) * 1000 : 0}
+            </div>
+            
+            <div className="text-xs text-slate-500 mt-2 mb-8 leading-relaxed">
+              💡 Note: Remember, a HELOC is essentially a home-secured credit card. Borrow rationally.
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-end text-sm font-medium">
+                <span className="text-slate-600">Planned Draw (Utilization)</span>
+                <span className={`text-xl font-bold ${utilizationRatio >= 50 ? 'text-red-500' : 'text-emerald-600'}`}>{utilizationRatio}%</span>
+              </div>
+              <input type="range" min="0" max="100" value={utilizationRatio} onChange={handleUtilizationChange} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
             </div>
           </div>
 
-          {/* Property Type */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Property Type:</label>
-            <select
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value as PropertyType)}
-              className="rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              style={{ width: '140px' }}
-            >
-              <option value="Single-family">Single-family</option>
-              <option value="Townhouse">Townhouse</option>
-              <option value="Condo">Condo</option>
-              <option value="Multi-family">Multi-family</option>
-              <option value="Manufactured">Manufactured</option>
-            </select>
+          <div className={`mt-6 p-4 rounded-xl border shadow-sm ${utilizationRatio >= 50 ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
+            <div className="text-[11px] font-bold tracking-wider uppercase mb-1.5 flex items-center gap-1.5">
+              {utilizationRatio >= 50 ? (
+                <>
+                  <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                  <span className="text-red-600">High Risk Warning</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  <span className="text-emerald-600">Score-Safe Draw Limit</span>
+                </>
+              )}
+            </div>
+            <div className={`text-2xl font-bold ${utilizationRatio >= 50 ? 'text-red-600' : 'text-emerald-600'}`}>
+              ${availableAmount.toLocaleString()}
+            </div>
+            
+            <div className="text-[11px] mt-1.5 font-medium leading-tight">
+              {utilizationRatio >= 50 ?
+                  <span className="text-red-600">Exceeding 50% utilization will heavily damage your credit score.</span> :
+                  <span className="text-emerald-700">Keeps your utilization under 50% to protect your credit score.</span>}
+            </div>
           </div>
+        </div>
 
-          {/* Occupancy Type */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Occupancy:</label>
-            <select
-              value={occupancyType}
-              onChange={(e) => setOccupancyType(e.target.value as OccupancyType)}
-              className="rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              style={{ width: '150px' }}
-            >
-              <option value="Primary residence">Primary</option>
-              <option value="Second home">Second Home</option>
-              <option value="Investment property">Investment</option>
-            </select>
-          </div>
-
-          {/* Credit Score */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Credit Score:</label>
-            <div className="relative" style={{ width: '70px' }}>
-              <input
-                type="number"
-                value={creditScore}
-                onChange={(e) => setCreditScore(e.target.value)}
-                placeholder="740"
-                min="300"
-                max="850"
-                className="w-full rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              />
+        {/* Pillar 2: Risk (Right) - 极致瘦身与绝对居中 */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between h-full">
+          
+          <div className="w-full flex justify-center items-start -mb-6">
+            <div className="w-full max-w-[200px]">
+              <CreditHealthGaugeChart currentScore={parseFloat(creditScore) || 0} healthScore={healthScore} label="Predicted Credit Score" />
             </div>
           </div>
 
-          {/* Annual Income */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Annual Income:</label>
-            <div className="relative" style={{ width: '120px' }}>
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
-              <input
-                type="number"
-                value={annualIncome}
-                onChange={(e) => setAnnualIncome(e.target.value)}
-                placeholder="120000"
-                min="0"
-                className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              />
+          <div className="w-full bg-slate-50 rounded-xl border border-slate-200 p-4 shadow-sm relative z-10">
+            <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-200">
+              <span className="text-[13px] font-bold text-slate-700">Total Point Impact</span>
+              <span className="text-sm font-black text-red-600 bg-red-100 px-2 py-0.5 rounded-md leading-none shadow-sm border border-red-200/50">
+                -{creditScoreImpact} pts
+              </span>
             </div>
-          </div>
-
-          {/* Mortgage Balance */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <label className="whitespace-nowrap text-sm font-medium text-slate-700">Mortgage Balance:</label>
-              <div className="relative" style={{ width: '140px' }}>
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
-                <input
-                  type="number"
-                  value={mortgageBalance}
-                  onChange={(e) => setMortgageBalance(e.target.value)}
-                  placeholder="350000"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                />
+            
+            <div className="space-y-2 text-xs text-slate-600">
+              <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><div className="w-1 h-1 rounded-full bg-slate-400"></div>Hard Inquiry</span>
+                  <span className="font-mono font-medium">-5</span>
+              </div>
+              <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><div className="w-1 h-1 rounded-full bg-slate-400"></div>New Account</span>
+                  <span className="font-mono font-medium">-5</span>
+              </div>
+              <div className={`flex justify-between items-center pt-2 mt-1 border-t border-slate-200/60 ${utilizationRatio >= 50 ? 'text-red-600 font-bold' : 'font-medium'}`}>
+                <span className="flex items-center gap-1.5"><div className={`w-1 h-1 rounded-full ${utilizationRatio >= 50 ? 'bg-red-500' : 'bg-slate-400'}`}></div>Utilization Penalty</span>
+                <span className="font-mono">-{utilizationRatio < 50 ? 0 : utilizationRatio >= 80 ? 70 : 35}</span>
               </div>
             </div>
-            <button
-              onClick={() => setShowMortgageCalc(true)}
-              className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline"
-            >
-              Forget Your Mortgage Balance?
-            </button>
           </div>
 
-          {/* Housing Payment */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Housing Payment:</label>
-            <div className="relative" style={{ width: '100px' }}>
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
-              <input
-                type="number"
-                value={subjectHousingPayment}
-                onChange={(e) => setSubjectHousingPayment(e.target.value)}
-                placeholder="2500"
-                min="0"
-                className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              />
-            </div>
-          </div>
-
-          {/* Other Monthly Debt with Calculator */}
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap text-sm font-medium text-slate-700">Other Debt:</label>
-            <div className="flex items-center gap-1">
-              <div className="relative" style={{ width: '100px' }}>
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
-                <input
-                  type="number"
-                  value={otherMonthlyDebt}
-                  onChange={(e) => setOtherMonthlyDebt(e.target.value)}
-                  placeholder="0"
-                  min="0"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                />
-              </div>
-              <button
-                onClick={() => setShowDebtCalculator(true)}
-                className="rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-emerald-600 hover:bg-emerald-100 transition-colors"
-                title="Open Debt Calculator"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </button>
-            </div>
-          </div>
         </div>
+
       </div>
 
-      {/* Results */}
-      <div className={`grid grid-cols-2 gap-3 ${!creditResult ? 'opacity-0 pointer-events-none' : ''}`}>
-        {/* Row 1: Max HELOC Amount */}
-        <ResultCard
-          label="Maximum HELOC Amount"
-          value={creditResult ? `$${Math.round(('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '$0'}
-          description="💡 Note: Remember, a HELOC is essentially a home-secured credit card. Borrow rationally."
-          highlight
-        />
-
-        {/* Row 1: Available Amount */}
-        <ResultCard
-          label="Available Amount"
-          value={`$${availableAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
-          description={`At ${utilizationRatio}% utilization`}
-          highlight
-        />
-
-        {/* Row 2: Utilization Ratio */}
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50/30 p-4">
-          <label className="text-sm font-medium text-slate-700">Utilization Ratio</label>
-          <div className="mt-2 flex items-center gap-2">
-            <input
-              key="utilization-ratio-slider"
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value={utilizationRatio}
-              onChange={handleUtilizationChange}
-              className="min-w-0 flex-1 accent-emerald-500"
-            />
-            <div className="flex-shrink-0 font-mono text-base font-semibold text-emerald-600">
-              {utilizationRatio}%
-            </div>
-          </div>
-        </div>
-
-        {/* Row 2-3: Credit Health Chart (spans 2 rows) */}
-        <div className="row-span-2 flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50/30 p-2" style={{ minHeight: '200px' }}>
-          <CreditHealthGaugeChart
-            key="credit-health-gauge"
-            currentScore={parseFloat(creditScore) || 0}
-            healthScore={healthScore}
-            label="Credit Health Score"
-          />
-        </div>
-
-        {/* Row 3: Credit Score Impact */}
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-            Potential Credit Score Impact
-          </div>
-          <div className="mt-1.5 font-mono text-xl font-bold leading-tight text-red-600">
-            -{creditScoreImpact} points
-          </div>
-          <div className="mt-2 space-y-1 text-[10px] text-slate-600">
-            <div>• Hard Inquiry: -5 points</div>
-            <div>• New Account: -5 points</div>
-            <div>
-              • Utilization Impact: -
-              {utilizationRatio < 50 ? 0 : utilizationRatio >= 80 ? 70 : 35} points
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mortgage Balance Calculator Modal */}
-      <MortgageBalanceCalculator
-        isOpen={showMortgageCalc}
-        onClose={() => setShowMortgageCalc(false)}
-        onConfirm={handleMortgageConfirm}
-      />
-
-      {/* v3.0: Debt Calculator Dialog */}
-      <DebtCalculatorDialog
-        isOpen={showDebtCalculator}
-        onClose={() => setShowDebtCalculator(false)}
-        onApply={handleDebtCalculatorApply}
-        initialValue={parseFloat(otherMonthlyDebt) || 0}
-        locale="en"
-      />
-    </div>
-  );
-}
-
-// Result Card Component
-function ResultCard({
-  label,
-  value,
-  description,
-  highlight = false,
-}: {
-  label: string;
-  value: string;
-  description: string;
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-lg border p-3 ${
-        highlight ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white'
-      }`}
-    >
-      <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">{label}</div>
-      <div
-        className={`mt-1.5 font-mono text-xl font-bold leading-tight ${
-          highlight ? 'text-emerald-600' : 'text-slate-900'
-        }`}
-      >
-        {value}
-      </div>
-      <div className="mt-1 text-[10px] leading-tight text-slate-500">{description}</div>
+      <MortgageBalanceCalculator isOpen={showMortgageCalc} onClose={() => setShowMortgageCalc(false)} onConfirm={handleMortgageConfirm} />
+      <DebtCalculatorDialog isOpen={showDebtCalculator} onClose={() => setShowDebtCalculator(false)} onApply={handleDebtCalculatorApply} initialValue={parseFloat(otherMonthlyDebt) || 0} locale="en" />
     </div>
   );
 }
