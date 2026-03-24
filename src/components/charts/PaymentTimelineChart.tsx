@@ -59,7 +59,7 @@ export default function PaymentTimelineChart({ timeline, showBurdenRatio = false
     const payments = timeline.map((t) => t.payment);
     const burdenRatios = showBurdenRatio ? timeline.map((t) => t.burdenRatio || 0) : [];
 
-    // Create datasets
+    // Create datasets with segment coloring
     const datasets: any[] = [
       {
         label: 'Monthly Payment ($)',
@@ -71,6 +71,12 @@ export default function PaymentTimelineChart({ timeline, showBurdenRatio = false
         yAxisID: 'y',
         pointRadius: 0,
         pointHoverRadius: 4,
+        segment: {
+          borderColor: (ctx: any) => {
+            const month = ctx.p0.parsed.x;
+            return month < 120 ? '#10b981' : '#ef4444';
+          },
+        },
       },
     ];
 
@@ -115,6 +121,18 @@ export default function PaymentTimelineChart({ timeline, showBurdenRatio = false
               color: '#475569',
               usePointStyle: true,
               padding: 15,
+              generateLabels: function(chart) {
+                const original = ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
+                original.push({
+                  text: 'Payment Shock Hazard (Month 121+)',
+                  fillStyle: '#ef4444',
+                  strokeStyle: '#ef4444',
+                  lineWidth: 2,
+                  hidden: false,
+                  index: 999,
+                });
+                return original;
+              },
             },
           },
           tooltip: {
