@@ -48,25 +48,11 @@ export default function SliderWithValue({
 
   return (
     <div className="space-y-1">
-      {/* Label, Slider, and Value in one row */}
-      <div className="flex items-center gap-3">
-        <label className="text-xs font-medium text-stone-700 whitespace-nowrap min-w-[100px]">
+      {/* First row: Label and Value */}
+      <div className="flex items-center justify-between gap-3">
+        <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">
           {label}
         </label>
-
-        {/* Slider */}
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-stone-200 accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          style={{
-            background: `linear-gradient(to right, #10b981 0%, #10b981 ${((value - min) / (max - min)) * 100}%, #e7e5e4 ${((value - min) / (max - min)) * 100}%, #e7e5e4 100%)`,
-          }}
-        />
 
         <input
           type="number"
@@ -80,9 +66,23 @@ export default function SliderWithValue({
         />
       </div>
 
+      {/* Second row: Slider (full width) */}
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-2 cursor-pointer appearance-none rounded-lg bg-stone-200 accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        style={{
+          background: `linear-gradient(to right, #10b981 0%, #10b981 ${((value - min) / (max - min)) * 100}%, #e7e5e4 ${((value - min) / (max - min)) * 100}%, #e7e5e4 100%)`,
+        }}
+      />
+
       {/* Help Text */}
       {helpText && (
-        <div className="text-xs text-stone-500 ml-[100px]">
+        <div className="text-xs text-stone-500">
           {typeof helpText === 'string' ? <p>{helpText}</p> : helpText}
         </div>
       )}

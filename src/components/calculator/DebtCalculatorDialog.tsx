@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { DebtDetail, calculateTotalDebt } from '@/lib/heloc/types';
+import SliderWithValue from './SliderWithValue';
 
 interface DebtCalculatorDialogProps {
   isOpen: boolean;
@@ -36,11 +37,10 @@ export default function DebtCalculatorDialog({
   const totalDebt = calculateTotalDebt(debtDetail);
 
   // 更新单个字段
-  const updateField = (field: keyof DebtDetail, value: string) => {
-    const numValue = parseFloat(value) || 0;
+  const updateField = (field: keyof DebtDetail, value: number) => {
     setDebtDetail((prev) => ({
       ...prev,
-      [field]: numValue,
+      [field]: value,
     }));
   };
 
@@ -89,11 +89,11 @@ export default function DebtCalculatorDialog({
         </div>
 
         {/* Total and Actions */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-blue-50">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-emerald-50">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-blue-900">{t.totalMonthlyDebt}:</span>
-            <span className="text-xl font-bold text-blue-600">
-              ${totalDebt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <span className="text-sm font-medium text-emerald-900">{t.totalMonthlyDebt}:</span>
+            <span className="text-xl font-bold text-emerald-600">
+              ${totalDebt.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ export default function DebtCalculatorDialog({
             </button>
             <button
               onClick={handleApply}
-              className="px-5 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+              className="px-5 py-1.5 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 transition-colors"
             >
               {t.apply}
             </button>
@@ -116,138 +116,94 @@ export default function DebtCalculatorDialog({
         <div className="overflow-y-auto px-5 py-4 space-y-4">
           {/* Other Property Housing */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t.otherPropertyHousing}
-              <span className="text-gray-500 ml-1 text-xs">{t.piti}</span>
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.otherPropertyHousing || ''}
-                onChange={(e) => updateField('otherPropertyHousing', e.target.value)}
-                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
+            <SliderWithValue
+              label="Other Property Housing Payment (PITI)"
+              value={debtDetail.otherPropertyHousing}
+              min={0}
+              max={50000}
+              step={500}
+              onChange={(val) => updateField('otherPropertyHousing', val)}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Student Loan Payment */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t.studentLoanPayment}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.studentLoanPayment || ''}
-                onChange={(e) => updateField('studentLoanPayment', e.target.value)}
-                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
+            <SliderWithValue
+              label={t.studentLoanPayment}
+              value={debtDetail.studentLoanPayment}
+              min={0}
+              max={10000}
+              step={100}
+              onChange={(val) => updateField('studentLoanPayment', val)}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Auto Loan Payment */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t.autoLoanPayment}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.autoLoanPayment || ''}
-                onChange={(e) => updateField('autoLoanPayment', e.target.value)}
-                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
+            <SliderWithValue
+              label={t.autoLoanPayment}
+              value={debtDetail.autoLoanPayment}
+              min={0}
+              max={10000}
+              step={100}
+              onChange={(val) => updateField('autoLoanPayment', val)}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Credit Card Min Payment */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t.creditCardMinPayment}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.creditCardMinPayment || ''}
-                onChange={(e) => updateField('creditCardMinPayment', e.target.value)}
-                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
+            <SliderWithValue
+              label={t.creditCardMinPayment}
+              value={debtDetail.creditCardMinPayment}
+              min={0}
+              max={10000}
+              step={100}
+              onChange={(val) => updateField('creditCardMinPayment', val)}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Support Obligations */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t.supportObligations}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.supportObligations || ''}
-                onChange={(e) => updateField('supportObligations', e.target.value)}
-                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
+            <SliderWithValue
+              label={t.supportObligations}
+              value={debtDetail.supportObligations}
+              min={0}
+              max={10000}
+              step={100}
+              onChange={(val) => updateField('supportObligations', val)}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Other Installment Debt */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t.otherInstallmentDebt}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.otherInstallmentDebt || ''}
-                onChange={(e) => updateField('otherInstallmentDebt', e.target.value)}
-                className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
+            <SliderWithValue
+              label={t.otherInstallmentDebt}
+              value={debtDetail.otherInstallmentDebt}
+              min={0}
+              max={10000}
+              step={100}
+              onChange={(val) => updateField('otherInstallmentDebt', val)}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Rental Income Credit (Deduction) */}
           <div className="bg-green-50 p-4 rounded-md border border-green-200">
-            <label className="block text-sm font-medium text-green-800 mb-2">
-              {t.rentalIncomeCredit}
-              <span className="text-green-600 ml-1 text-xs">{t.deduction}</span>
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-green-600">-$</span>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={debtDetail.rentalIncomeCredit || ''}
-                onChange={(e) => updateField('rentalIncomeCredit', e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-green-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
-                placeholder="0.00"
-              />
-            </div>
-            <p className="text-xs text-green-700 mt-1">{t.rentalIncomeNote}</p>
+            <SliderWithValue
+              label={`${t.rentalIncomeCredit} ${t.deduction}`}
+              value={debtDetail.rentalIncomeCredit}
+              min={0}
+              max={10000}
+              step={100}
+              onChange={(val) => updateField('rentalIncomeCredit', val)}
+              formatValue={(val) => `-$${val.toLocaleString()}`}
+            />
+            <p className="text-xs text-green-700 mt-2">{t.rentalIncomeNote}</p>
           </div>
         </div>
       </div>
