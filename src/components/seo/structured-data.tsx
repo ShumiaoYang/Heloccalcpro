@@ -63,11 +63,10 @@ export function StructuredData({
       priceCurrency: 'USD',
     },
     featureList: [
-      'Real-time HELOC calculations',
-      'Risk score analysis',
-      'Debt consolidation scenarios',
-      'Home renovation planning',
-      'AI-powered recommendations',
+      'Calculates Jumbo HELOC limits for property values up to $5,000,000',
+      'Strict alignment with FICO 300-850 credit scoring models',
+      'Bank-grade risk engine simulating 43%-50% Debt-to-Income (DTI) stress testing',
+      'Visualizes 20-year payment shock and amortization schedules',
     ],
   };
 

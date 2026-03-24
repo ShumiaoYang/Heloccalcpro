@@ -95,8 +95,8 @@ export default function PdfReportCTA({
   const [otherDebt, setOtherDebt] = useState(propOtherMonthlyDebt);
 
   // Step 3: Scenario Details
-  const [creditCardLimit, setCreditCardLimit] = useState('');
-  const [creditCardBalance, setCreditCardBalance] = useState('');
+  const [creditCardLimit, setCreditCardLimit] = useState(0);
+  const [creditCardBalance, setCreditCardBalance] = useState(0);
 
   // UI state
   const [loading, setLoading] = useState(false);
@@ -185,7 +185,7 @@ export default function PdfReportCTA({
 
   const validateStep3 = () => {
     if (scenario !== 'home_renovation') {
-      if (!creditCardLimit || !creditCardBalance) {
+      if (creditCardLimit <= 0 || creditCardBalance < 0) {
         setError('Please fill in all credit card information');
         return false;
       }
@@ -239,7 +239,7 @@ export default function PdfReportCTA({
       const monthlySavings = calculateMonthlySavingsByScenario(scenario as ScenarioType, {
         helocAmount,
         helocRate,
-        creditCardBalance: parseFloat(creditCardBalance) || 0,
+        creditCardBalance: creditCardBalance || 0,
         creditCardRate: 18, // Average credit card rate
         currentMonthlyPayment: monthlyDebt,
       });
@@ -260,8 +260,8 @@ export default function PdfReportCTA({
         case 'debt_consolidation':
           scenarioMetrics = calculateDebtConsolidation({
             ...baseInput,
-            creditCardBalance: parseFloat(creditCardBalance) || 0,
-            creditCardLimit: parseFloat(creditCardLimit) || 0,
+            creditCardBalance: creditCardBalance || 0,
+            creditCardLimit: creditCardLimit || 0,
           });
           break;
         case 'home_renovation':
@@ -275,8 +275,8 @@ export default function PdfReportCTA({
         case 'credit_optimization':
           scenarioMetrics = calculateCreditOptimization({
             ...baseInput,
-            creditCardBalance: parseFloat(creditCardBalance) || 0,
-            creditCardLimit: parseFloat(creditCardLimit) || 0,
+            creditCardBalance: creditCardBalance || 0,
+            creditCardLimit: creditCardLimit || 0,
           });
           break;
         case 'contingent_liquidity':
@@ -341,8 +341,8 @@ export default function PdfReportCTA({
           subjectHousingPayment: housingPayment,
           otherMonthlyDebt: otherDebt,
           // Step 3 data
-          creditCardLimit: scenario !== 'home_renovation' ? parseFloat(creditCardLimit) : undefined,
-          creditCardBalance: scenario !== 'home_renovation' ? parseFloat(creditCardBalance) : undefined,
+          creditCardLimit: scenario !== 'home_renovation' ? creditCardLimit : undefined,
+          creditCardBalance: scenario !== 'home_renovation' ? creditCardBalance : undefined,
         }),
       });
 
@@ -494,9 +494,9 @@ export default function PdfReportCTA({
                 <SliderWithValue
                   label="Home Value (FMV)"
                   value={homeValue}
-                  min={100000}
-                  max={2000000}
-                  step={10000}
+                  min={50000}
+                  max={5000000}
+                  step={5000}
                   onChange={setHomeValue}
                   formatValue={formatCurrency}
                 />
@@ -515,7 +515,7 @@ export default function PdfReportCTA({
                   label="Housing Payment"
                   value={housingPayment}
                   min={0}
-                  max={10000}
+                  max={25000}
                   step={100}
                   onChange={setHousingPayment}
                   formatValue={formatCurrency}
@@ -525,7 +525,7 @@ export default function PdfReportCTA({
                   label="Other Debt"
                   value={otherDebt}
                   min={0}
-                  max={10000}
+                  max={15000}
                   step={100}
                   onChange={setOtherDebt}
                   formatValue={formatCurrency}
@@ -543,9 +543,9 @@ export default function PdfReportCTA({
                 <SliderWithValue
                   label="Annual Gross Income"
                   value={annualIncome}
-                  min={20000}
-                  max={500000}
-                  step={5000}
+                  min={10000}
+                  max={1000000}
+                  step={1000}
                   onChange={setAnnualIncome}
                   formatValue={formatCurrency}
                 />
@@ -647,36 +647,25 @@ export default function PdfReportCTA({
               {/* Other Scenarios - Credit Card Info */}
               {scenario !== 'home_renovation' && (
                 <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-stone-700 mb-1">
-                      Credit Card Total Limit *
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-500">$</span>
-                      <input
-                        type="number"
-                        placeholder="50000"
-                        value={creditCardLimit}
-                        onChange={(e) => setCreditCardLimit(e.target.value)}
-                        className="w-full px-3 py-2 pl-7 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-stone-700 mb-1">
-                      Credit Card Total Balance *
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-500">$</span>
-                      <input
-                        type="number"
-                        placeholder="10000"
-                        value={creditCardBalance}
-                        onChange={(e) => setCreditCardBalance(e.target.value)}
-                        className="w-full px-3 py-2 pl-7 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
+                  <SliderWithValue
+                    label="Credit Card Total Limit"
+                    value={creditCardLimit}
+                    min={0}
+                    max={250000}
+                    step={1000}
+                    onChange={setCreditCardLimit}
+                    formatValue={formatCurrency}
+                  />
+
+                  <SliderWithValue
+                    label="Credit Card Total Balance"
+                    value={creditCardBalance}
+                    min={0}
+                    max={creditCardLimit || 250000}
+                    step={100}
+                    onChange={setCreditCardBalance}
+                    formatValue={formatCurrency}
+                  />
                 </div>
               )}
 
