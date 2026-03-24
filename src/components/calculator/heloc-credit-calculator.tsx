@@ -225,26 +225,24 @@ export default function HelocCreditCalculator({
               onChange={setSubjectHousingPayment}
               formatValue={(val) => `$${val.toLocaleString()}`}
             />
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <div className="flex-1">
-                  <SliderWithValue
-                    label="Other Debt"
-                    value={otherMonthlyDebt}
-                    min={0}
-                    max={15000}
-                    step={100}
-                    onChange={setOtherMonthlyDebt}
-                    formatValue={(val) => `$${val.toLocaleString()}`}
-                  />
-                </div>
-                <button onClick={() => setShowDebtCalculator(true)} type="button" className="shrink-0 rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-emerald-600 hover:bg-emerald-100 transition-colors mt-5" title="Open Debt Calculator">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
+            <SliderWithValue
+              label="Other Debt"
+              value={otherMonthlyDebt}
+              min={0}
+              max={15000}
+              step={100}
+              onChange={setOtherMonthlyDebt}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+              helpText={
+                <button
+                  onClick={() => setShowDebtCalculator(true)}
+                  type="button"
+                  className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline"
+                >
+                  Not sure what Other Debt includes?
                 </button>
-              </div>
-            </div>
+              }
+            />
           </div>
         </div>
 
@@ -261,7 +259,7 @@ export default function HelocCreditCalculator({
               onChange={setCreditScore}
             />
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Property Type</label>
+              <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">Property Type</label>
               <select value={propertyType} onChange={(e) => setPropertyType(e.target.value as PropertyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
                 <option value="Single-family">Single-family</option>
                 <option value="Townhouse">Townhouse</option>
@@ -271,7 +269,7 @@ export default function HelocCreditCalculator({
               </select>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Occupancy</label>
+              <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">Occupancy</label>
               <select value={occupancyType} onChange={(e) => setOccupancyType(e.target.value as OccupancyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
                 <option value="Primary residence">Primary</option>
                 <option value="Second home">Second Home</option>

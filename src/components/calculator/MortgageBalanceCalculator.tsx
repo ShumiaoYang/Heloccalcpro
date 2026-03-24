@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { calculateMortgageBalance } from '@/lib/heloc/mortgage-calculator';
+import SliderWithValue from './SliderWithValue';
 
 interface MortgageBalanceCalculatorProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ export default function MortgageBalanceCalculator({
   onConfirm,
 }: MortgageBalanceCalculatorProps) {
   // Input states
-  const [initialAmount, setInitialAmount] = useState<string>('300000');
+  const [initialAmount, setInitialAmount] = useState<number>(300000);
   const [startYear, setStartYear] = useState<string>('2020');
   const [startMonth, setStartMonth] = useState<string>('01');
   const [annualRate, setAnnualRate] = useState<number>(5.0);
@@ -23,7 +24,7 @@ export default function MortgageBalanceCalculator({
 
   // Calculate result
   const result = useMemo(() => {
-    const amount = parseFloat(initialAmount) || 0;
+    const amount = initialAmount || 0;
     if (amount <= 0) return null;
 
     const startDate = new Date(parseInt(startYear), parseInt(startMonth) - 1, 1);
@@ -79,20 +80,15 @@ export default function MortgageBalanceCalculator({
         <div className="space-y-4">
           {/* Initial Amount */}
           <div>
-            <label className="text-sm font-medium text-slate-700">
-              Initial Mortgage Amount
-            </label>
-            <div className="relative mt-1.5">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">
-                $
-              </span>
-              <input
-                type="number"
-                value={initialAmount}
-                onChange={(e) => setInitialAmount(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 bg-white p-2.5 pl-8 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              />
-            </div>
+            <SliderWithValue
+              label="Initial Mortgage Amount"
+              value={initialAmount}
+              min={0}
+              max={5000000}
+              step={5000}
+              onChange={setInitialAmount}
+              formatValue={(val) => `$${val.toLocaleString()}`}
+            />
           </div>
 
           {/* Start Date and Loan Term Row */}
