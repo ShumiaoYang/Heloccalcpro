@@ -115,6 +115,11 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                       <div className="overflow-x-auto">
                         <BlockMath math="\text{MaxCreditLimit} = \min(\text{MaxCreditLimit}_{\text{CLTV}}, \text{MaxCreditLimit}_{\text{DTI}})" />
                       </div>
+                      <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                        {isZh
+                          ? '决定银行批准的绝对最大 HELOC 金额，通过比较资产净值限额（CLTV）和现金流限额（DTI）并取两者中的较小值来计算。'
+                          : 'Determines the absolute maximum HELOC amount a bank will approve by comparing asset equity limits (CLTV) and cash flow limits (DTI) and taking the smaller of the two.'}
+                      </p>
                     </div>
 
                     <div className="bg-white rounded-lg p-4">
@@ -122,6 +127,15 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                       <div className="overflow-x-auto">
                         <BlockMath math="\text{MaxCreditLimit}_{\text{CLTV}} = \text{HomeValue} \times \text{CLTV} - \text{MortgageBalance}" />
                       </div>
+                      <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                        {isZh
+                          ? '纯粹基于房产价值计算最大借款金额，通过将房屋价值乘以允许的 CLTV 比率，然后减去现有抵押贷款余额来确定。这是资产净值的"硬上限"。'
+                          : 'Calculates the maximum borrowing amount based purely on property value by multiplying home value by the allowed CLTV ratio, then subtracting existing mortgage balance. This is the "hard ceiling" from your equity.'}
+                        {' '}
+                        <Link href={`/${locale}/heloc-cltv-limits`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                          {isZh ? '深入了解您的房产价值如何设定 CLTV 限额。' : 'Dive deep into how your property value sets your CLTV limits.'}
+                        </Link>
+                      </p>
                     </div>
 
                     <div className="bg-white rounded-lg p-4">
@@ -129,6 +143,15 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                       <div className="overflow-x-auto">
                         <BlockMath math="\text{MaxCreditLimit}_{\text{DTI}} = \frac{\text{MonthlyIncome} \times \text{DTI} - \text{CurrentMonthlyDebt}}{\text{HelocPaymentCtrlRate}}" />
                       </div>
+                      <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                        {isZh
+                          ? '通过确定允许的总月债务（收入 × DTI 比率）并减去当前债务，然后除以 HELOC 支付控制率来计算最大信用额度。'
+                          : 'Computes the maximum credit line by determining allowable total monthly debt (income × DTI ratio) minus current debt, then dividing by the HELOC payment control rate.'}
+                        {' '}
+                        <Link href={`/${locale}/heloc-dti-requirements`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                          {isZh ? '了解为什么严格的 DTI 要求可能限制您的最大贷款金额。' : 'Understand why strict DTI requirements might restrict your maximum loan amount.'}
+                        </Link>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -186,6 +209,15 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                       <div className="overflow-x-auto">
                         <BlockMath math="\text{effectiveRate} = \max(\text{primeRate} + \text{finalMargin}, \text{floorRate})" />
                       </div>
+                      <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                        {isZh
+                          ? '代表两个抵押贷款的真实混合利率，通过将基准利率（Prime Rate）加上最终保证金（Margin），并与最低利率（Floor Rate）比较取较大值来计算。'
+                          : 'Represents the true blended interest rate across both mortgages by adding the prime rate to the final margin and comparing against the floor rate, taking the higher value.'}
+                        {' '}
+                        <Link href={`/${locale}/heloc-effective-blended-rate`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                          {isZh ? '停止查看独立利率，计算您的真实有效利率。' : 'Stop looking at standalone rates and calculate your true Effective Rate.'}
+                        </Link>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -203,6 +235,15 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                         ? '这个比率衡量月供跳升占收入的百分比。银行通常要求 Payment Shock < 5% 才会批准高额度 HELOC。'
                         : 'This ratio measures the payment jump as a percentage of income. Banks typically require Payment Shock < 5% to approve high-limit HELOCs.'
                       }
+                    </p>
+                    <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                      {isZh
+                        ? '衡量从提款期（仅付息）过渡到还款期（本金+利息）时月供的突然增加，表示为收入的百分比。'
+                        : 'Measures the sudden increase in monthly obligations when transitioning from the draw period (interest-only) to the repayment period (principal + interest), expressed as a percentage of income.'}
+                      {' '}
+                      <a href={`/${locale}/heloc-payment-shock`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                        {isZh ? '警惕现金流陷阱：分析您未来的 Payment Shock。' : 'Beware of the cash flow trap: analyze your future Payment Shock.'}
+                      </a>
                     </p>
                   </div>
                 </div>
@@ -239,6 +280,15 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                       <div className="overflow-x-auto mt-2">
                         <BlockMath math="\text{StressedPayment} = \text{Balance} \times \frac{\text{StressedRate}/12 \times (1+\text{StressedRate}/12)^n}{(1+\text{StressedRate}/12)^n-1}" />
                       </div>
+                      <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+                        {isZh
+                          ? '预测如果利率达到上限时的最大潜在月供，通过将余额乘以压力测试利率下的摊销因子来计算。'
+                          : 'Projects the maximum potential monthly HELOC payment if rates hit their cap by multiplying balance by the amortization factor under stressed rate conditions.'}
+                        {' '}
+                        <a href={`/${locale}/heloc-rate-increase-risk`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                          {isZh ? '通过严格的利率上升压力测试保护您家庭的财务。' : 'Protect your family\'s finances by running a rigorous Rate Increase Stress Test.'}
+                        </a>
+                      </p>
                     </div>
 
                     <div className="bg-white rounded-lg p-4">

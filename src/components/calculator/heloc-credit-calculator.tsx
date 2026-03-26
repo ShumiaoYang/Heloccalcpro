@@ -56,7 +56,7 @@ export default function HelocCreditCalculator({
   // v3.0 fields
   const [propertyType, setPropertyType] = useState<PropertyType>('Single-family');
   const [occupancyType, setOccupancyType] = useState<OccupancyType>('Primary residence');
-  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState<number>(950);
+  const [otherMonthlyDebt, setOtherMonthlyDebt] = useState<number>(900);
   const [annualIncome, setAnnualIncome] = useState<number>(120000);
   const [subjectHousingPayment, setSubjectHousingPayment] = useState<number>(2800);
 

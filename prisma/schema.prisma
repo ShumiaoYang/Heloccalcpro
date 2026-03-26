@@ -230,3 +230,14 @@ enum PurchaseStatus {
   FAILED
   REFUNDED
 }
+
+model PrimeRate {
+  id            String   @id @default(cuid())
+  rate          Float
+  effectiveDate DateTime
+  source        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([effectiveDate])
+}

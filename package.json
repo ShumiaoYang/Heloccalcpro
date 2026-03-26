@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:https": "node server-https.mjs",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && bash scripts/pre-build.sh && next build",
     "build:local": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
@@ -57,6 +57,7 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18",
     "react-katex": "^3.1.0",
+    "recharts": "^3.8.0",
     "resend": "^6.9.2",
     "scoop": "^0.0.2",
     "stripe": "^14.25.0"
