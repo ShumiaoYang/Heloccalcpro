@@ -285,9 +285,9 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                           ? '预测如果利率达到上限时的最大潜在月供，通过将余额乘以压力测试利率下的摊销因子来计算。'
                           : 'Projects the maximum potential monthly HELOC payment if rates hit their cap by multiplying balance by the amortization factor under stressed rate conditions.'}
                         {' '}
-                        <Link href={`/${locale}/heloc-rate-increase-risk`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                        <a href={`/${locale}/heloc-rate-increase-risk`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
                           {isZh ? '通过严格的利率上升压力测试保护您家庭的财务。' : 'Protect your family\'s finances by running a rigorous Rate Increase Stress Test.'}
-                        </Link>
+                        </a>
                       </p>
                     </div>
 

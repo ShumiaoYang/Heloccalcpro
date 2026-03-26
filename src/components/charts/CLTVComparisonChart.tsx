@@ -60,7 +60,7 @@ export default function CLTVComparisonChart({ locale = 'en' }: CLTVComparisonCha
           label: (context) => {
             const label = context.dataset.label || '';
             const value = context.parsed.y;
-            return `${label}: $${value.toLocaleString()}`;
+            return `${label}: $${value?.toLocaleString() ?? '0'}`;
           },
         },
       },
