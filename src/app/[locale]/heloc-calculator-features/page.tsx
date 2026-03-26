@@ -241,7 +241,7 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
                         ? '衡量从提款期（仅付息）过渡到还款期（本金+利息）时月供的突然增加，表示为收入的百分比。'
                         : 'Measures the sudden increase in monthly obligations when transitioning from the draw period (interest-only) to the repayment period (principal + interest), expressed as a percentage of income.'}
                       {' '}
-                      <Link href={`/${locale}/heloc-payment-shock` as `/en/heloc-payment-shock` | `/zh/heloc-payment-shock`} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                      <Link href={`/${locale}/heloc-payment-shock` as const} className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
                         {isZh ? '警惕现金流陷阱：分析您未来的 Payment Shock。' : 'Beware of the cash flow trap: analyze your future Payment Shock.'}
                       </Link>
                     </p>
