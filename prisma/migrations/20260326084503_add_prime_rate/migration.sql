@@ -13,8 +13,8 @@ ALTER TYPE "ScenarioType_new" RENAME TO "ScenarioType";
 DROP TYPE "public"."ScenarioType_old";
 COMMIT;
 
--- AlterTable
-ALTER TABLE "PdfPurchase" ADD COLUMN     "isFreePromo" BOOLEAN NOT NULL DEFAULT false;
+-- AlterTable (isFreePromo already exists in production, skip to avoid conflict)
+-- ALTER TABLE "PdfPurchase" ADD COLUMN     "isFreePromo" BOOLEAN NOT NULL DEFAULT false;
 
 -- CreateTable
 CREATE TABLE "PrimeRate" (
@@ -31,5 +31,5 @@ CREATE TABLE "PrimeRate" (
 -- CreateIndex
 CREATE INDEX "PrimeRate_effectiveDate_idx" ON "PrimeRate"("effectiveDate");
 
--- CreateIndex
-CREATE INDEX "PdfPurchase_isFreePromo_idx" ON "PdfPurchase"("isFreePromo");
+-- CreateIndex (skip if column doesn't exist)
+-- CREATE INDEX "PdfPurchase_isFreePromo_idx" ON "PdfPurchase"("isFreePromo");
