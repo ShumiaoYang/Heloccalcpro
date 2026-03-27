@@ -1,8 +1,16 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useDebounce } from '@/lib/hooks/useDebounce';
-import PaymentTimelineChart from '@/components/charts/PaymentTimelineChart';
+
+const PaymentTimelineChart = dynamic(
+  () => import('@/components/charts/PaymentTimelineChart'),
+  {
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full animate-pulse rounded-xl bg-slate-100/50 flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
+  }
+);
 
 // Constants
 const DEFAULT_DRAW_AMOUNT = 100000;
