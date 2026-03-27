@@ -11,8 +11,10 @@ import { getSiteContent } from '@/lib/content';
 import { getNavigation } from '@/lib/navigation';
 import { getSeoMetadata } from '@/lib/seo';
 import {
+  getAuthorSchema,
   getOrganizationSchema,
   getWebApplicationSchema,
+  getFinancialProductSchema,
   getFAQPageSchema
 } from '@/lib/structured-data';
 import type { Locale } from '@/i18n/routing';
@@ -32,8 +34,10 @@ export default async function LocaleHomePage({ params }: PageProps) {
   const navigation = getNavigation(locale);
 
   // Generate structured data schemas
+  const authorSchema = getAuthorSchema();
   const organizationSchema = getOrganizationSchema();
   const webAppSchema = getWebApplicationSchema();
+  const financialProductSchema = getFinancialProductSchema();
   const faqSchema = getFAQPageSchema(locale);
 
   return (
@@ -41,11 +45,19 @@ export default async function LocaleHomePage({ params }: PageProps) {
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(authorSchema) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(financialProductSchema) }}
       />
       <script
         type="application/ld+json"
