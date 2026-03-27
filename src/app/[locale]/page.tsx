@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
   return metadata;
 }
 
-export default function LocaleHomePage({ params }: PageProps) {
+export default async function LocaleHomePage({ params }: PageProps) {
   const { locale } = params;
   const content = getSiteContent(locale);
   const navigation = getNavigation(locale);
