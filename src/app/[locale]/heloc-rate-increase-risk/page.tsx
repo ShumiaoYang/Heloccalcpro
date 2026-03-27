@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
-import { ArticleSchema } from '@/components/seo/structured-data';
 import { getSeoMetadata } from '@/lib/seo';
 import { getCurrentPrimeRate } from '@/lib/prime-rate/service';
 
@@ -43,14 +42,6 @@ export default async function HelocRateIncreaseRiskPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
-      <ArticleSchema
-        title={isZh ? 'HELOC 压力测试' : 'The HELOC Stress Test'}
-        description={isZh
-          ? '保护您的家庭免受 Prime Rate 飙升影响'
-          : 'Protecting Your Family from Prime Rate Spikes'}
-        datePublished="2026-03-26"
-        author="Sapling Yang"
-      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
           <Link href={`/${locale}`} className="hover:text-emerald-600 transition">

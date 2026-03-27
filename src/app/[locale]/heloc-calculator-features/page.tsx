@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { ArrowLeft, Calculator } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
-import { ArticleSchema } from '@/components/seo/structured-data';
 import { getSeoMetadata } from '@/lib/seo';
 import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
@@ -45,14 +44,6 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
-      <ArticleSchema
-        title={isZh ? 'HELOC 计算器功能详解' : 'HELOC Calculator Features'}
-        description={isZh
-          ? '深入了解 HELOC 计算器的所有功能：信用额度计算、月供模拟、风险评分系统、压力测试、还款计划等。'
-          : 'Explore all features of our HELOC Calculator: credit limit calculation, payment simulation, risk scoring system, stress testing, repayment planning, and more.'}
-        datePublished="2026-03-12"
-        author="Sapling Yang"
-      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
           <Link href={`/${locale}`} className="hover:text-emerald-600 transition">
