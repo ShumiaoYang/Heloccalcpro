@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import { getSeoMetadata } from '@/lib/seo';
-import CLTVComparisonChart from '@/components/charts/CLTVComparisonChart';
+
+const CLTVComparisonChart = dynamic(
+  () => import('@/components/charts/CLTVComparisonChart'),
+  {
+    ssr: false,
+    loading: () => <div className="h-[400px] w-full animate-pulse rounded-xl bg-slate-100/50 flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
+  }
+);
 
 type PageProps = {
   params: { locale: Locale };

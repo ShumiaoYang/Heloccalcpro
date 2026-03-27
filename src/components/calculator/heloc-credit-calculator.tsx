@@ -1,14 +1,29 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { useDebounce } from '@/lib/hooks/useDebounce';
-import CreditHealthGaugeChart from '@/components/charts/CreditHealthGaugeChart';
 import MortgageBalanceCalculator from './MortgageBalanceCalculator';
 import DebtCalculatorDialog from './DebtCalculatorDialog';
-import DiagnosticChart from '@/components/charts/DiagnosticChart';
 import SliderWithValue from './SliderWithValue';
 import { calculateCredit, calculateApprovedCreditLimit, getMaxLTVByCredit } from '@/lib/heloc/credit-calculator';
 import { PropertyType, OccupancyType, DebtDetail } from '@/lib/heloc/types';
+
+const CreditHealthGaugeChart = dynamic(
+  () => import('@/components/charts/CreditHealthGaugeChart'),
+  {
+    ssr: false,
+    loading: () => <div className="h-[200px] w-[200px] mx-auto animate-pulse rounded-full bg-slate-100/50" />
+  }
+);
+
+const DiagnosticChart = dynamic(
+  () => import('@/components/charts/DiagnosticChart'),
+  {
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full animate-pulse rounded-xl bg-slate-100/50 flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
+  }
+);
 
 // Default values
 const DEFAULT_HOME_VALUE = 600000;
