@@ -11,13 +11,25 @@ import { DEFAULT_VALUES } from '@/lib/heloc/types';
  */
 export const getCurrentPrimeRate = cache(async (): Promise<number> => {
   try {
+    console.log('[PrimeRate] Fetching from database...');
     const latest = await prisma.primeRate.findFirst({
       orderBy: { effectiveDate: 'desc' },
     });
 
-    return latest?.rate ?? DEFAULT_VALUES.primeRate;
+    if (latest) {
+      console.log('[PrimeRate] Found in DB:', {
+        rate: latest.rate,
+        effectiveDate: latest.effectiveDate,
+        source: latest.source,
+      });
+      return latest.rate;
+    } else {
+      console.warn('[PrimeRate] No data found in DB, using default:', DEFAULT_VALUES.primeRate);
+      return DEFAULT_VALUES.primeRate;
+    }
   } catch (error) {
-    console.error('Failed to fetch Prime Rate from DB:', error);
+    console.error('[PrimeRate] Failed to fetch from DB:', error);
+    console.error('[PrimeRate] Using default value:', DEFAULT_VALUES.primeRate);
     return DEFAULT_VALUES.primeRate;
   }
 });
