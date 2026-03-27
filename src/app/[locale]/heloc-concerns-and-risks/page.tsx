@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { ArrowLeft, AlertTriangle, TrendingDown, Home, CreditCard, DollarSign } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
-import { ArticleSchema } from '@/components/seo/structured-data';
 import { getSeoMetadata } from '@/lib/seo';
 
 type PageProps = {
@@ -43,14 +42,6 @@ export default function ConcernsRisksPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
-      <ArticleSchema
-        title={isZh ? 'HELOC 风险与常见问题完整指南' : 'HELOC Risks & Common Concerns'}
-        description={isZh
-          ? '深入了解房屋净值信用额度(HELOC)的主要风险：利率波动、还款压力、房产价值下跌、信用评分影响等。'
-          : 'Understand the main risks of Home Equity Line of Credit (HELOC): interest rate fluctuations, repayment pressure, property value decline, credit score impact, and more.'}
-        datePublished="2026-03-12"
-        author="Sapling Yang"
-      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">

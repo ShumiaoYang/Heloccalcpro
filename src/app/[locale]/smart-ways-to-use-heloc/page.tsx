@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
-import { ArticleSchema } from '@/components/seo/structured-data';
 import { getSeoMetadata } from '@/lib/seo';
 
 type PageProps = {
@@ -43,14 +42,6 @@ export default function SmartWaysPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
-      <ArticleSchema
-        title={isZh ? 'HELOC 聪明用法完整指南' : 'Smart Ways to Use HELOC'}
-        description={isZh
-          ? '深入了解房屋净值信用额度(HELOC)的5种聪明用法：家庭装修、债务整合、投资房产、教育资金和应急储备。'
-          : 'Discover 5 smart ways to use your Home Equity Line of Credit (HELOC): home renovations, debt consolidation, investment properties, education funding, and emergency reserves.'}
-        datePublished="2026-03-12"
-        author="Sapling Yang"
-      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">

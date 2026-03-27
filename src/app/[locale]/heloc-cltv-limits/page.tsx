@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
-import { ArticleSchema } from '@/components/seo/structured-data';
 import { getSeoMetadata } from '@/lib/seo';
 import CLTVComparisonChart from '@/components/charts/CLTVComparisonChart';
 
@@ -40,14 +39,6 @@ export default function HelocCLTVLimitsPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
-      <ArticleSchema
-        title={isZh ? 'HELOC CLTV 限额详解' : 'Understanding HELOC CLTV Limits'}
-        description={isZh
-          ? '深入了解 CLTV 如何决定您的 HELOC 最大额度'
-          : 'Deep dive into how CLTV determines your maximum HELOC limit'}
-        datePublished="2026-03-24"
-        author="Sapling Yang"
-      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
           <Link href={`/${locale}`} className="hover:text-emerald-600 transition">

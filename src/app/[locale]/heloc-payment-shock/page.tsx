@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, AlertTriangle } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
-import { ArticleSchema } from '@/components/seo/structured-data';
 import { getSeoMetadata } from '@/lib/seo';
 import { getCurrentPrimeRate } from '@/lib/prime-rate/service';
 
@@ -43,14 +42,6 @@ export default async function HelocPaymentShockPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
-      <ArticleSchema
-        title={isZh ? 'HELOC Payment Shock' : 'HELOC Payment Shock'}
-        description={isZh
-          ? '现金流陷阱分析'
-          : 'The Cash Flow Trap Analysis'}
-        datePublished="2026-03-26"
-        author="Sapling Yang"
-      />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
           <Link href={`/${locale}`} className="hover:text-emerald-600 transition">
