@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import HelocTabbedCalculator from '@/components/calculator/heloc-tabbed-calculator';
+import { LiveRateBadge } from '@/components/home/live-rate-badge';
 import type { SiteContent } from '@/lib/content';
 import type { Locale } from '@/i18n/routing';
 
@@ -10,13 +11,16 @@ type SectionsProps = {
 
 type ToolSectionProps = SectionsProps;
 
-export function HeroSection({ content, locale }: SectionsProps) {
+export async function HeroSection({ content, locale }: SectionsProps) {
   const { hero, site } = content;
   return (
     <section id="hero" className="section-spacing">
-      <span className="inline-flex rounded-full border border-emerald-100 bg-white/90 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-600 shadow-sm">
-        {hero.badge}
-      </span>
+      <div className="flex flex-col gap-3 mb-6">
+        <span className="inline-flex rounded-full border border-emerald-100 bg-white/90 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-600 shadow-sm">
+          {hero.badge}
+        </span>
+        <LiveRateBadge />
+      </div>
       <div className="space-y-6">
         <h1 className="text-4xl font-semibold tracking-tight text-primary-900 sm:text-5xl">{hero.title}</h1>
         <p className="max-w-4xl text-base leading-relaxed text-slate-600">{hero.subtitle}</p>
