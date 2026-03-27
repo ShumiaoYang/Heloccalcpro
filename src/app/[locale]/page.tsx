@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
   return metadata;
 }
 
-export default function LocaleHomePage({ params }: PageProps) {
+export default async function LocaleHomePage({ params }: PageProps) {
   const { locale } = params;
   const content = getSiteContent(locale);
   const navigation = getNavigation(locale);
@@ -59,6 +59,7 @@ export default function LocaleHomePage({ params }: PageProps) {
         logoutLabel={content.site.logoutCta}
         locale={locale}
       >
+        {/* @ts-expect-error Async Server Component */}
         <HeroSection content={content} locale={locale} />
         <ToolSection content={content} locale={locale} />
         <SmartWaysSection content={content} locale={locale} />
