@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useId } from 'react';
 import dynamic from 'next/dynamic';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 
@@ -93,6 +93,9 @@ function calculateBurdenRatioTimeline(
 }
 
 export default function HelocCalculatorV3() {
+  const drawAmountId = useId();
+  const primeRateId = useId();
+
   // Basic inputs
   const [drawAmount, setDrawAmount] = useState<string>(DEFAULT_DRAW_AMOUNT.toString());
   const [primeRate, setPrimeRate] = useState<string>(DEFAULT_PRIME_RATE.toString());
@@ -146,32 +149,34 @@ export default function HelocCalculatorV3() {
           <div className="flex flex-wrap items-center gap-6">
             {/* Draw Amount */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Draw Amount:</label>
+              <label htmlFor={drawAmountId} className="text-sm font-medium text-slate-700 whitespace-nowrap">Draw Amount:</label>
               <div className="relative" style={{ width: '140px' }}>
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-600">$</span>
                 <input
+                  id={drawAmountId}
                   type="number"
                   value={drawAmount}
                   onChange={(e) => setDrawAmount(e.target.value)}
                   placeholder="100000"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
                 />
               </div>
             </div>
 
             {/* Prime Rate */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Prime Rate:</label>
+              <label htmlFor={primeRateId} className="text-sm font-medium text-slate-700 whitespace-nowrap">Prime Rate:</label>
               <div className="relative" style={{ width: '100px' }}>
                 <input
+                  id={primeRateId}
                   type="number"
                   value={primeRate}
                   onChange={(e) => setPrimeRate(e.target.value)}
                   placeholder="7.5"
                   step="0.1"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pr-7 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                  className="w-full rounded-xl border border-slate-200 bg-white p-2 pr-7 text-sm text-slate-800 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">%</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-600">%</span>
               </div>
             </div>
 
@@ -206,22 +211,24 @@ export default function HelocCalculatorV3() {
             />
 
             {/* Summary Cards - Below Chart */}
-            {paymentTimeline.length > 0 && (
-              <div className="grid grid-cols-2 gap-3">
-                <SummaryCard
-                  label="Draw Period Payment"
-                  value={`$${paymentTimeline[0].payment.toFixed(2)}`}
-                  description="Months 1-120 (Interest-Only)"
-                  highlight
-                />
-                <SummaryCard
-                  label="Repayment Period Payment"
-                  value={`$${paymentTimeline[DRAW_PERIOD_MONTHS].payment.toFixed(2)}`}
-                  description="Months 121-360 (Principal & Interest)"
-                  highlight
-                />
-              </div>
-            )}
+            <div className="min-h-[90px] w-full">
+              {paymentTimeline.length > 0 && (
+                <div className="grid grid-cols-2 gap-3">
+                  <SummaryCard
+                    label="Draw Period Payment"
+                    value={`$${paymentTimeline[0].payment.toFixed(2)}`}
+                    description="Months 1-120 (Interest-Only)"
+                    highlight
+                  />
+                  <SummaryCard
+                    label="Repayment Period Payment"
+                    value={`$${paymentTimeline[DRAW_PERIOD_MONTHS].payment.toFixed(2)}`}
+                    description="Months 121-360 (Principal & Interest)"
+                    highlight
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Advanced Toggle and Options */}
@@ -338,7 +345,7 @@ function SummaryCard({
       >
         {value}
       </div>
-      <div className="mt-1 text-[10px] leading-tight text-slate-500">{description}</div>
+      <div className="mt-1 text-[10px] leading-tight text-slate-600">{description}</div>
     </div>
   );
 }
