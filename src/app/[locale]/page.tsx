@@ -1,12 +1,29 @@
 import PageShell from '@/components/layout/page-shell';
+import dynamic from 'next/dynamic';
 import {
   HeroSection,
-  ConcernsHelpSection,
-  FeaturesSection,
-  FooterSection,
-  SmartWaysSection,
   ToolSection,
 } from '@/components/home/sections';
+
+const SmartWaysSection = dynamic(
+  () => import('@/components/home/sections').then(mod => ({ default: mod.SmartWaysSection })),
+  { loading: () => <div className="min-h-[500px] w-full" /> }
+);
+
+const ConcernsHelpSection = dynamic(
+  () => import('@/components/home/sections').then(mod => ({ default: mod.ConcernsHelpSection })),
+  { loading: () => <div className="min-h-[600px] w-full" /> }
+);
+
+const FeaturesSection = dynamic(
+  () => import('@/components/home/sections').then(mod => ({ default: mod.FeaturesSection })),
+  { loading: () => <div className="min-h-[400px] w-full" /> }
+);
+
+const FooterSection = dynamic(
+  () => import('@/components/home/sections').then(mod => ({ default: mod.FooterSection })),
+  { loading: () => <div className="min-h-[300px] w-full" /> }
+);
 import { getSiteContent } from '@/lib/content';
 import { getNavigation } from '@/lib/navigation';
 import { getSeoMetadata } from '@/lib/seo';

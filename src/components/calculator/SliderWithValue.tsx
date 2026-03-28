@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, useId, ReactNode } from 'react';
 
 interface SliderWithValueProps {
   label: string;
@@ -23,6 +23,7 @@ export default function SliderWithValue({
   formatValue,
   helpText,
 }: SliderWithValueProps) {
+  const id = useId();
   const [localString, setLocalString] = useState(value.toString());
 
   // Sync external value to local state
@@ -50,11 +51,12 @@ export default function SliderWithValue({
     <div className="space-y-1">
       {/* First row: Label and Value */}
       <div className="flex items-center justify-between gap-3">
-        <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">
+        <label htmlFor={id} className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">
           {label}
         </label>
 
         <input
+          id={id}
           type="number"
           value={localString}
           onChange={handleInputChange}
@@ -74,6 +76,7 @@ export default function SliderWithValue({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={`${label} slider`}
         className="w-full h-2 cursor-pointer appearance-none rounded-lg bg-stone-200 accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         style={{
           background: `linear-gradient(to right, #10b981 0%, #10b981 ${((value - min) / (max - min)) * 100}%, #e7e5e4 ${((value - min) / (max - min)) * 100}%, #e7e5e4 100%)`,
