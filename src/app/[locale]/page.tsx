@@ -19,6 +19,8 @@ import {
 } from '@/lib/structured-data';
 import type { Locale } from '@/i18n/routing';
 
+export const revalidate = 3600; // Revalidate every hour
+
 type PageProps = {
   params: { locale: Locale };
 };
