@@ -1,8 +1,6 @@
-import { unstable_noStore as noStore } from 'next/cache';
 import { getCurrentPrimeRate } from '@/lib/prime-rate/service';
 
 export async function LiveRateBadge() {
-  noStore();
   const primeRate = await getCurrentPrimeRate();
 
   return (
