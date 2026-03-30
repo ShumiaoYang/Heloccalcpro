@@ -4,11 +4,33 @@
  */
 
 import React from 'react';
-import { View, Text, Page, StyleSheet } from '@react-pdf/renderer';
+import { View, Text, Page, StyleSheet, Image } from '@react-pdf/renderer';
 import { Heading1, Heading2, Paragraph, Divider } from '../components/base';
 import type { PdfData } from '../types';
 import { defaultPdfStyles } from '../styles';
 import { explainPaymentChange } from '@/lib/heloc/life-cost-translator';
+
+const getPaymentShockChartUrl = (drawPayment: number, shockedPayment: number) => {
+  const chartConfig = {
+    type: 'line',
+    data: {
+      labels: ['Year 1', 'Year 5', 'Year 10 (Draw)', 'Year 11 (Shock)', 'Year 15'],
+      datasets: [{
+        label: 'Monthly Payment ($)',
+        data: [drawPayment, drawPayment, drawPayment, shockedPayment, shockedPayment],
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        borderWidth: 3,
+        fill: true,
+      }]
+    },
+    options: {
+      title: { display: true, text: 'The Year 11 Payment Shock Reality', fontSize: 16 },
+      scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+    }
+  };
+  return `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}&w=600&h=300`;
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -90,6 +112,12 @@ export const StressTest: React.FC<StressTestProps> = ({ data }) => {
           This analysis shows how your monthly payment would change if the Prime Rate increases.
           Assuming 50% utilization of your HELOC limit (${assumedBalance.toLocaleString()}).
         </Paragraph>
+
+        {/* Payment Shock Chart */}
+        <Image
+          src={getPaymentShockChartUrl(baseMonthlyPayment, scenario2Payment)}
+          style={{ width: '100%', height: 200, marginVertical: 15 }}
+        />
       </View>
 
       {/* Stress Test Table */}

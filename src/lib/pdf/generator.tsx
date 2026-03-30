@@ -5,6 +5,7 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 import type { PdfData } from './types';
+import { StressTest } from './sections/stress-test';
 
 const styles = StyleSheet.create({
   page: {
@@ -416,22 +417,7 @@ const HelocReportDocument: React.FC<{ data: PdfData }> = ({ data }) => {
       </Page>
 
       {/* Page 6: Stress Test */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>06. Stress Test: Preparing for Rate Hikes</Text>
-          <Text style={styles.text}>
-            {v3?.stressTest?.rateHikeImpact || 'If rates rise 2%, your monthly payment could increase significantly.'}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={{ fontWeight: 'bold' }}>Advisor Tip: </Text>
-            {v3?.stressTest?.advisorTip || 'Consider rate lock options or maintain cash reserves.'}
-          </Text>
-        </View>
-
-        <Text style={styles.footer}>
-          HELOC Financial Strategy Report | Page 6 | Confidential
-        </Text>
-      </Page>
+      <StressTest data={data} />
 
       {/* Page 7: Bank Readiness Checklist */}
       <Page size="A4" style={styles.page}>

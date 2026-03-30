@@ -76,9 +76,10 @@ export default function PdfReportCTA({
 
   // Step 1: Your Goal
   const [email, setEmail] = useState('');
-  const [amountNeeded, setAmountNeeded] = useState('');
+  const [amountNeeded, setAmountNeeded] = useState('50000');
   const [amountType, setAmountType] = useState<'custom' | 'max' | 'none'>('custom');
   const [scenario, setScenario] = useState<Scenario | ''>('');
+  const [isMaxBorrowing, setIsMaxBorrowing] = useState(false);
 
   // Step 1 conditional fields (Home Renovation)
   const [renovationDuration, setRenovationDuration] = useState('');
@@ -326,7 +327,7 @@ export default function PdfReportCTA({
           },
           calculatedData,
           // Step 1 data
-          amountNeeded: amountType === 'custom' ? parseFloat(amountNeeded) : amountType,
+          amountNeeded: amountType === 'max' ? maxHelocAmount : (amountType === 'custom' ? parseFloat(amountNeeded) : 0),
           scenario,
           renovationDuration: scenario === 'home_renovation' ? parseInt(renovationDuration) : undefined,
           renovationType: scenario === 'home_renovation' ? renovationType : undefined,
@@ -423,41 +424,10 @@ export default function PdfReportCTA({
                 />
               </div>
 
-              {/* Amount Needed */}
+              {/* Scenario - Moved to top */}
               <div>
                 <label className="block text-xs font-medium text-stone-700 mb-1">
-                  Amount Needed *
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-500">$</span>
-                  <input
-                    type="text"
-                    list="amount-options"
-                    placeholder="Enter amount or select"
-                    value={amountNeeded}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setAmountNeeded(value);
-                      // Check if it's a preset option
-                      if (value === 'As much as possible' || value === 'No specific target') {
-                        setAmountType(value === 'As much as possible' ? 'max' : 'none');
-                      } else {
-                        setAmountType('custom');
-                      }
-                    }}
-                    className="w-full px-3 py-2 pl-7 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                  <datalist id="amount-options">
-                    <option value="As much as possible" />
-                    <option value="No specific target" />
-                  </datalist>
-                </div>
-              </div>
-
-              {/* Scenario */}
-              <div>
-                <label className="block text-xs font-medium text-stone-700 mb-1">
-                  Scenario *
+                  What is your main goal? *
                 </label>
                 <select
                   value={scenario}
@@ -471,6 +441,42 @@ export default function PdfReportCTA({
                   <option value="contingent_liquidity">Contingent Liquidity</option>
                   <option value="investment">Investment/Other</option>
                 </select>
+              </div>
+
+              {/* Amount Needed - Using SliderWithValue */}
+              <div className={isMaxBorrowing ? 'opacity-50 pointer-events-none' : ''}>
+                <SliderWithValue
+                  label="Amount Needed"
+                  value={isMaxBorrowing ? 0 : (parseFloat(amountNeeded) || 0)}
+                  min={0}
+                  max={1000000}
+                  step={5000}
+                  onChange={(val) => setAmountNeeded(val.toString())}
+                  formatValue={(val) => `$${val.toLocaleString()}`}
+                />
+              </div>
+
+              {/* Max Borrowing Power Checkbox */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="maxBorrowing"
+                  checked={isMaxBorrowing}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setIsMaxBorrowing(checked);
+                    if (checked) {
+                      setAmountType('max');
+                    } else {
+                      setAmountNeeded('50000');
+                      setAmountType('custom');
+                    }
+                  }}
+                  className="w-4 h-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500"
+                />
+                <label htmlFor="maxBorrowing" className="text-sm text-stone-700 cursor-pointer">
+                  Calculate my Maximum Borrowing Power
+                </label>
               </div>
 
               {error && <p className="text-red-600 text-xs">{error}</p>}
