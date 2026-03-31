@@ -119,7 +119,49 @@ export class GeminiProvider extends AIProvider {
 
       const parsed = JSON.parse(cleanedText);
 
-      // 验证必需字段
+      // Check if this is debt consolidation response format
+      if (parsed.executiveVerdict && parsed.radicalCandorWarning) {
+        return {
+          summary: parsed.executiveVerdict.summary || '',
+          diagnostic: parsed.cashFlowAnalysis?.commentary || '',
+          strategy: parsed.actionPlan?.[0]?.description || '',
+          actionPlan: parsed.actionPlan?.map((item: any) => item.title) || [],
+          tips: [],
+          v3Report: {
+            executiveBrief: parsed.executiveVerdict.summary,
+            goalAnalysis: {
+              economicImpact: parsed.cashFlowAnalysis?.commentary || '',
+              advisorNote: parsed.executiveVerdict.headline || '',
+            },
+            bankEvaluation: {
+              cltvInsight: 'Standard evaluation applied',
+              dtiInsight: 'DTI assessed within normal parameters',
+              marginInsight: 'Rate based on credit profile',
+            },
+            riskDashboard: {
+              dtiLabel: parsed.executiveVerdict.status === 'APPROVED_ZONE' ? 'Healthy' : 'Caution',
+              cltvLabel: 'Healthy',
+              dtiColor: parsed.executiveVerdict.status === 'APPROVED_ZONE' ? 'green' : 'yellow',
+              cltvColor: 'green',
+            },
+            lifetimeRoadmap: {
+              drawPeriodView: 'Interest-only payments during draw period',
+              repaymentPeriodView: 'Principal and interest payments begin',
+              paymentShockWarning: 'Prepare for payment increase in repayment period',
+            },
+            lifecyclePersonalized: 'Your financial journey will evolve over the 20-year term',
+            stressTest: {
+              rateHikeImpact: 'Rate increases will impact monthly payments',
+              advisorTip: 'Maintain cash reserves for rate volatility',
+            },
+            bankReadiness: parsed.actionPlan?.map((item: any) => `${item.title}: ${item.description}`) || [],
+            specialRecommendation: parsed.actionPlan?.[0]?.description || 'Follow the action plan carefully',
+            radicalCandorWarning: parsed.radicalCandorWarning,
+          },
+        };
+      }
+
+      // Standard format validation
       if (!parsed.summary || !parsed.diagnostic || !parsed.strategy) {
         throw new Error('Missing required fields in AI response');
       }

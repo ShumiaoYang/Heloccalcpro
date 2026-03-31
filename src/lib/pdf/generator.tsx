@@ -6,6 +6,7 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 import type { PdfData } from './types';
 import { StressTest } from './sections/stress-test';
+import { ExecutiveSummary } from './sections/executive-summary';
 
 const styles = StyleSheet.create({
   page: {
@@ -213,6 +214,30 @@ const HelocReportDocument: React.FC<{ data: PdfData }> = ({ data }) => {
           <Text style={styles.subtitle}>Date: {new Date().toLocaleDateString('en-US')}</Text>
           <Text style={styles.subtitle}>Primary Goal: {userInputs.scenario || 'Financial Planning'}</Text>
         </View>
+
+        {/* Max Borrowing Power Warning */}
+        {(!userInputs.amountNeeded || userInputs.amountNeeded === 0) && userInputs.scenario === 'debt_consolidation' && (
+          <View style={{ backgroundColor: '#fee2e2', borderLeft: '4pt solid #dc2626', padding: 15, marginBottom: 20 }}>
+            <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#991b1b', marginBottom: 8 }}>
+              ⚠️ THE MAXIMUM LIMIT TRAP
+            </Text>
+            <Text style={{ fontSize: 10, color: '#7f1d1d', lineHeight: 1.5 }}>
+              You requested your maximum borrowing power. Remember: Just because the bank offers you this amount, does NOT mean you should take it all. Only draw exactly what you need to pay off existing debt.
+            </Text>
+          </View>
+        )}
+
+        {/* Radical Candor Warning from AI */}
+        {v3?.radicalCandorWarning && (
+          <View style={{ backgroundColor: '#fee2e2', borderLeft: '4pt solid #dc2626', padding: 15, marginBottom: 20 }}>
+            <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#991b1b', marginBottom: 8 }}>
+              {v3.radicalCandorWarning.title}
+            </Text>
+            <Text style={{ fontSize: 10, color: '#7f1d1d', lineHeight: 1.5 }}>
+              {v3.radicalCandorWarning.message}
+            </Text>
+          </View>
+        )}
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>01. Executive Brief: The Advisor&apos;s View</Text>

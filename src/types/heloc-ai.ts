@@ -130,6 +130,10 @@ export interface AiAnalysis {
     };
     bankReadiness: string[];
     specialRecommendation: string;
+    radicalCandorWarning?: {
+      title: string;
+      message: string;
+    };
   };
 
   /** Executive Summary (向后兼容) */

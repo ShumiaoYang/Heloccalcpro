@@ -6,7 +6,7 @@
 import type { ScenarioType } from '@/types/heloc-ai';
 import type { PromptContext, PromptTemplate } from './base';
 import { getSystemRolePrompt, getOutputSchema } from './base';
-import { getDebtConsolidationPrompt } from './debt-consolidation';
+import { generateDebtConsolidationPrompt } from './debt-consolidation';
 import { getHomeRenovationPrompt } from './home-renovation';
 import { getCreditOptimizationPrompt } from './credit-optimization';
 import { getContingentLiquidityPrompt } from './contingent-liquidity';
@@ -26,7 +26,8 @@ export function generatePrompt(
 
   switch (scenario) {
     case 'debt_consolidation':
-      userMessage = getDebtConsolidationPrompt(context);
+      // Note: debt_consolidation now handled in getUserPromptV3
+      userMessage = '';
       break;
     case 'home_renovation':
       userMessage = getHomeRenovationPrompt(context);
@@ -55,7 +56,7 @@ export function generatePrompt(
  * 导出所有场景的Prompt生成函数
  */
 export {
-  getDebtConsolidationPrompt,
+  generateDebtConsolidationPrompt,
   getHomeRenovationPrompt,
   getCreditOptimizationPrompt,
   getContingentLiquidityPrompt,

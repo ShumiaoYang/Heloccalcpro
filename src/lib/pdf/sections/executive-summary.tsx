@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Page, StyleSheet } from '@react-pdf/renderer';
+import { View, Page, StyleSheet, Text } from '@react-pdf/renderer';
 import { Heading1, Heading2, Paragraph, Divider } from '../components/base';
 import { MetricCard } from '../components/metric-card';
 import { Badge } from '../components/badge';
@@ -28,6 +28,23 @@ const styles = StyleSheet.create({
   metricColumn: {
     flex: 1,
   },
+  warningBox: {
+    backgroundColor: '#fee2e2',
+    borderLeft: '4pt solid #dc2626',
+    padding: 15,
+    marginBottom: 20,
+  },
+  warningTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#991b1b',
+    marginBottom: 8,
+  },
+  warningText: {
+    fontSize: 10,
+    color: '#7f1d1d',
+    lineHeight: 1.5,
+  },
 });
 
 interface ExecutiveSummaryProps {
@@ -35,16 +52,39 @@ interface ExecutiveSummaryProps {
 }
 
 export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ data }) => {
-  const { calculatedData, aiAnalysis } = data;
+  const { calculatedData, aiAnalysis, userInputs } = data;
   const { coreMetrics } = calculatedData;
 
   // Calculate confidence score
   const confidenceScore = calculateConfidenceScore(coreMetrics.cltv, coreMetrics.dti);
 
+  // Check if user requested max borrowing power
+  const isMaxBorrowing = !userInputs.amountNeeded || userInputs.amountNeeded === 0;
+  const isDebtConsolidation = userInputs.scenario === 'debt_consolidation';
+
   return (
     <Page size="A4" style={styles.page}>
       <Heading1>Executive Summary</Heading1>
       <Divider />
+
+      {/* Max Borrowing Power Warning */}
+      {isMaxBorrowing && isDebtConsolidation && (
+        <View style={styles.warningBox}>
+          <Text style={styles.warningTitle}>⚠️ THE MAXIMUM LIMIT TRAP</Text>
+          <Text style={styles.warningText}>
+            You requested your maximum borrowing power. Remember: Just because the bank offers you this amount,
+            does NOT mean you should take it all. Only draw exactly what you need to pay off existing debt.
+          </Text>
+        </View>
+      )}
+
+      {/* Radical Candor Warning from AI */}
+      {aiAnalysis.v3Report?.radicalCandorWarning && (
+        <View style={styles.warningBox}>
+          <Text style={styles.warningTitle}>{aiAnalysis.v3Report.radicalCandorWarning.title}</Text>
+          <Text style={styles.warningText}>{aiAnalysis.v3Report.radicalCandorWarning.message}</Text>
+        </View>
+      )}
 
       {/* Confidence Badge */}
       <Badge

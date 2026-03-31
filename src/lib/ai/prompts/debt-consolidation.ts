@@ -1,52 +1,69 @@
-/**
- * Debt Consolidation Scenario Prompt
- * 债务整合场景Prompt模板
- */
-
-import type { PromptContext } from './base';
-import type { DebtConsolidationMetrics } from '@/types/heloc-ai';
-
-export function getDebtConsolidationPrompt(context: PromptContext): string {
-  const { calculatedData, userInputs } = context;
-  const metrics = calculatedData.scenarioMetrics as DebtConsolidationMetrics;
-
-  return `It's exciting that you're considering using your HELOC to consolidate high-interest debt. Let's analyze your situation together.
-
-## Your Financial Snapshot
-- Home Value: $${userInputs.homeValue?.toLocaleString()}
-- Mortgage Balance: $${userInputs.mortgageBalance?.toLocaleString()}
-- Your HELOC Limit: $${calculatedData.coreMetrics.maxLimit.toLocaleString()}
-- Your HELOC Rate: ${calculatedData.coreMetrics.helocRate}%
-- Your CLTV: ${calculatedData.coreMetrics.cltv}%
-- Your DTI: ${calculatedData.coreMetrics.dti}%
-
-## Your Debt Consolidation Opportunity
-- Credit Card Balance: $${userInputs.creditCardBalance?.toLocaleString()}
-- Estimated Interest You Could Save: $${metrics?.interestSaved?.toLocaleString() || 'N/A'}
-- Time You Could Save on Payoff: ${metrics?.payoffMonthsReduced || 'N/A'} months
-
-### Calculation Assumptions
-- Average credit card rate: 18-24% (based on credit score)
-- HELOC rate advantage: ${calculatedData.coreMetrics.helocRate}% vs. credit card rates
-- Payoff calculation assumes consistent monthly payments
-
-Provide your analysis covering:
-1. **Interest Rate Arbitrage**: Explain the savings in terms they can feel (e.g., "That's like getting a raise of $X per month")
-2. **Debt Freedom Timeline**: How much faster can they become debt-free?
-3. **Risk Management**: What happens if they continue using credit cards after consolidation?
-4. **Discipline Strategy**: How to ensure this is a one-time reset, not a cycle
-5. **Critical Warnings**: Be honest about the risks of converting unsecured to secured debt
-
-Respond with ONLY a valid JSON object in this exact format:
-{
-  "summary": "2-3 sentence executive summary using 'You/Your' (acknowledge their goal with empathy)",
-  "diagnostic": "Risk diagnostic explaining CLTV and DTI in context of their security",
-  "strategy": "Scenario-specific strategy that feels like a roadmap, not orders",
-  "actionPlan": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"],
-  "tips": [
-    {"type": "info", "content": "Pro tip with explanation"},
-    {"type": "danger", "content": "Critical warning with 'why it matters'"}
-  ],
-  "stressTestCommentary": "Optional commentary on stress test results"
-}`;
+export interface DebtConsolidationReportData {
+  executiveVerdict: {
+    status: 'APPROVED_ZONE' | 'CAUTION_ZONE' | 'DANGER_ZONE';
+    headline: string;
+    summary: string;
+  };
+  cashFlowAnalysis: { freedUpCashFlow: number; commentary: string; };
+  radicalCandorWarning: { title: string; message: string; };
+  actionPlan: { title: string; description: string; }[];
 }
+
+export const generateDebtConsolidationPrompt = (
+  userData: {
+    homeValue: number;
+    maxBorrowingPower: number;
+    requestedAmount: number;
+    isMaxBorrowing: boolean;
+    currentDti: number;
+    newDti: number;
+    estimatedHelocRate: number;
+    currentMonthlyDebt: number;
+    newHelocMonthlyPayment: number;
+  }
+) => {
+  const maxBorrowingContext = userData.isMaxBorrowing
+    ? `CRITICAL CONTEXT: The user did NOT ask for a specific amount. They checked "Calculate My Max Borrowing Power". You must emphasize that just because they are approved for ${userData.requestedAmount}, they should ONLY draw exactly what they need to pay off existing debt. Maxing out this entire line will destroy their financial life.`
+    : `CONTEXT: The user requested a specific amount of ${userData.requestedAmount} to consolidate their debt.`;
+
+  return `
+You are a 15-year veteran US Senior Credit Underwriter. Act as a strict Fiduciary.
+RULE 1: NEVER use sales words like "Congratulations", "Exciting".
+RULE 2: ONLY discuss cold math and severe risks.
+RULE 3: Output strictly in the requested JSON schema. No markdown outside JSON.
+
+Data:
+- Home Value: ${userData.homeValue}
+- Max Limit: ${userData.maxBorrowingPower}
+- Requested: ${userData.requestedAmount}
+- Current DTI: ${userData.currentDti}%
+- New DTI: ${userData.newDti}%
+- HELOC Rate: ${userData.estimatedHelocRate}%
+- Current non-mortgage monthly debts: ${userData.currentMonthlyDebt}
+- New HELOC interest-only payment: ${userData.newHelocMonthlyPayment}
+
+${maxBorrowingContext}
+
+OUTPUT JSON SCHEMA:
+{
+  "executiveVerdict": {
+    "status": "APPROVED_ZONE" | "CAUTION_ZONE" | "DANGER_ZONE",
+    "headline": "[5-10 word sharp verdict]",
+    "summary": "[2-3 sentences. Acknowledge relief, highlight DTI. Warn if MAX requested.]"
+  },
+  "cashFlowAnalysis": {
+    "freedUpCashFlow": [Number],
+    "commentary": "[Explain savings instantly, remind them debt is just moved.]"
+  },
+  "radicalCandorWarning": {
+    "title": "[Punchy warning title]",
+    "message": "[Harsh warning. Explicitly tell them to 'cut up the credit cards'.]"
+  },
+  "actionPlan": [
+    { "title": "Demand 'Direct Pay'", "description": "[Explain why]" },
+    { "title": "...", "description": "..." },
+    { "title": "...", "description": "..." }
+  ]
+}
+`;
+};

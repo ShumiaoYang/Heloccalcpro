@@ -145,6 +145,26 @@ export function getUserPromptV3(context: PromptContext): string {
   const { calculatedData, userInputs } = context;
   const { coreMetrics, scenarioMetrics } = calculatedData;
 
+  // Check if debt consolidation scenario with special handling
+  if (userInputs.scenario === 'debt_consolidation') {
+    const { generateDebtConsolidationPrompt } = require('./debt-consolidation');
+    const isMaxBorrowing = !userInputs.amountNeeded || userInputs.amountNeeded === 0;
+    const maxBorrowingPower = coreMetrics.maxLimit;
+    const requestedAmount = isMaxBorrowing ? maxBorrowingPower : userInputs.amountNeeded;
+
+    return generateDebtConsolidationPrompt({
+      homeValue: userInputs.homeValue,
+      maxBorrowingPower,
+      requestedAmount,
+      isMaxBorrowing,
+      currentDti: coreMetrics.dti,
+      newDti: coreMetrics.dti,
+      estimatedHelocRate: coreMetrics.helocRate,
+      currentMonthlyDebt: userInputs.monthlyDebt || 0,
+      newHelocMonthlyPayment: Math.round(requestedAmount * coreMetrics.helocRate / 100 / 12),
+    });
+  }
+
   return `Generate a HELOC Analysis Report using the following data:
 
 ## User Profile
