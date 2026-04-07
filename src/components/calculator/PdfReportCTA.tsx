@@ -11,11 +11,12 @@ import {
   calculateInterestOnlyPayment,
   getMarginByCredit
 } from '@/lib/heloc/core-metrics';
+import { calculateApprovedCreditLimit } from '@/lib/heloc/credit-calculator';
 import {
   calculateDebtConsolidation,
   calculateHomeRenovation,
   calculateCreditOptimization,
-  calculateContingentLiquidity,
+  calculateEmergencyFund,
   calculateInvestment,
 } from '@/lib/heloc/scenario-calculator';
 import type { ScenarioType } from '@/types/heloc-ai';
@@ -51,7 +52,7 @@ type Scenario =
   | 'home_renovation'
   | 'debt_consolidation'
   | 'credit_optimization'
-  | 'contingent_liquidity'
+  | 'emergency_fund'
   | 'investment';
 
 export default function PdfReportCTA({
@@ -76,8 +77,7 @@ export default function PdfReportCTA({
 
   // Step 1: Your Goal
   const [email, setEmail] = useState('');
-  const [amountNeeded, setAmountNeeded] = useState('');
-  const [amountType, setAmountType] = useState<'custom' | 'max' | 'none'>('custom');
+  const [amountNeeded, setAmountNeeded] = useState('50000');
   const [scenario, setScenario] = useState<Scenario | ''>('');
 
   // Step 1 conditional fields (Home Renovation)
@@ -163,13 +163,10 @@ export default function PdfReportCTA({
       setError('Please enter the amount needed');
       return false;
     }
-    // Validate custom amount must be > 0
-    if (amountType === 'custom') {
-      const amount = parseFloat(amountNeeded);
-      if (isNaN(amount) || amount <= 0) {
-        setError('Amount must be greater than 0');
-        return false;
-      }
+    const amount = parseFloat(amountNeeded);
+    if (isNaN(amount) || amount <= 0) {
+      setError('Amount must be greater than 0');
+      return false;
     }
     if (!scenario) {
       setError('Please select a usage scenario');
@@ -215,15 +212,7 @@ export default function PdfReportCTA({
     setError('');
 
     try {
-      // Calculate HELOC amount based on amountType
-      let helocAmount = 0;
-      if (amountType === 'custom') {
-        helocAmount = parseFloat(amountNeeded) || 0;
-      } else if (amountType === 'max') {
-        helocAmount = maxHelocAmount;
-      } else if (amountType === 'none') {
-        helocAmount = maxHelocAmount * 0.5;
-      }
+      const helocAmount = parseFloat(amountNeeded) || 0;
 
       // Use page-level parameters for rate calculation
       const helocRate = calculateHelocRate(propPrimeRate, propMargin);
@@ -233,7 +222,18 @@ export default function PdfReportCTA({
       const cltv = calculateCLTV(homeValue, mortgageBalance, helocAmount);
       const drawPeriodPayment = calculateInterestOnlyPayment(helocAmount, helocRate);
       const dti = calculateDTI(annualIncome, monthlyDebt, drawPeriodPayment);
-      const maxLimit = maxHelocAmount;
+      const recalculatedApproval = calculateApprovedCreditLimit({
+        homeValue,
+        mortgageBalance,
+        creditScore,
+        propertyType,
+        occupancyType: occupancy,
+        annualIncome,
+        existingMonthlyDebt: monthlyDebt,
+      });
+      const maxLimit = Number.isFinite(recalculatedApproval.approvedCreditLimit)
+        ? recalculatedApproval.approvedCreditLimit
+        : maxHelocAmount;
 
       // Calculate monthly savings based on scenario
       const monthlySavings = calculateMonthlySavingsByScenario(scenario as ScenarioType, {
@@ -279,8 +279,8 @@ export default function PdfReportCTA({
             creditCardLimit: creditCardLimit || 0,
           });
           break;
-        case 'contingent_liquidity':
-          scenarioMetrics = calculateContingentLiquidity({
+        case 'emergency_fund':
+          scenarioMetrics = calculateEmergencyFund({
             ...baseInput,
             monthlyExpenses: monthlyDebt, // Use monthlyDebt as proxy for expenses
           });
@@ -326,7 +326,7 @@ export default function PdfReportCTA({
           },
           calculatedData,
           // Step 1 data
-          amountNeeded: amountType === 'custom' ? parseFloat(amountNeeded) : amountType,
+          amountNeeded: parseFloat(amountNeeded) || 0,
           scenario,
           renovationDuration: scenario === 'home_renovation' ? parseInt(renovationDuration) : undefined,
           renovationType: scenario === 'home_renovation' ? renovationType : undefined,
@@ -423,41 +423,10 @@ export default function PdfReportCTA({
                 />
               </div>
 
-              {/* Amount Needed */}
+              {/* Scenario - Moved to top */}
               <div>
                 <label className="block text-xs font-medium text-stone-700 mb-1">
-                  Amount Needed *
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-500">$</span>
-                  <input
-                    type="text"
-                    list="amount-options"
-                    placeholder="Enter amount or select"
-                    value={amountNeeded}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setAmountNeeded(value);
-                      // Check if it's a preset option
-                      if (value === 'As much as possible' || value === 'No specific target') {
-                        setAmountType(value === 'As much as possible' ? 'max' : 'none');
-                      } else {
-                        setAmountType('custom');
-                      }
-                    }}
-                    className="w-full px-3 py-2 pl-7 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                  <datalist id="amount-options">
-                    <option value="As much as possible" />
-                    <option value="No specific target" />
-                  </datalist>
-                </div>
-              </div>
-
-              {/* Scenario */}
-              <div>
-                <label className="block text-xs font-medium text-stone-700 mb-1">
-                  Scenario *
+                  What is your main goal? *
                 </label>
                 <select
                   value={scenario}
@@ -468,10 +437,21 @@ export default function PdfReportCTA({
                   <option value="home_renovation">Home Renovation</option>
                   <option value="debt_consolidation">Debt Consolidation</option>
                   <option value="credit_optimization">Credit/Asset Optimization</option>
-                  <option value="contingent_liquidity">Contingent Liquidity</option>
+                  <option value="emergency_fund">Emergency Fund</option>
                   <option value="investment">Investment/Other</option>
                 </select>
               </div>
+
+              {/* Amount Needed - Using SliderWithValue */}
+              <SliderWithValue
+                label="Amount Needed"
+                value={parseFloat(amountNeeded) || 0}
+                min={0}
+                max={1000000}
+                step={5000}
+                onChange={(val) => setAmountNeeded(val.toString())}
+                formatValue={(val) => `$${val.toLocaleString()}`}
+              />
 
               {error && <p className="text-red-600 text-xs">{error}</p>}
 

@@ -109,8 +109,13 @@ export class GeminiProvider extends AIProvider {
    */
   private parseResponse(responseText: string): AiAnalysis {
     try {
-      // Gemini可能返回带有markdown代码块的JSON，需要清理
+      // Clean response
       let cleanedText = responseText.trim();
+
+      // Remove <think> tags if present
+      cleanedText = cleanedText.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+
+      // Remove markdown code blocks
       if (cleanedText.startsWith('```json')) {
         cleanedText = cleanedText.replace(/^```json\n/, '').replace(/\n```$/, '');
       } else if (cleanedText.startsWith('```')) {
@@ -119,7 +124,52 @@ export class GeminiProvider extends AIProvider {
 
       const parsed = JSON.parse(cleanedText);
 
-      // 验证必需字段
+      // Check if this is debt consolidation response format
+      if (parsed.executiveVerdict && parsed.radicalCandorWarning) {
+        return {
+          executiveVerdict: parsed.executiveVerdict,
+          cashFlowAnalysis: parsed.cashFlowAnalysis,
+          radicalCandorWarning: parsed.radicalCandorWarning,
+          summary: parsed.executiveVerdict.summary || '',
+          diagnostic: parsed.cashFlowAnalysis?.commentary || '',
+          strategy: parsed.actionPlan?.[0]?.description || '',
+          actionPlan: parsed.actionPlan?.map((item: any) => item.title) || [],
+          tips: [],
+          v3Report: {
+            executiveBrief: parsed.executiveVerdict.summary,
+            goalAnalysis: {
+              economicImpact: parsed.cashFlowAnalysis?.commentary || '',
+              advisorNote: parsed.executiveVerdict.headline || '',
+            },
+            bankEvaluation: {
+              cltvInsight: 'Standard evaluation applied',
+              dtiInsight: 'DTI assessed within normal parameters',
+              marginInsight: 'Rate based on credit profile',
+            },
+            riskDashboard: {
+              dtiLabel: parsed.executiveVerdict.status === 'APPROVED_ZONE' ? 'Healthy' : 'Caution',
+              cltvLabel: 'Healthy',
+              dtiColor: parsed.executiveVerdict.status === 'APPROVED_ZONE' ? 'green' : 'yellow',
+              cltvColor: 'green',
+            },
+            lifetimeRoadmap: {
+              drawPeriodView: 'Interest-only payments during draw period',
+              repaymentPeriodView: 'Principal and interest payments begin',
+              paymentShockWarning: 'Prepare for payment increase in repayment period',
+            },
+            lifecyclePersonalized: 'Your financial journey will evolve over the 20-year term',
+            stressTest: {
+              rateHikeImpact: 'Rate increases will impact monthly payments',
+              advisorTip: 'Maintain cash reserves for rate volatility',
+            },
+            bankReadiness: parsed.actionPlan?.map((item: any) => `${item.title}: ${item.description}`) || [],
+            specialRecommendation: parsed.actionPlan?.[0]?.description || 'Follow the action plan carefully',
+            radicalCandorWarning: parsed.radicalCandorWarning,
+          },
+        };
+      }
+
+      // Standard format validation
       if (!parsed.summary || !parsed.diagnostic || !parsed.strategy) {
         throw new Error('Missing required fields in AI response');
       }
@@ -139,6 +189,11 @@ export class GeminiProvider extends AIProvider {
         actionPlan: parsed.actionPlan,
         tips: parsed.tips,
         stressTestCommentary: parsed.stressTestCommentary,
+        homeRenovationV2: parsed.homeRenovationV2,
+        debtConsolidationV3: parsed.debtConsolidationV3,
+        creditOptimizationV3: parsed.creditOptimizationV3,
+        emergencyFundV3: parsed.emergencyFundV3,
+        investmentV3: parsed.investmentV3,
       };
     } catch (error) {
       throw new Error(`Failed to parse AI response: ${error instanceof Error ? error.message : 'Unknown error'}`);

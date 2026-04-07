@@ -5,19 +5,26 @@ import HelocCreditCalculator from './heloc-credit-calculator';
 import HelocPaymentCalculator from './heloc-payment-calculator';
 import HelocFooter from './HelocFooter';
 import PdfReportCTA from './PdfReportCTA';
-import { calculateCredit } from '@/lib/heloc/credit-calculator';
+import { calculateApprovedCreditLimit } from '@/lib/heloc/credit-calculator';
 import { PropertyType, OccupancyType } from '@/lib/heloc/types';
 
 type TabType = 'credit' | 'payment';
 
-export default function HelocTabbedCalculator() {
+type HelocTabbedCalculatorProps = {
+  livePrimeRate: number;
+  baseMargin: number;
+};
+
+export default function HelocTabbedCalculator({
+  livePrimeRate,
+  baseMargin,
+}: HelocTabbedCalculatorProps) {
   const [activeTab, setActiveTab] = useState<TabType>('credit');
 
   // Credit Line parameters (page-level state)
   const [homeValue, setHomeValue] = useState(600000);
   const [mortgageBalance, setMortgageBalance] = useState(300000);
   const [creditScore, setCreditScore] = useState(740);
-  const [desiredLTV, setDesiredLTV] = useState(80);
   const [utilizationRatio, setUtilizationRatio] = useState(45);
 
   // v3.0 新增字段
@@ -27,8 +34,8 @@ export default function HelocTabbedCalculator() {
   const [otherMonthlyDebt, setOtherMonthlyDebt] = useState(0);
 
   // Payment Plan parameters (page-level state)
-  const [primeRate, setPrimeRate] = useState(7.5);
-  const [margin, setMargin] = useState(1.5);
+  const [primeRate, setPrimeRate] = useState(livePrimeRate);
+  const [margin, setMargin] = useState(baseMargin);
   const [annualIncome, setAnnualIncome] = useState(120000);
   const [monthlyDebt, setMonthlyDebt] = useState(2000);
 
@@ -39,7 +46,6 @@ export default function HelocTabbedCalculator() {
     homeValue: number;
     mortgageBalance: number;
     creditScore: number;
-    desiredLTV: number;
     utilizationRatio: number;
     propertyType: PropertyType;
     occupancyType: OccupancyType;
@@ -50,7 +56,6 @@ export default function HelocTabbedCalculator() {
     setHomeValue(values.homeValue);
     setMortgageBalance(values.mortgageBalance);
     setCreditScore(values.creditScore);
-    setDesiredLTV(values.desiredLTV);
     setUtilizationRatio(values.utilizationRatio);
     setPropertyType(values.propertyType);
     setOccupancyType(values.occupancyType);
@@ -77,21 +82,25 @@ export default function HelocTabbedCalculator() {
       return null;
     }
     try {
-      return calculateCredit({
+      return calculateApprovedCreditLimit({
         homeValue,
         mortgageBalance,
         creditScore,
-        desiredLTV,
+        propertyType,
+        occupancyType,
+        annualIncome,
+        existingMonthlyDebt: subjectHousingPayment + otherMonthlyDebt,
       });
     } catch (error) {
       return null;
     }
-  }, [homeValue, mortgageBalance, creditScore, desiredLTV]);
+  }, [homeValue, mortgageBalance, creditScore, propertyType, occupancyType, annualIncome, subjectHousingPayment, otherMonthlyDebt]);
 
   // Calculate available amount
   const availableAmount = useMemo(() => {
     if (!creditResult) return 0;
-    return Math.round(creditResult.maxHelocAmount * (utilizationRatio / 100) * 100) / 100;
+    const limit = creditResult.approvedCreditLimit;
+    return Math.round(limit * (utilizationRatio / 100) * 100) / 100;
   }, [creditResult, utilizationRatio]);
 
   const handleGetReportClick = useCallback(() => {
@@ -134,7 +143,6 @@ export default function HelocTabbedCalculator() {
                   initialHomeValue={homeValue}
                   initialMortgageBalance={mortgageBalance}
                   initialCreditScore={creditScore}
-                  initialDesiredLTV={desiredLTV}
                   initialUtilizationRatio={utilizationRatio}
                   onValuesChange={handleCreditValuesChange}
                 />
@@ -169,7 +177,7 @@ export default function HelocTabbedCalculator() {
         primeRate={primeRate}
         margin={margin}
         availableAmount={availableAmount}
-        maxHelocAmount={creditResult?.maxHelocAmount || 0}
+        maxHelocAmount={creditResult?.approvedCreditLimit || 0}
         propertyType={propertyType}
         occupancyType={occupancyType}
         subjectHousingPayment={subjectHousingPayment}

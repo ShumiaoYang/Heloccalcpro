@@ -27,6 +27,7 @@ const FooterSection = dynamic(
 import { getSiteContent } from '@/lib/content';
 import { getNavigation } from '@/lib/navigation';
 import { getSeoMetadata } from '@/lib/seo';
+import { getLivePrimeRate, getBaseMargin } from '@/lib/heloc/rate-service';
 import {
   getAuthorSchema,
   getOrganizationSchema,
@@ -51,6 +52,8 @@ export default async function LocaleHomePage({ params }: PageProps) {
   const { locale } = params;
   const content = getSiteContent(locale);
   const navigation = getNavigation(locale);
+  const livePrimeRate = await getLivePrimeRate();
+  const baseMargin = getBaseMargin();
 
   // Generate structured data schemas
   const authorSchema = getAuthorSchema();
@@ -91,7 +94,12 @@ export default async function LocaleHomePage({ params }: PageProps) {
         locale={locale}
       >
         <HeroSection content={content} locale={locale} />
-        <ToolSection content={content} locale={locale} />
+        <ToolSection
+          content={content}
+          locale={locale}
+          livePrimeRate={livePrimeRate}
+          baseMargin={baseMargin}
+        />
         <SmartWaysSection content={content} locale={locale} />
         <ConcernsHelpSection content={content} locale={locale} />
         <FeaturesSection content={content} locale={locale} />

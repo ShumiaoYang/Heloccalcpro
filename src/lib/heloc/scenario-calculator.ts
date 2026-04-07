@@ -8,7 +8,7 @@ import type {
   DebtConsolidationMetrics,
   HomeRenovationMetrics,
   CreditOptimizationMetrics,
-  ContingentLiquidityMetrics,
+  EmergencyFundMetrics,
   InvestmentMetrics,
 } from '@/types/heloc-ai';
 
@@ -45,7 +45,7 @@ export interface CreditOptimizationInput extends BaseScenarioInput {
   creditCardLimit: number;
 }
 
-export interface ContingentLiquidityInput extends BaseScenarioInput {
+export interface EmergencyFundInput extends BaseScenarioInput {
   monthlyExpenses: number;
 }
 
@@ -180,13 +180,13 @@ export function calculateCreditOptimization(
 }
 
 /**
- * 应急流动性场景计算
+ * 应急基金场景计算
  * 分析HELOC作为应急资金的覆盖能力
  * 注意：HELOC额度可能被冻结/缩减，不应作为唯一应急资金来源
  */
-export function calculateContingentLiquidity(
-  input: ContingentLiquidityInput
-): ContingentLiquidityMetrics {
+export function calculateEmergencyFund(
+  input: EmergencyFundInput
+): EmergencyFundMetrics {
   // HELOC可用额度
   const availableLiquidity = input.helocLimit;
 
@@ -218,4 +218,3 @@ export function calculateInvestment(
     equityRiskRatio: Math.round(equityRiskRatio * 10) / 10, // 保留1位小数
   };
 }
-

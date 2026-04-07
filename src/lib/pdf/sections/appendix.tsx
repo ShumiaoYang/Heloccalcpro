@@ -5,70 +5,69 @@
 
 import React from 'react';
 import { View, Text, Page, StyleSheet } from '@react-pdf/renderer';
-import { Heading1, Heading2, Paragraph, Divider } from '../components/base';
+import { Heading1, Heading2, Divider } from '../components/base';
 import type { PdfData } from '../types';
 import { defaultPdfStyles } from '../styles';
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 32,
     fontFamily: defaultPdfStyles.fonts.body,
   },
   section: {
-    marginBottom: defaultPdfStyles.spacing.lg,
+    marginBottom: defaultPdfStyles.spacing.md,
   },
   paramRow: {
     flexDirection: 'row',
-    paddingVertical: 6,
+    paddingVertical: 4,
     borderBottomWidth: 0.5,
     borderBottomColor: defaultPdfStyles.colors.border,
   },
   paramLabel: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 9,
     color: defaultPdfStyles.colors.textSecondary,
   },
   paramValue: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 'bold',
   },
   assumptionItem: {
-    marginBottom: defaultPdfStyles.spacing.sm,
+    marginBottom: 6,
+  },
+  assumptionText: {
+    fontSize: 9,
+    fontFamily: defaultPdfStyles.fonts.body,
+    color: defaultPdfStyles.colors.text,
+    lineHeight: 1.35,
   },
   disclaimerSection: {
-    marginTop: defaultPdfStyles.spacing.xl,
-    paddingTop: defaultPdfStyles.spacing.lg,
+    marginTop: defaultPdfStyles.spacing.md,
+    paddingTop: defaultPdfStyles.spacing.md,
     borderTop: `2px solid ${defaultPdfStyles.colors.border}`,
   },
   warningBox: {
-    padding: defaultPdfStyles.spacing.sm,
-    marginBottom: defaultPdfStyles.spacing.md,
+    padding: 8,
+    marginBottom: 8,
     borderWidth: 1.5,
     borderRadius: 4,
     borderColor: defaultPdfStyles.colors.warning,
     backgroundColor: '#fff7ed',
   },
   warningText: {
-    fontSize: 9,
+    fontSize: 8,
     fontFamily: defaultPdfStyles.fonts.body,
     color: defaultPdfStyles.colors.text,
-    lineHeight: 1.4,
-  },
-  bulletPoint: {
-    fontSize: 9,
-    fontFamily: defaultPdfStyles.fonts.body,
-    color: defaultPdfStyles.colors.text,
-    marginBottom: 4,
-    paddingLeft: defaultPdfStyles.spacing.sm,
+    lineHeight: 1.3,
   },
   footer: {
-    marginTop: defaultPdfStyles.spacing.md,
-    paddingTop: defaultPdfStyles.spacing.sm,
+    marginTop: 6,
+    paddingTop: 6,
     borderTop: `1px solid ${defaultPdfStyles.colors.border}`,
   },
   footerText: {
-    fontSize: 8,
+    fontSize: 7,
     fontFamily: defaultPdfStyles.fonts.body,
     color: defaultPdfStyles.colors.textLight,
     textAlign: 'center',
@@ -81,6 +80,22 @@ interface AppendixProps {
 
 export const Appendix: React.FC<AppendixProps> = ({ data }) => {
   const { userInputs, calculatedData, generatedAt } = data;
+  const isHomeRenovation = calculatedData.scenario === 'home_renovation';
+  const isInvestment = calculatedData.scenario === 'investment';
+  const hasCreditCardInputs = calculatedData.scenario === 'debt_consolidation'
+    || calculatedData.scenario === 'credit_optimization';
+
+  const formatCurrencySafe = (value: unknown): string => {
+    const num = typeof value === 'number' ? value : Number(value);
+    if (!Number.isFinite(num)) return 'N/A';
+    return `$${Math.round(num).toLocaleString('en-US')}`;
+  };
+
+  const formatTextSafe = (value: unknown, fallback = 'N/A'): string => {
+    if (typeof value === 'string' && value.trim()) return value;
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+    return fallback;
+  };
 
   // Helper function to get credit score assumption
   const getCreditCardRateAssumption = (creditScore: number) => {
@@ -101,37 +116,98 @@ export const Appendix: React.FC<AppendixProps> = ({ data }) => {
 
         <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Home Value (FMV)</Text>
-          <Text style={styles.paramValue}>${userInputs.homeValue?.toLocaleString()}</Text>
+          <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.homeValue)}</Text>
         </View>
 
         <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Mortgage Balance</Text>
-          <Text style={styles.paramValue}>${userInputs.mortgageBalance?.toLocaleString()}</Text>
+          <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.mortgageBalance)}</Text>
         </View>
 
         <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Annual Income</Text>
-          <Text style={styles.paramValue}>${userInputs.annualIncome?.toLocaleString()}</Text>
+          <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.annualIncome)}</Text>
+        </View>
+
+        <View style={styles.paramRow}>
+          <Text style={styles.paramLabel}>Housing Payment</Text>
+          <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.subjectHousingPayment)}</Text>
+        </View>
+
+        <View style={styles.paramRow}>
+          <Text style={styles.paramLabel}>Other Debt</Text>
+          <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.otherMonthlyDebt)}</Text>
         </View>
 
         <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Credit Score</Text>
-          <Text style={styles.paramValue}>{userInputs.creditScore}</Text>
+          <Text style={styles.paramValue}>{formatTextSafe(userInputs.creditScore)}</Text>
         </View>
 
         <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Property Type</Text>
-          <Text style={styles.paramValue}>{userInputs.propertyType || 'Single Family'}</Text>
+          <Text style={styles.paramValue}>{formatTextSafe(userInputs.propertyType, 'Single Family')}</Text>
         </View>
 
         <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Occupancy</Text>
-          <Text style={styles.paramValue}>{userInputs.occupancy || 'Primary Residence'}</Text>
+          <Text style={styles.paramValue}>{formatTextSafe(userInputs.occupancy, 'Primary Residence')}</Text>
         </View>
 
         <View style={styles.paramRow}>
+          <Text style={styles.paramLabel}>Amount Needed</Text>
+          <Text style={styles.paramValue}>
+            {formatCurrencySafe(userInputs.amountNeeded ?? userInputs.drawAmount)}
+          </Text>
+        </View>
+
+        {hasCreditCardInputs && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Credit Card Balance</Text>
+            <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.creditCardBalance)}</Text>
+          </View>
+        )}
+
+        {hasCreditCardInputs && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Credit Card Limit</Text>
+            <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.creditCardLimit)}</Text>
+          </View>
+        )}
+
+        {isHomeRenovation && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Renovation Type</Text>
+            <Text style={styles.paramValue}>{formatTextSafe(userInputs.renovationType)}</Text>
+          </View>
+        )}
+
+        {isHomeRenovation && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Renovation Duration</Text>
+            <Text style={styles.paramValue}>{formatTextSafe(userInputs.renovationDuration)} months</Text>
+          </View>
+        )}
+
+        {isInvestment && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Investment Type</Text>
+            <Text style={styles.paramValue}>{formatTextSafe(userInputs.investmentType)}</Text>
+          </View>
+        )}
+
+        {isInvestment && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Expected Return Rate (%)</Text>
+            <Text style={styles.paramValue}>
+              {formatTextSafe(userInputs.expectedReturnRate ?? userInputs.expectedReturn)}
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.paramRow}>
           <Text style={styles.paramLabel}>Scenario</Text>
-          <Text style={styles.paramValue}>{calculatedData.scenario}</Text>
+          <Text style={styles.paramValue}>{formatTextSafe(calculatedData.scenario)}</Text>
         </View>
       </View>
 
@@ -140,24 +216,47 @@ export const Appendix: React.FC<AppendixProps> = ({ data }) => {
         <Heading2>Calculation Assumptions</Heading2>
 
         <View style={styles.assumptionItem}>
-          <Paragraph>
-            <Text style={{ fontWeight: 'bold' }}>1. Credit Card Interest Rate: </Text>
-            Assumed at {getCreditCardRateAssumption(userInputs.creditScore || 700)} based on credit score of {userInputs.creditScore}.
-          </Paragraph>
+          <Text style={styles.assumptionText}>
+            <Text style={{ fontWeight: 'bold' }}>Bank Approved Limit: </Text>
+            Maximum estimated HELOC approval limit in this report is {formatCurrencySafe(calculatedData.coreMetrics.maxLimit)}.
+          </Text>
         </View>
 
+        {hasCreditCardInputs && (
+          <View style={styles.assumptionItem}>
+            <Text style={styles.assumptionText}>
+              <Text style={{ fontWeight: 'bold' }}>Credit Card Interest Rate: </Text>
+              Assumed at {getCreditCardRateAssumption(userInputs.creditScore || 700)} based on credit score of {formatTextSafe(userInputs.creditScore)}.
+            </Text>
+          </View>
+        )}
+
         <View style={styles.assumptionItem}>
-          <Paragraph>
-            <Text style={{ fontWeight: 'bold' }}>2. Property Type Impact: </Text>
+          <Text style={styles.assumptionText}>
+            <Text style={{ fontWeight: 'bold' }}>Property Type Impact: </Text>
             Condos typically have 7% lower LTV limits compared to Single Family homes due to lender risk policies.
-          </Paragraph>
+          </Text>
         </View>
 
         <View style={styles.assumptionItem}>
-          <Paragraph>
-            <Text style={{ fontWeight: 'bold' }}>3. Occupancy Impact: </Text>
+          <Text style={styles.assumptionText}>
+            <Text style={{ fontWeight: 'bold' }}>Occupancy Impact: </Text>
             Investment properties typically have 1.5% higher HELOC rates and tighter credit limits compared to primary residences.
-          </Paragraph>
+          </Text>
+        </View>
+
+        <View style={styles.assumptionItem}>
+          <Text style={styles.assumptionText}>
+            <Text style={{ fontWeight: 'bold' }}>System Defaults: </Text>
+            Draw period defaults to 10 years, repayment period defaults to 20 years, and underwriting DTI guardrail is typically treated around 43%.
+          </Text>
+        </View>
+
+        <View style={styles.assumptionItem}>
+          <Text style={styles.assumptionText}>
+            <Text style={{ fontWeight: 'bold' }}>Prime + Margin Model: </Text>
+            Effective HELOC rate is estimated from Prime ({formatTextSafe(userInputs.primeRate, 'N/A')}%) + Margin ({formatTextSafe(userInputs.margin, 'N/A')}%) and modeled as {formatTextSafe(calculatedData.coreMetrics.helocRate, 'N/A')}%.
+          </Text>
         </View>
       </View>
 

@@ -7,6 +7,7 @@ import React from 'react';
 import { View, Page, StyleSheet, Text } from '@react-pdf/renderer';
 import type { PdfData } from '../types';
 import { defaultPdfStyles } from '../styles';
+import { getScenarioDefinition, resolvePdfScenarioFromData } from '../templates/scenario-definitions';
 
 const styles = StyleSheet.create({
   page: {
@@ -101,8 +102,9 @@ interface CoverProps {
 }
 
 export const Cover: React.FC<CoverProps> = ({ data }) => {
-  const { userInputs, calculatedData, generatedAt, userInfo } = data;
-  const { coreMetrics } = calculatedData;
+  const { userInputs, generatedAt, userInfo } = data;
+  const scenarioDef = getScenarioDefinition(resolvePdfScenarioFromData(data));
+  const reportEmail = userInfo?.email || userInputs?.email || 'N/A';
 
   return (
     <Page size="A4" style={styles.page}>
@@ -113,7 +115,7 @@ export const Cover: React.FC<CoverProps> = ({ data }) => {
       <View style={styles.container}>
         {/* 标题区域 */}
         <View style={styles.titleSection}>
-          <Text style={styles.title}>HELOC Expert Report</Text>
+          <Text style={styles.title}>{scenarioDef.title}</Text>
           <Text style={styles.subtitle}>
             Professional Financial Analysis & Strategy
           </Text>
@@ -122,20 +124,12 @@ export const Cover: React.FC<CoverProps> = ({ data }) => {
         {/* 信息卡片 */}
         <View style={styles.infoBox}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Home Value:</Text>
-            <Text style={styles.infoValue}>
-              ${userInputs.homeValue?.toLocaleString() || 'N/A'}
-            </Text>
+            <Text style={styles.infoLabel}>Email:</Text>
+            <Text style={styles.infoValue}>{reportEmail}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Maximum HELOC:</Text>
-            <Text style={styles.infoValue}>
-              ${coreMetrics.maxLimit.toLocaleString()}
-            </Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>HELOC Rate:</Text>
-            <Text style={styles.infoValue}>{coreMetrics.helocRate}%</Text>
+            <Text style={styles.infoLabel}>Scenario:</Text>
+            <Text style={styles.infoValue}>{scenarioDef.scenarioLabel}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Report Date:</Text>
@@ -147,12 +141,6 @@ export const Cover: React.FC<CoverProps> = ({ data }) => {
               })}
             </Text>
           </View>
-          {userInfo?.name && (
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Prepared For:</Text>
-              <Text style={styles.infoValue}>{userInfo.name}</Text>
-            </View>
-          )}
         </View>
       </View>
 

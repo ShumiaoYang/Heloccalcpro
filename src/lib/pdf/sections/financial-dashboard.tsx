@@ -1,127 +1,70 @@
-/**
- * Financial Dashboard Section
- * 财务仪表盘章节
- */
-
 import React from 'react';
-import { View, Page, StyleSheet, Text } from '@react-pdf/renderer';
-import { Heading1, Heading2, Paragraph, Divider } from '../components/base';
-import { Card } from '../components/card';
-import { MetricCard } from '../components/metric-card';
-import type { PdfData } from '../types';
+import { View, Text, Page, StyleSheet } from '@react-pdf/renderer';
+import { Heading1, Heading2, Divider } from '../components/base';
 import { defaultPdfStyles } from '../styles';
+import type { PdfData } from '../types';
 
 const styles = StyleSheet.create({
-  page: {
-    padding: 40,
-    fontFamily: defaultPdfStyles.fonts.body,
-  },
-  section: {
-    marginBottom: defaultPdfStyles.spacing.lg,
-  },
-  metricsGrid: {
-    flexDirection: 'row',
-    gap: defaultPdfStyles.spacing.sm,
-    marginBottom: defaultPdfStyles.spacing.md,
-  },
-  metricColumn: {
-    flex: 1,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-  },
-  label: {
-    fontSize: 10,
-    color: defaultPdfStyles.colors.textSecondary,
-  },
-  value: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    color: defaultPdfStyles.colors.text,
-  },
+  page: { padding: 40, fontFamily: defaultPdfStyles.fonts.body },
+  section: { marginBottom: defaultPdfStyles.spacing.lg },
+  compareContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+  boxBefore: { flex: 1, padding: 15, backgroundColor: '#fee2e2', marginRight: 10, borderRadius: 4, borderTop: '4px solid #ef4444' },
+  boxAfter: { flex: 1, padding: 15, backgroundColor: '#dcfce3', marginLeft: 10, borderRadius: 4, borderTop: '4px solid #22c55e' },
+  boxLabel: { fontSize: 12, fontWeight: 'bold', marginBottom: 8, color: '#334155' },
+  boxValue: { fontSize: 24, fontWeight: 'bold', marginBottom: 5 },
+  commentary: { marginTop: 25, padding: 15, backgroundColor: '#f1f5f9', borderRadius: 4 },
+  commentTitle: { fontSize: 13, fontWeight: 'bold', color: '#0f172a', marginBottom: 5 },
+  commentText: { fontSize: 11, color: '#334155', lineHeight: 1.5 }
 });
 
-interface FinancialDashboardProps {
-  data: PdfData;
-}
+export const FinancialDashboard = ({ data }: { data: PdfData }) => {
+  const analysis = data.aiAnalysis;
+  // 如果解析失败，直接返回空
+  if (typeof analysis === 'string') return null;
 
-export const FinancialDashboard: React.FC<FinancialDashboardProps> = ({ data }) => {
-  const { userInputs, calculatedData } = data;
-  const { coreMetrics } = calculatedData;
+  const cashFlow = analysis?.cashFlowAnalysis;
+  const oldPayment = Number(
+    data.userInputs?.currentMonthlyDebt ?? data.userInputs?.monthlyDebt ?? 0
+  );
 
-  // Calculate current equity
-  const currentEquity = (userInputs.homeValue || 0) - (userInputs.mortgageBalance || 0);
+  const drawAmount = Number(
+    data.userInputs?.drawAmount ??
+      data.userInputs?.amountNeeded ??
+      data.calculatedData?.coreMetrics?.maxLimit ??
+      0
+  );
+  const helocRate = Number(data.calculatedData?.coreMetrics?.helocRate ?? 0);
+  const derivedInterestOnlyPayment = drawAmount > 0 && helocRate > 0
+    ? (drawAmount * helocRate) / 1200
+    : 0;
 
-  // Determine risk levels for CLTV and DTI
-  const cltvVariant = coreMetrics.cltv > 80 ? 'danger' : coreMetrics.cltv > 70 ? 'warning' : 'success';
-  const dtiVariant = coreMetrics.dti > 43 ? 'danger' : coreMetrics.dti > 36 ? 'warning' : 'success';
+  const newPayment = Number(derivedInterestOnlyPayment);
+  const freedUp = Number(cashFlow?.freedUpCashFlow ?? (oldPayment - newPayment));
 
   return (
     <Page size="A4" style={styles.page}>
-      <Heading1>Your Financial Dashboard</Heading1>
+      <Heading1>The Cash Flow Reality Check</Heading1>
       <Divider />
-
-      {/* 房产信息 */}
       <View style={styles.section}>
-        <Heading2>Your Property Overview</Heading2>
-        <Card variant="default">
-          <View style={styles.cardContent}>
-            <Text style={styles.label}>Home Value</Text>
-            <Text style={styles.value}>${userInputs.homeValue?.toLocaleString() || 'N/A'}</Text>
+        <Heading2>Monthly Debt Obligations (Before vs. After)</Heading2>
+        <View style={styles.compareContainer}>
+          <View style={styles.boxBefore}>
+            <Text style={styles.boxLabel}>BEFORE (Current Bleeding)</Text>
+            <Text style={[styles.boxValue, { color: '#ef4444' }]}>${oldPayment.toLocaleString()}</Text>
+            <Text style={{ fontSize: 10, color: '#7f1d1d' }}>High-interest minimums</Text>
           </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.label}>Mortgage Balance</Text>
-            <Text style={styles.value}>${userInputs.mortgageBalance?.toLocaleString() || 'N/A'}</Text>
+          <View style={styles.boxAfter}>
+            <Text style={styles.boxLabel}>AFTER (The Rescue Plan)</Text>
+            <Text style={[styles.boxValue, { color: '#22c55e' }]}>${newPayment.toFixed(0)}</Text>
+            <Text style={{ fontSize: 10, color: '#14532d' }}>HELOC Interest-only</Text>
           </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.label}>Current Equity</Text>
-            <Text style={styles.value}>${currentEquity.toLocaleString()}</Text>
-          </View>
-        </Card>
-      </View>
+        </View>
 
-      {/* HELOC信息 */}
-      <View style={styles.section}>
-        <Heading2>Your HELOC Details</Heading2>
-        <Card variant="default">
-          <View style={styles.cardContent}>
-            <Text style={styles.label}>Maximum HELOC Limit</Text>
-            <Text style={styles.value}>${coreMetrics.maxLimit.toLocaleString()}</Text>
-          </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.label}>HELOC Interest Rate</Text>
-            <Text style={styles.value}>{coreMetrics.helocRate}%</Text>
-          </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.label}>Monthly Savings Potential</Text>
-            <Text style={styles.value}>${coreMetrics.monthlySavings.toLocaleString()}</Text>
-          </View>
-        </Card>
-      </View>
-
-      {/* 核心风险指标 - 使用 MetricCard 和警示色 */}
-      <View style={styles.section}>
-        <Heading2>Key Risk Indicators</Heading2>
-        <Paragraph>
-          These metrics help us assess your financial position and borrowing capacity.
-        </Paragraph>
-        <View style={styles.metricsGrid}>
-          <View style={styles.metricColumn}>
-            <MetricCard
-              label="CLTV (Combined Loan-to-Value)"
-              value={`${coreMetrics.cltv}%`}
-              variant={cltvVariant}
-            />
-          </View>
-          <View style={styles.metricColumn}>
-            <MetricCard
-              label="DTI (Debt-to-Income)"
-              value={`${coreMetrics.dti}%`}
-              variant={dtiVariant}
-            />
-          </View>
+        <View style={styles.commentary}>
+          <Text style={styles.commentTitle}>Immediate Relief: ${freedUp.toLocaleString()} / month</Text>
+          <Text style={styles.commentText}>
+            {cashFlow?.commentary || "You are saving money instantly, but remember, you haven't 'paid off' anything—you just moved the debt to your house."}
+          </Text>
         </View>
       </View>
     </Page>

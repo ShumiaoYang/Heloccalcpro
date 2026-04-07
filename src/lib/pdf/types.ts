@@ -6,6 +6,29 @@
 import type { AiAnalysis, CalculatedData } from '@/types/heloc-ai';
 
 /**
+ * Debt Consolidation AI Analysis
+ */
+export interface DebtConsolidationAnalysis {
+  executiveVerdict: {
+    status: 'APPROVED_ZONE' | 'CAUTION_ZONE' | 'DANGER_ZONE';
+    headline: string;
+    summary: string;
+  };
+  cashFlowAnalysis: {
+    freedUpCashFlow: number;
+    commentary: string;
+  };
+  radicalCandorWarning: {
+    title: string;
+    message: string;
+  };
+  actionPlan: Array<{
+    title: string;
+    description: string;
+  }>;
+}
+
+/**
  * PDF生成所需的完整数据
  */
 export interface PdfData {
@@ -17,6 +40,12 @@ export interface PdfData {
 
   // AI分析结果
   aiAnalysis: AiAnalysis;
+
+  // 场景类型
+  scenario?: string;
+
+  // 是否为最大借款额度
+  isMaxBorrowing?: boolean;
 
   // 生成时间
   generatedAt: Date;
