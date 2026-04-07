@@ -4,6 +4,8 @@
  */
 
 import type { CalculatedData } from '@/types/heloc-ai';
+import { calculateCLTVCap } from '@/lib/heloc/credit-calculator';
+import { calculateCreditDTILimit, calculateDynamicMaxDTI } from '@/lib/heloc/core-metrics';
 
 // ============================================
 // Prompt接口定义
@@ -114,20 +116,73 @@ export function getUserPromptV3(context: PromptContext): string {
   // Check if debt consolidation scenario with special handling
   if (userInputs.scenario === 'debt_consolidation') {
     const { generateDebtConsolidationPrompt } = require('./debt-consolidation');
-    const isMaxBorrowing = !userInputs.amountNeeded || userInputs.amountNeeded === 0;
-    const maxBorrowingPower = coreMetrics.maxLimit;
-    const requestedAmount = isMaxBorrowing ? maxBorrowingPower : userInputs.amountNeeded;
+    const requestedAmount = userInputs.amountNeeded || coreMetrics.maxLimit;
+    const annualIncome = Number(userInputs.annualIncome || 0);
+    const monthlyIncome = annualIncome > 0 ? annualIncome / 12 : 0;
+    const currentMonthlyDebt = Number(
+      userInputs.currentMonthlyDebt
+      ?? userInputs.monthlyDebt
+      ?? ((userInputs.subjectHousingPayment || 0) + (userInputs.otherMonthlyDebt || 0))
+    );
+    const currentDti = monthlyIncome > 0 ? (currentMonthlyDebt / monthlyIncome) * 100 : 0;
+    const helocRate = coreMetrics.helocRate;
+    const drawInterestPayment = (requestedAmount * helocRate) / 100 / 12;
+    const repaymentMonths = Number(userInputs.repaymentMonths || 240);
+    const propertyType = (userInputs.propertyType as
+      | 'Single-family'
+      | 'Townhouse'
+      | 'Condo'
+      | 'Multi-family'
+      | 'Manufactured') || 'Single-family';
+    const occupancyType = (userInputs.occupancy as
+      | 'Primary residence'
+      | 'Second home'
+      | 'Investment property') || 'Primary residence';
+    const { cltvCap } = calculateCLTVCap(
+      Number(userInputs.creditScore || 700),
+      occupancyType,
+      propertyType
+    );
+    const effectiveDtiPct = calculateDynamicMaxDTI(Number(userInputs.creditScore || 700), cltvCap) * 100;
+    const cltvLimitAmount = Math.max(
+      0,
+      Number(userInputs.homeValue || 0) * (cltvCap / 100) - Number(userInputs.mortgageBalance || 0)
+    );
+    const dtiLimitAmount = calculateCreditDTILimit(
+      annualIncome,
+      currentMonthlyDebt,
+      Number(userInputs.creditScore || 700),
+      cltvCap
+    );
+    const calcRepaymentPi = (principal: number, ratePct: number, months: number): number => {
+      if (principal <= 0 || months <= 0) return 0;
+      const monthlyRate = ratePct / 100 / 12;
+      if (monthlyRate === 0) return principal / months;
+      const factor = Math.pow(1 + monthlyRate, months);
+      return (principal * monthlyRate * factor) / (factor - 1);
+    };
 
     return generateDebtConsolidationPrompt({
       homeValue: userInputs.homeValue,
-      maxBorrowingPower,
+      maxBorrowingPower: coreMetrics.maxLimit,
       requestedAmount,
-      isMaxBorrowing,
-      currentDti: coreMetrics.dti,
-      newDti: coreMetrics.dti,
-      estimatedHelocRate: coreMetrics.helocRate,
-      currentMonthlyDebt: userInputs.monthlyDebt || 0,
-      newHelocMonthlyPayment: Math.round(requestedAmount * coreMetrics.helocRate / 100 / 12),
+      creditCardBalance: Number(userInputs.creditCardBalance || 0),
+      creditCardLimit: Number(userInputs.creditCardLimit || 0),
+      currentDti,
+      projectedDti: coreMetrics.dti,
+      estimatedHelocRate: helocRate,
+      currentMonthlyDebt,
+      monthlyIncome,
+      drawInterestPayment,
+      repaymentPayment: calcRepaymentPi(requestedAmount, helocRate, repaymentMonths),
+      repaymentPlus2Payment: calcRepaymentPi(requestedAmount, helocRate + 2, repaymentMonths),
+      repaymentPlus4Payment: calcRepaymentPi(requestedAmount, helocRate + 4, repaymentMonths),
+      drawPlus2Payment: (requestedAmount * (helocRate + 2)) / 100 / 12,
+      drawPlus4Payment: (requestedAmount * (helocRate + 4)) / 100 / 12,
+      effectiveCltv: cltvCap,
+      effectiveDti: effectiveDtiPct,
+      cltvLimit: cltvLimitAmount,
+      dtiLimit: dtiLimitAmount,
     });
   }
 

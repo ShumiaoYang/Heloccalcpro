@@ -190,6 +190,10 @@ export class GeminiProvider extends AIProvider {
         tips: parsed.tips,
         stressTestCommentary: parsed.stressTestCommentary,
         homeRenovationV2: parsed.homeRenovationV2,
+        debtConsolidationV3: parsed.debtConsolidationV3,
+        creditOptimizationV3: parsed.creditOptimizationV3,
+        emergencyFundV3: parsed.emergencyFundV3,
+        investmentV3: parsed.investmentV3,
       };
     } catch (error) {
       throw new Error(`Failed to parse AI response: ${error instanceof Error ? error.message : 'Unknown error'}`);

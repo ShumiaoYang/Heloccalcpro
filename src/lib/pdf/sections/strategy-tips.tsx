@@ -24,16 +24,16 @@ export const StrategyTips = ({ data }: { data: PdfData }) => {
 
   return (
     <>
-      {/* Page 4: 毒舌理财师的严重警告 */}
+      {/* Legacy warning page */}
       <Page size="A4" style={styles.page}>
-        <Heading1>The Brutal Truth</Heading1>
+        <Heading1>Risk Review</Heading1>
         <Divider />
         <View style={styles.section}>
-          <Heading2>Stop The Bleeding Now</Heading2>
+          <Heading2>Protect Your Cash Flow</Heading2>
           <View style={styles.warningBox}>
-            <Text style={styles.warningTitle}>{warning?.title || 'WARNING: The Plastic Trap'}</Text>
+            <Text style={styles.warningTitle}>{warning?.title || 'Important Risk Notice'}</Text>
             <Text style={styles.warningText}>
-              {warning?.message || 'Cut up your credit cards immediately. Treating your home like an ATM is the fastest path to foreclosure.'}
+              {warning?.message || 'If repayment capacity weakens, your home remains collateral. Keep post-transfer spending controls and principal-reduction discipline in place.'}
             </Text>
           </View>
         </View>

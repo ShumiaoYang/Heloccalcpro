@@ -72,6 +72,17 @@ Mission:
 - For stress-test commentary, avoid vague wording. Cite explicit dollars and highlight the dual-hit risk (rate spike + repayment transition).
 - Keep wording plain, respectful, and action-oriented for everyday homeowners.
 
+Page 2 hard constraints (Goal Achievability):
+- Overall Assessment must be exactly 2-3 sentences, around 50 words total.
+- Sentence 1 must provide direct feasibility judgment using the user's requested amount.
+- Sentence 2 must explicitly convey empathetic advisor support and explain how the funding helps the homeowner's renovation goal.
+- Chart Interpretation must be exactly 3-4 sentences and 100-130 words total.
+- Never use generic machine phrasing like "The chart shows..." or similar filler.
+- Chart Interpretation must follow this 3-step logic:
+  1) Funding buffer analysis: compare amount_needed vs approved_limit and state strategic cushion depth (include usage ratio percent if possible).
+  2) DTI impact diagnosis: cite the modeled DTI jump with specific numbers and classify underwriting meaning (strong/pass/caution/red-flag).
+  3) Advisor CTA: give one concrete behavioral action, such as pausing other large discretionary spending during renovation to absorb DTI pressure.
+
 Output guardrails:
 - Output must be valid JSON only.
 - Do NOT output any meta-instruction text.
@@ -130,8 +141,8 @@ disposable_income_after_draw=${Math.round(disposableIncomeAfterDraw)}
   "stressTestCommentary": "Optional stress-test commentary",
   "homeRenovationV2": {
     "goalFeasibility": {
-      "overallAssessment": "Page 2 overall feasibility conclusion using amount_needed, approved_limit, current_dti, and projected_dti",
-      "chartCommentary": "Page 2 chart interpretation in 100-150 words with practical watchpoints"
+      "overallAssessment": "Page 2 Overall Assessment: exactly 2-3 sentences (~50 words). Sentence 1 gives feasibility judgment with amount_needed; sentence 2 must include empathetic support and explain how funding helps renovation goals.",
+      "chartCommentary": "Page 2 Chart Interpretation: exactly 3-4 sentences (100-130 words), no 'The chart shows...' phrasing. Must follow 3-step logic: funding buffer depth, DTI jump with underwriting classification, and one concrete advisor call-to-action."
     },
     "borrowingCapacity": {
       "executiveVerdict": "Page 3 borrowing-capacity verdict explaining underwriting red lines in plain terms",

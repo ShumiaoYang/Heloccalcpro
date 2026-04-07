@@ -26,9 +26,34 @@ interface GoalAmountVsApprovalInput {
   safeUsageRatio?: number;
 }
 
+interface EmergencyGoalAmountVsApprovalInput {
+  amountNeeded: number;
+  approvedLimit: number;
+}
+
 interface GoalDtiComparisonInput {
   currentDti: number;
   projectedDti: number;
+}
+
+interface GoalUtilizationComparisonInput {
+  currentUtilization: number;
+  projectedUtilization: number;
+}
+
+interface SurvivalRunwayInput {
+  survivalMonths: number;
+}
+
+interface LiquidityMixInput {
+  cashReserve: number;
+  helocBackup: number;
+}
+
+interface ArbitrageSpreadInput {
+  costOfDebtRate: number;
+  expectedReturnRate: number;
+  netSpreadRate: number;
 }
 
 interface CashFlowStressGroupedInput {
@@ -39,6 +64,11 @@ interface CashFlowStressGroupedInput {
   repaymentAtPlus2: number;
   drawAtPlus4: number;
   repaymentAtPlus4: number;
+}
+
+interface DebtRestructuringComparisonInput {
+  currentCardMinPayment: number;
+  newHelocInterestOnlyPayment: number;
 }
 
 interface RoiImpactInput {
@@ -225,6 +255,43 @@ export function buildGoalAmountVsApprovalChart({
   return buildQuickChartUrl(chartConfig, { width: 520, height: 300 });
 }
 
+export function buildEmergencyGoalAmountVsApprovalChart({
+  amountNeeded,
+  approvedLimit,
+}: EmergencyGoalAmountVsApprovalInput): string {
+  const chartConfig = {
+    type: 'bar',
+    data: {
+      labels: ['Amount Needed', 'Estimated Approved Limit'],
+      datasets: [
+        {
+          label: 'USD',
+          data: [Math.max(0, amountNeeded), Math.max(0, approvedLimit)],
+          backgroundColor: ['#7c3aed', '#16a34a'],
+        },
+      ],
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Emergency Target vs Estimated Approval',
+        fontSize: 12,
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: { beginAtZero: true },
+            scaleLabel: { display: true, labelString: 'USD' },
+          },
+        ],
+      },
+    },
+  };
+
+  return buildQuickChartUrl(chartConfig, { width: 520, height: 300 });
+}
+
 export function buildGoalDtiComparisonChart({
   currentDti,
   projectedDti,
@@ -279,6 +346,189 @@ export function buildGoalDtiComparisonChart({
   };
 
   return buildQuickChartUrl(chartConfig, { width: 520, height: 300 });
+}
+
+export function buildGoalUtilizationComparisonChart({
+  currentUtilization,
+  projectedUtilization,
+}: GoalUtilizationComparisonInput): string {
+  const current = Math.max(0, Math.min(currentUtilization, 100));
+  const projected = Math.max(0, Math.min(projectedUtilization, 100));
+  const projectedColor = projected >= 30 ? '#dc2626' : projected >= 10 ? '#f59e0b' : '#16a34a';
+
+  const chartConfig = {
+    type: 'bar',
+    data: {
+      labels: ['Current Utilization', 'After Paydown Utilization'],
+      datasets: [
+        {
+          label: 'Utilization',
+          data: [current, projected],
+          backgroundColor: ['#2563eb', projectedColor],
+          stack: 'util',
+        },
+        {
+          label: 'Buffer to 100%',
+          data: [100 - current, 100 - projected],
+          backgroundColor: 'rgba(148, 163, 184, 0.12)',
+          stack: 'util',
+        },
+      ],
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Credit Utilization Before vs After Paydown',
+        fontSize: 12,
+      },
+      legend: {
+        position: 'bottom',
+        labels: {
+          boxWidth: 10,
+          fontSize: 8,
+        },
+      },
+      scales: {
+        xAxes: [{ stacked: true }],
+        yAxes: [
+          {
+            stacked: true,
+            ticks: { beginAtZero: true, max: 100, stepSize: 10 },
+            scaleLabel: { display: true, labelString: 'Utilization (%)' },
+          },
+        ],
+      },
+    },
+  };
+
+  return buildQuickChartUrl(chartConfig, { width: 520, height: 300 });
+}
+
+export function buildSurvivalRunwayChart({
+  survivalMonths,
+}: SurvivalRunwayInput): string {
+  const months = Math.max(0, survivalMonths);
+  const roundedMonths = Math.round(months * 10) / 10;
+  const chartConfig = {
+    type: 'bar',
+    data: {
+      labels: ['Your Runway', '6-Month Baseline'],
+      datasets: [
+        {
+          label: 'Months',
+          data: [roundedMonths, 6],
+          backgroundColor: [roundedMonths >= 6 ? '#16a34a' : '#f59e0b', '#94a3b8'],
+        },
+      ],
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: `Survival Runway (${roundedMonths.toFixed(1)} months)`,
+        fontSize: 12,
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              suggestedMax: Math.max(12, Math.ceil(roundedMonths * 1.2)),
+            },
+            scaleLabel: { display: true, labelString: 'Months' },
+          },
+        ],
+      },
+    },
+  };
+
+  return buildQuickChartUrl(chartConfig, { width: 520, height: 300 });
+}
+
+export function buildLiquidityMixChart({
+  cashReserve,
+  helocBackup,
+}: LiquidityMixInput): string {
+  const cash = Math.max(0, cashReserve);
+  const heloc = Math.max(0, helocBackup);
+  const normalizedCash = cash > 0 || heloc > 0 ? cash : 1;
+  const normalizedHeloc = cash > 0 || heloc > 0 ? heloc : 1;
+  const chartConfig = {
+    type: 'doughnut',
+    data: {
+      labels: ['Cash Savings', 'HELOC Backup Line'],
+      datasets: [
+        {
+          data: [normalizedCash, normalizedHeloc],
+          backgroundColor: ['#16a34a', '#2563eb'],
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      cutoutPercentage: 58,
+      legend: {
+        position: 'bottom',
+        labels: { boxWidth: 10, fontSize: 8 },
+      },
+      title: {
+        display: true,
+        text: 'Liquidity Mix (Cash vs HELOC Backup)',
+        fontSize: 12,
+      },
+    },
+  };
+
+  return buildQuickChartUrl(chartConfig, { width: 650, height: 280 });
+}
+
+export function buildArbitrageSpreadChart({
+  costOfDebtRate,
+  expectedReturnRate,
+  netSpreadRate,
+}: ArbitrageSpreadInput): string {
+  const chartConfig = {
+    type: 'bar',
+    data: {
+      labels: ['Cost of Debt', 'Expected Return', 'Net Spread'],
+      datasets: [
+        {
+          label: 'Rate (%)',
+          data: [
+            Math.max(0, costOfDebtRate),
+            Math.max(0, expectedReturnRate),
+            netSpreadRate,
+          ],
+          backgroundColor: [
+            '#ef4444',
+            '#16a34a',
+            netSpreadRate >= 3 ? '#16a34a' : netSpreadRate > 0 ? '#f59e0b' : '#dc2626',
+          ],
+        },
+      ],
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Arbitrage Spread (Return vs Debt Cost)',
+        fontSize: 12,
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              suggestedMin: Math.min(0, Math.floor(netSpreadRate - 1)),
+              suggestedMax: Math.max(expectedReturnRate, costOfDebtRate, netSpreadRate) + 2,
+            },
+            scaleLabel: { display: true, labelString: 'Rate (%)' },
+          },
+        ],
+      },
+    },
+  };
+
+  return buildQuickChartUrl(chartConfig, { width: 700, height: 280 });
 }
 
 export function buildCashFlowStressGroupedChart({
@@ -352,6 +602,46 @@ export function buildCashFlowStressGroupedChart({
   };
 
   return buildQuickChartUrl(chartConfig, { width: 700, height: 320 });
+}
+
+export function buildDebtRestructuringComparisonChart({
+  currentCardMinPayment,
+  newHelocInterestOnlyPayment,
+}: DebtRestructuringComparisonInput): string {
+  const chartConfig = {
+    type: 'bar',
+    data: {
+      labels: ['Current Card Min Payment', 'New HELOC Interest-Only'],
+      datasets: [
+        {
+          label: 'Monthly Payment (USD)',
+          data: [
+            Math.max(0, currentCardMinPayment),
+            Math.max(0, newHelocInterestOnlyPayment),
+          ],
+          backgroundColor: ['#ef4444', '#16a34a'],
+        },
+      ],
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Cash Flow Release Comparison',
+        fontSize: 12,
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: { beginAtZero: true },
+            scaleLabel: { display: true, labelString: 'Monthly Payment (USD)' },
+          },
+        ],
+      },
+    },
+  };
+
+  return buildQuickChartUrl(chartConfig, { width: 700, height: 260 });
 }
 
 export function buildRoiImpactChart({

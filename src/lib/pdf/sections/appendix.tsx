@@ -81,6 +81,9 @@ interface AppendixProps {
 export const Appendix: React.FC<AppendixProps> = ({ data }) => {
   const { userInputs, calculatedData, generatedAt } = data;
   const isHomeRenovation = calculatedData.scenario === 'home_renovation';
+  const isInvestment = calculatedData.scenario === 'investment';
+  const hasCreditCardInputs = calculatedData.scenario === 'debt_consolidation'
+    || calculatedData.scenario === 'credit_optimization';
 
   const formatCurrencySafe = (value: unknown): string => {
     const num = typeof value === 'number' ? value : Number(value);
@@ -158,6 +161,20 @@ export const Appendix: React.FC<AppendixProps> = ({ data }) => {
           </Text>
         </View>
 
+        {hasCreditCardInputs && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Credit Card Balance</Text>
+            <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.creditCardBalance)}</Text>
+          </View>
+        )}
+
+        {hasCreditCardInputs && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Credit Card Limit</Text>
+            <Text style={styles.paramValue}>{formatCurrencySafe(userInputs.creditCardLimit)}</Text>
+          </View>
+        )}
+
         {isHomeRenovation && (
           <View style={styles.paramRow}>
             <Text style={styles.paramLabel}>Renovation Type</Text>
@@ -169,6 +186,22 @@ export const Appendix: React.FC<AppendixProps> = ({ data }) => {
           <View style={styles.paramRow}>
             <Text style={styles.paramLabel}>Renovation Duration</Text>
             <Text style={styles.paramValue}>{formatTextSafe(userInputs.renovationDuration)} months</Text>
+          </View>
+        )}
+
+        {isInvestment && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Investment Type</Text>
+            <Text style={styles.paramValue}>{formatTextSafe(userInputs.investmentType)}</Text>
+          </View>
+        )}
+
+        {isInvestment && (
+          <View style={styles.paramRow}>
+            <Text style={styles.paramLabel}>Expected Return Rate (%)</Text>
+            <Text style={styles.paramValue}>
+              {formatTextSafe(userInputs.expectedReturnRate ?? userInputs.expectedReturn)}
+            </Text>
           </View>
         )}
 
@@ -184,42 +217,44 @@ export const Appendix: React.FC<AppendixProps> = ({ data }) => {
 
         <View style={styles.assumptionItem}>
           <Text style={styles.assumptionText}>
-            <Text style={{ fontWeight: 'bold' }}>1. Bank Approved Limit: </Text>
+            <Text style={{ fontWeight: 'bold' }}>Bank Approved Limit: </Text>
             Maximum estimated HELOC approval limit in this report is {formatCurrencySafe(calculatedData.coreMetrics.maxLimit)}.
           </Text>
         </View>
 
-        <View style={styles.assumptionItem}>
-          <Text style={styles.assumptionText}>
-            <Text style={{ fontWeight: 'bold' }}>2. Credit Card Interest Rate: </Text>
-            Assumed at {getCreditCardRateAssumption(userInputs.creditScore || 700)} based on credit score of {formatTextSafe(userInputs.creditScore)}.
-          </Text>
-        </View>
+        {hasCreditCardInputs && (
+          <View style={styles.assumptionItem}>
+            <Text style={styles.assumptionText}>
+              <Text style={{ fontWeight: 'bold' }}>Credit Card Interest Rate: </Text>
+              Assumed at {getCreditCardRateAssumption(userInputs.creditScore || 700)} based on credit score of {formatTextSafe(userInputs.creditScore)}.
+            </Text>
+          </View>
+        )}
 
         <View style={styles.assumptionItem}>
           <Text style={styles.assumptionText}>
-            <Text style={{ fontWeight: 'bold' }}>3. Property Type Impact: </Text>
+            <Text style={{ fontWeight: 'bold' }}>Property Type Impact: </Text>
             Condos typically have 7% lower LTV limits compared to Single Family homes due to lender risk policies.
           </Text>
         </View>
 
         <View style={styles.assumptionItem}>
           <Text style={styles.assumptionText}>
-            <Text style={{ fontWeight: 'bold' }}>4. Occupancy Impact: </Text>
+            <Text style={{ fontWeight: 'bold' }}>Occupancy Impact: </Text>
             Investment properties typically have 1.5% higher HELOC rates and tighter credit limits compared to primary residences.
           </Text>
         </View>
 
         <View style={styles.assumptionItem}>
           <Text style={styles.assumptionText}>
-            <Text style={{ fontWeight: 'bold' }}>5. System Defaults: </Text>
+            <Text style={{ fontWeight: 'bold' }}>System Defaults: </Text>
             Draw period defaults to 10 years, repayment period defaults to 20 years, and underwriting DTI guardrail is typically treated around 43%.
           </Text>
         </View>
 
         <View style={styles.assumptionItem}>
           <Text style={styles.assumptionText}>
-            <Text style={{ fontWeight: 'bold' }}>6. Prime + Margin Model: </Text>
+            <Text style={{ fontWeight: 'bold' }}>Prime + Margin Model: </Text>
             Effective HELOC rate is estimated from Prime ({formatTextSafe(userInputs.primeRate, 'N/A')}%) + Margin ({formatTextSafe(userInputs.margin, 'N/A')}%) and modeled as {formatTextSafe(calculatedData.coreMetrics.helocRate, 'N/A')}%.
           </Text>
         </View>

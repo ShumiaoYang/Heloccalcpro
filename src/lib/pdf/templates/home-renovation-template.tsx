@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Image as PdfImage, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Heading1, Heading2, Paragraph, Divider } from '../components/base';
 import { defaultPdfStyles } from '../styles';
 import type { PdfData } from '../types';
@@ -302,13 +302,13 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
   const goalOverallAssessment = resolveAiCopy(
     v2?.goalFeasibility?.overallAssessment,
     withinApprovedLimit
-      ? `Based on your funding goal of ${formatCurrency(loanAmount)} versus an estimated approval of ${formatCurrency(maxLimit)}, this renovation plan appears feasible. Your projected DTI moves from ${formatPercent(oldDti)} to about ${formatPercent(projectedDti)}, so the key watchpoint is near-term monthly cash pressure and credit utilization sensitivity.`
-      : `Your requested funding of ${formatCurrency(loanAmount)} is above the estimated approval of ${formatCurrency(maxLimit)}. This means part of the plan is likely to hit underwriting guardrails unless scope or debt structure is adjusted before application.`
+      ? `Your requested renovation funding of ${formatCurrency(loanAmount)} appears feasible against an estimated approval of ${formatCurrency(maxLimit)}. This can give your household the financing capacity to build the living space upgrade you are aiming for, while keeping the plan grounded in bank-level affordability math.`
+      : `Your requested renovation funding of ${formatCurrency(loanAmount)} is above the estimated approval of ${formatCurrency(maxLimit)}. We understand how important this project is for your family, and resizing scope now can keep progress realistic while protecting monthly stability.`
   );
 
   const goalChartCommentary = resolveAiCopy(
     v2?.goalFeasibility?.chartCommentary,
-    `The funding chart shows where your requested budget stands against the modeled bank limit, with a highlighted safety zone at 50% utilization to reduce overdraw risk. The DTI chart shows your current debt load and your projected post-draw debt load on a fixed 0%-100% scale, so the increase is visually explicit. Treat these charts as an early approval screen, not a guarantee. If your requested amount remains close to the limit, preserve at least 10%-15% contingency outside the initial contractor scope, and avoid committing the full line at once. This keeps flexibility if bids run over budget or if rate conditions tighten during construction.`
+    `Your requested amount of ${formatCurrency(loanAmount)} uses about ${maxLimit > 0 ? ((loanAmount / maxLimit) * 100).toFixed(1) : '0.0'}% of the modeled approval capacity, which leaves a meaningful strategic cushion only if draw discipline is maintained. DTI is modeled from ${formatPercent(oldDti)} to ${formatPercent(projectedDti)}, and that shift moves the file from comfort territory toward a tighter underwriting posture that deserves active cash-flow management. Bank reviewers typically read this jump as manageable but less forgiving if new obligations are added during the project. To protect your approval durability, pause non-essential large purchases during construction and keep a contingency reserve outside contractor commitments.`
   );
 
   const borrowingVerdict = resolveAiCopy(
@@ -417,10 +417,10 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
 
         <View style={styles.dualChartRow}>
           <View style={styles.dualChartCard}>
-            <Image src={goalAmountChartUrl} style={styles.dualChartImage} />
+            <PdfImage src={goalAmountChartUrl} style={styles.dualChartImage} />
           </View>
           <View style={styles.dualChartCard}>
-            <Image src={goalDtiChartUrl} style={styles.dualChartImage} />
+            <PdfImage src={goalDtiChartUrl} style={styles.dualChartImage} />
           </View>
         </View>
 
@@ -464,7 +464,7 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
           </View>
         </View>
 
-        <Image src={borrowingCapacityChartUrl} style={styles.capacityChart} />
+        <PdfImage src={borrowingCapacityChartUrl} style={styles.capacityChart} />
         <Paragraph>{borrowingDetail}</Paragraph>
 
         <View style={styles.noteBox}>
@@ -484,7 +484,7 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
           <Paragraph light>{paymentShockWarning}</Paragraph>
         </View>
 
-        <Image src={cashFlowChartUrl} style={styles.chart} />
+        <PdfImage src={cashFlowChartUrl} style={styles.chart} />
 
         <View style={styles.section}>
           <Heading2>Chart Interpretation</Heading2>
@@ -504,7 +504,7 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
           <Paragraph>{roiSummary}</Paragraph>
         </View>
 
-        <Image src={roiImpactChartUrl} style={styles.chart} />
+        <PdfImage src={roiImpactChartUrl} style={styles.chart} />
 
         <View style={styles.metricGrid}>
           <View style={styles.metricCard}>

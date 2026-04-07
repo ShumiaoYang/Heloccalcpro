@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, Page, StyleSheet, Image } from '@react-pdf/renderer';
+import { View, Text, Page, StyleSheet, Image as PdfImage } from '@react-pdf/renderer';
 import { Heading1, Heading2, Paragraph, Divider } from '../components/base';
 import type { PdfData } from '../types';
 import { defaultPdfStyles } from '../styles';
@@ -114,7 +114,7 @@ export const StressTest: React.FC<StressTestProps> = ({ data }) => {
         </Paragraph>
 
         {/* Payment Shock Chart */}
-        <Image
+        <PdfImage
           src={getPaymentShockChartUrl(baseMonthlyPayment, scenario2Payment)}
           style={{ width: '100%', height: 200, marginVertical: 15 }}
         />

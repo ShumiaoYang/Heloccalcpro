@@ -195,4 +195,113 @@ export interface AiAnalysis {
       checklist: string[];
     };
   };
+
+  /** Debt Consolidation v3 page-specific content (optional, backward compatible) */
+  debtConsolidationV3?: {
+    goalFeasibility?: {
+      overallAssessment?: string;
+      chartCommentary?: string;
+    };
+    borrowingCapacity?: {
+      executiveVerdict?: string;
+      parameterChartReview?: string;
+      advisorsNote?: string;
+    };
+    cashFlowStress?: {
+      summary?: string;
+      paymentShockWarning?: string;
+      stressTestAssessment?: string;
+      advisorsNote?: string;
+    };
+    arbitrageDiagnosis?: {
+      cureCommentary?: string;
+      bleedingCommentary?: string;
+      fiduciaryWarning?: string;
+    };
+    executionPlan?: {
+      intro?: string;
+      checklist?: string[];
+    };
+  };
+
+  /** Credit Optimization v3 page-specific content (optional, backward compatible) */
+  creditOptimizationV3?: {
+    goalFeasibility?: {
+      overallAssessment?: string;
+      chartCommentary?: string;
+    };
+    borrowingCapacity?: {
+      executiveVerdict?: string;
+      parameterChartReview?: string;
+      advisorsNote?: string;
+    };
+    cashFlowStress?: {
+      summary?: string;
+      paymentShockWarning?: string;
+      stressTestAssessment?: string;
+      advisorsNote?: string;
+    };
+    arbitrageDiagnosis?: {
+      cureCommentary?: string;
+      bleedingCommentary?: string;
+      fiduciaryWarning?: string;
+    };
+    creditRepairPlan?: {
+      intro?: string;
+      checklist?: string[];
+    };
+  };
+
+  /** Emergency Fund v3 page-specific content (optional, backward compatible) */
+  emergencyFundV3?: {
+    goalFeasibility?: {
+      overallAssessment?: string;
+      chartCommentary?: string;
+    };
+    borrowingCapacity?: {
+      executiveVerdict?: string;
+      parameterChartReview?: string;
+      advisorsNote?: string;
+    };
+    emergencyDrawStress?: {
+      summary?: string;
+      stressTestAssessment?: string;
+      advisorsNote?: string;
+    };
+    costCarryRisk?: {
+      liquidityMixCommentary?: string;
+      hiddenFeesWarning?: string;
+      freezeRiskWarning?: string;
+    };
+    defensivePlan?: {
+      intro?: string;
+      checklist?: string[];
+    };
+  };
+
+  /** Investment v3 page-specific content (optional, backward compatible) */
+  investmentV3?: {
+    goalFeasibility?: {
+      overallAssessment?: string;
+      chartCommentary?: string;
+    };
+    borrowingCapacity?: {
+      executiveVerdict?: string;
+      parameterChartReview?: string;
+      advisorsNote?: string;
+    };
+    cashFlowStress?: {
+      summary?: string;
+      stressTestAssessment?: string;
+      advisorsNote?: string;
+    };
+    arbitrageDiagnosis?: {
+      spreadAssessment?: string;
+      fiduciaryWarning?: string;
+    };
+    guardrailsPlan?: {
+      intro?: string;
+      checklist?: string[];
+    };
+  };
 }

@@ -17,7 +17,7 @@ export interface ScenarioDefinition {
 const SCENARIO_DEFINITIONS: Record<PdfScenarioKey, ScenarioDefinition> = {
   debt_consolidation: {
     key: 'debt_consolidation',
-    title: 'The Debt Rescue Plan',
+    title: 'Debt Consolidation & Cash Flow Strategy',
     scenarioLabel: 'Debt Consolidation',
   },
   home_renovation: {
@@ -32,18 +32,18 @@ const SCENARIO_DEFINITIONS: Record<PdfScenarioKey, ScenarioDefinition> = {
   },
   emergency_fund: {
     key: 'emergency_fund',
-    title: 'The Financial Safety Net Assessment',
+    title: 'Financial Safety Net & Liquidity Assessment',
     scenarioLabel: 'Emergency Fund',
   },
   investment: {
     key: 'investment',
-    title: 'The Leverage & Yield Stress Test',
-    scenarioLabel: 'Investment / Real Estate',
+    title: 'Leveraged Investment & Wealth Risk Assessment',
+    scenarioLabel: 'Investment',
   },
   credit_optimization: {
     key: 'credit_optimization',
-    title: 'The Credit Profile Optimization Plan',
-    scenarioLabel: 'Credit Optimization',
+    title: 'Credit Profile & Asset Optimization Strategy',
+    scenarioLabel: 'Credit/Asset Optimization',
   },
 };
 

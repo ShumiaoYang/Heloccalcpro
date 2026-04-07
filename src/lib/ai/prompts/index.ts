@@ -12,6 +12,8 @@ import { getCreditOptimizationPrompt } from './credit-optimization';
 import { getEmergencyFundPrompt } from './emergency-fund';
 import { getInvestmentPrompt } from './investment';
 import { getMaxBorrowingPowerPrompt } from './max-borrowing-power';
+import { calculateCLTVCap } from '@/lib/heloc/credit-calculator';
+import { calculateCreditDTILimit, calculateDynamicMaxDTI } from '@/lib/heloc/core-metrics';
 
 /**
  * 根据场景类型生成完整的Prompt模板
@@ -37,22 +39,76 @@ export function generatePrompt(
 
   switch (scenario) {
     case 'debt_consolidation':
-      userMessage = generateDebtConsolidationPrompt({
-        homeValue: context.userInputs.homeValue,
-        maxBorrowingPower: context.calculatedData.coreMetrics.maxLimit,
-        requestedAmount: context.userInputs.amountNeeded || context.calculatedData.coreMetrics.maxLimit,
-        isMaxBorrowing: !context.userInputs.amountNeeded || context.userInputs.amountNeeded === 0,
-        currentDti: context.calculatedData.coreMetrics.dti,
-        newDti: context.calculatedData.coreMetrics.dti,
-        estimatedHelocRate: context.calculatedData.coreMetrics.helocRate,
-        currentMonthlyDebt: context.userInputs.monthlyDebt || 0,
-        newHelocMonthlyPayment: Math.round(
-          (context.userInputs.amountNeeded || context.calculatedData.coreMetrics.maxLimit)
-            * context.calculatedData.coreMetrics.helocRate
-            / 100
-            / 12
-        ),
-      });
+      {
+        const requestedAmount = context.userInputs.amountNeeded || context.calculatedData.coreMetrics.maxLimit;
+        const annualIncome = Number(context.userInputs.annualIncome || 0);
+        const monthlyIncome = annualIncome > 0 ? annualIncome / 12 : 0;
+        const currentMonthlyDebt = Number(
+          context.userInputs.currentMonthlyDebt
+          ?? context.userInputs.monthlyDebt
+          ?? ((context.userInputs.subjectHousingPayment || 0) + (context.userInputs.otherMonthlyDebt || 0))
+        );
+        const currentDti = monthlyIncome > 0 ? (currentMonthlyDebt / monthlyIncome) * 100 : 0;
+        const helocRate = context.calculatedData.coreMetrics.helocRate;
+        const drawInterestPayment = Math.round((requestedAmount * helocRate) / 100 / 12);
+        const repaymentMonths = Number(context.userInputs.repaymentMonths || 240);
+        const propertyType = (context.userInputs.propertyType as
+          | 'Single-family'
+          | 'Townhouse'
+          | 'Condo'
+          | 'Multi-family'
+          | 'Manufactured') || 'Single-family';
+        const occupancyType = (context.userInputs.occupancy as
+          | 'Primary residence'
+          | 'Second home'
+          | 'Investment property') || 'Primary residence';
+        const { cltvCap } = calculateCLTVCap(
+          Number(context.userInputs.creditScore || 700),
+          occupancyType,
+          propertyType
+        );
+        const effectiveDtiPct = calculateDynamicMaxDTI(Number(context.userInputs.creditScore || 700), cltvCap) * 100;
+        const cltvLimitAmount = Math.max(
+          0,
+          Number(context.userInputs.homeValue || 0) * (cltvCap / 100) - Number(context.userInputs.mortgageBalance || 0)
+        );
+        const dtiLimitAmount = calculateCreditDTILimit(
+          annualIncome,
+          currentMonthlyDebt,
+          Number(context.userInputs.creditScore || 700),
+          cltvCap
+        );
+        const calcRepaymentPi = (principal: number, ratePct: number, months: number): number => {
+          if (principal <= 0 || months <= 0) return 0;
+          const monthlyRate = ratePct / 100 / 12;
+          if (monthlyRate === 0) return principal / months;
+          const factor = Math.pow(1 + monthlyRate, months);
+          return (principal * monthlyRate * factor) / (factor - 1);
+        };
+
+        userMessage = generateDebtConsolidationPrompt({
+          homeValue: context.userInputs.homeValue,
+          maxBorrowingPower: context.calculatedData.coreMetrics.maxLimit,
+          requestedAmount,
+          creditCardBalance: Number(context.userInputs.creditCardBalance || 0),
+          creditCardLimit: Number(context.userInputs.creditCardLimit || 0),
+          currentDti,
+          projectedDti: context.calculatedData.coreMetrics.dti,
+          estimatedHelocRate: helocRate,
+          currentMonthlyDebt,
+          monthlyIncome,
+          drawInterestPayment,
+          repaymentPayment: calcRepaymentPi(requestedAmount, helocRate, repaymentMonths),
+          repaymentPlus2Payment: calcRepaymentPi(requestedAmount, helocRate + 2, repaymentMonths),
+          repaymentPlus4Payment: calcRepaymentPi(requestedAmount, helocRate + 4, repaymentMonths),
+          drawPlus2Payment: (requestedAmount * (helocRate + 2)) / 100 / 12,
+          drawPlus4Payment: (requestedAmount * (helocRate + 4)) / 100 / 12,
+          effectiveCltv: cltvCap,
+          effectiveDti: effectiveDtiPct,
+          cltvLimit: cltvLimitAmount,
+          dtiLimit: dtiLimitAmount,
+        });
+      }
       break;
     case 'home_renovation':
       userMessage = getHomeRenovationPrompt(context);
