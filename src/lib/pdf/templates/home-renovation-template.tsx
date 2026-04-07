@@ -417,10 +417,10 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
 
         <View style={styles.dualChartRow}>
           <View style={styles.dualChartCard}>
-            <Image src={goalAmountChartUrl} alt="" style={styles.dualChartImage} />
+            <Image src={goalAmountChartUrl} style={styles.dualChartImage} />
           </View>
           <View style={styles.dualChartCard}>
-            <Image src={goalDtiChartUrl} alt="" style={styles.dualChartImage} />
+            <Image src={goalDtiChartUrl} style={styles.dualChartImage} />
           </View>
         </View>
 
@@ -464,7 +464,7 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
           </View>
         </View>
 
-        <Image src={borrowingCapacityChartUrl} alt="" style={styles.capacityChart} />
+        <Image src={borrowingCapacityChartUrl} style={styles.capacityChart} />
         <Paragraph>{borrowingDetail}</Paragraph>
 
         <View style={styles.noteBox}>
@@ -484,7 +484,7 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
           <Paragraph light>{paymentShockWarning}</Paragraph>
         </View>
 
-        <Image src={cashFlowChartUrl} alt="" style={styles.chart} />
+        <Image src={cashFlowChartUrl} style={styles.chart} />
 
         <View style={styles.section}>
           <Heading2>Chart Interpretation</Heading2>
@@ -504,7 +504,7 @@ export const HomeRenovationTemplate: React.FC<{ data: PdfData }> = ({ data }) =>
           <Paragraph>{roiSummary}</Paragraph>
         </View>
 
-        <Image src={roiImpactChartUrl} alt="" style={styles.chart} />
+        <Image src={roiImpactChartUrl} style={styles.chart} />
 
         <View style={styles.metricGrid}>
           <View style={styles.metricCard}>
