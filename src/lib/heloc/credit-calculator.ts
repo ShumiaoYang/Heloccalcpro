@@ -1,13 +1,12 @@
 // HELOC Credit Calculator - Calculate available credit line
 // v3.0: Enhanced CLTV Cap calculation with multi-dimensional risk factors
 
-import { PropertyType, OccupancyType, pctToDecimal } from './types';
+import { PropertyType, OccupancyType } from './types';
 
 export interface CreditInput {
   homeValue: number;
   mortgageBalance: number;
   creditScore: number;
-  desiredLTV: number; // as percentage (e.g., 80 for 80%)
   // v3.0 新增字段
   propertyType?: PropertyType;
   occupancyType?: OccupancyType;
@@ -169,13 +168,12 @@ export function calculateCredit(input: CreditInput): CreditResult {
     homeValue,
     mortgageBalance,
     creditScore,
-    desiredLTV,
     propertyType = 'Single-family',
     occupancyType = 'Primary residence',
   } = input;
 
   // Validate inputs
-  if (homeValue <= 0 || mortgageBalance < 0 || desiredLTV <= 0 || desiredLTV > 100) {
+  if (homeValue <= 0 || mortgageBalance < 0) {
     throw new Error('Invalid input parameters');
   }
 
@@ -183,8 +181,8 @@ export function calculateCredit(input: CreditInput): CreditResult {
   const cltvCapResult = calculateCLTVCap(creditScore, occupancyType, propertyType);
   const { cltvCap, baseCLTVCap, occupancyAdjustment, propertyTypeAdjustment } = cltvCapResult;
 
-  // 使用 v3.0 CLTV Cap (较低的那个)
-  const effectiveLTV = Math.min(desiredLTV, cltvCap);
+  // 使用 v3.0 系统生效LTV（不再使用用户指定LTV）
+  const effectiveLTV = cltvCap;
 
   // Calculate current equity
   const currentEquity = homeValue - mortgageBalance;
@@ -244,10 +242,6 @@ export function validateCreditInput(input: Partial<CreditInput>): string[] {
 
   if (!input.creditScore || input.creditScore < 300 || input.creditScore > 850) {
     errors.push('Credit score must be between 300 and 850');
-  }
-
-  if (!input.desiredLTV || input.desiredLTV <= 0 || input.desiredLTV > 100) {
-    errors.push('LTV ratio must be between 0 and 100');
   }
 
   return errors;

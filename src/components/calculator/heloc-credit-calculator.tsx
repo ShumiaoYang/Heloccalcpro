@@ -6,8 +6,8 @@ import { useDebounce } from '@/lib/hooks/useDebounce';
 import MortgageBalanceCalculator from './MortgageBalanceCalculator';
 import DebtCalculatorDialog from './DebtCalculatorDialog';
 import SliderWithValue from './SliderWithValue';
-import { calculateCredit, calculateApprovedCreditLimit, getMaxLTVByCredit } from '@/lib/heloc/credit-calculator';
-import { PropertyType, OccupancyType, DebtDetail } from '@/lib/heloc/types';
+import { calculateApprovedCreditLimit } from '@/lib/heloc/credit-calculator';
+import { PropertyType, OccupancyType } from '@/lib/heloc/types';
 
 const CreditHealthGaugeChart = dynamic(
   () => import('@/components/charts/CreditHealthGaugeChart'),
@@ -29,20 +29,17 @@ const DiagnosticChart = dynamic(
 const DEFAULT_HOME_VALUE = 600000;
 const DEFAULT_MORTGAGE_BALANCE = 300000;
 const DEFAULT_CREDIT_SCORE = 740;
-const DEFAULT_DESIRED_LTV = 85;
 const DEFAULT_UTILIZATION_RATIO = 40;
 
 interface HelocCreditCalculatorProps {
   initialHomeValue?: number;
   initialMortgageBalance?: number;
   initialCreditScore?: number;
-  initialDesiredLTV?: number;
   initialUtilizationRatio?: number;
   onValuesChange?: (values: {
     homeValue: number;
     mortgageBalance: number;
     creditScore: number;
-    desiredLTV: number;
     utilizationRatio: number;
     propertyType: PropertyType;
     occupancyType: OccupancyType;
@@ -56,7 +53,6 @@ export default function HelocCreditCalculator({
   initialHomeValue,
   initialMortgageBalance,
   initialCreditScore,
-  initialDesiredLTV,
   initialUtilizationRatio,
   onValuesChange
 }: HelocCreditCalculatorProps) {
@@ -65,7 +61,6 @@ export default function HelocCreditCalculator({
   const [homeValue, setHomeValue] = useState<number>(initialHomeValue || DEFAULT_HOME_VALUE);
   const [mortgageBalance, setMortgageBalance] = useState<number>(initialMortgageBalance || DEFAULT_MORTGAGE_BALANCE);
   const [creditScore, setCreditScore] = useState<number>(initialCreditScore || DEFAULT_CREDIT_SCORE);
-  const [desiredLTV, setDesiredLTV] = useState<number>(initialDesiredLTV || DEFAULT_DESIRED_LTV);
   const [utilizationRatio, setUtilizationRatio] = useState<number>(initialUtilizationRatio || DEFAULT_UTILIZATION_RATIO);
 
   // v3.0 fields
@@ -116,7 +111,6 @@ export default function HelocCreditCalculator({
         homeValue: home,
         mortgageBalance: mortgage,
         creditScore: credit,
-        desiredLTV: desiredLTV,
         propertyType: propertyType,
         occupancyType: occupancyType,
         annualIncome: income > 0 ? income : undefined,
@@ -125,7 +119,7 @@ export default function HelocCreditCalculator({
     } catch (error) {
       return null;
     }
-  }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, desiredLTV, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment]);
+  }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment]);
 
   // Calculate available amount
   const availableAmount = useMemo(() => {
@@ -157,7 +151,7 @@ export default function HelocCreditCalculator({
       const debt = otherMonthlyDebt || 0;
       const housing = subjectHousingPayment || 0;
 
-      const currentDataKey = `${home}-${mortgage}-${credit}-${desiredLTV}-${utilizationRatio}-${propertyType}-${occupancyType}-${income}-${debt}-${housing}`;
+      const currentDataKey = `${home}-${mortgage}-${credit}-${utilizationRatio}-${propertyType}-${occupancyType}-${income}-${debt}-${housing}`;
 
       if (prevDataRef.current !== currentDataKey) {
         prevDataRef.current = currentDataKey;
@@ -165,7 +159,6 @@ export default function HelocCreditCalculator({
           homeValue: home,
           mortgageBalance: mortgage,
           creditScore: credit,
-          desiredLTV: desiredLTV,
           utilizationRatio: utilizationRatio,
           propertyType: propertyType,
           occupancyType: occupancyType,
@@ -175,7 +168,7 @@ export default function HelocCreditCalculator({
         });
       }
     }
-  }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, desiredLTV, utilizationRatio, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment, onValuesChange]);
+  }, [debouncedHomeValue, debouncedMortgageBalance, debouncedCreditScore, utilizationRatio, propertyType, occupancyType, annualIncome, otherMonthlyDebt, subjectHousingPayment, onValuesChange]);
 
   const handleMortgageConfirm = (balance: number) => setMortgageBalance(balance);
   const handleDebtCalculatorApply = (totalDebt: number) => setOtherMonthlyDebt(totalDebt);

@@ -109,8 +109,13 @@ export class GeminiProvider extends AIProvider {
    */
   private parseResponse(responseText: string): AiAnalysis {
     try {
-      // Gemini可能返回带有markdown代码块的JSON，需要清理
+      // Clean response
       let cleanedText = responseText.trim();
+
+      // Remove <think> tags if present
+      cleanedText = cleanedText.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+
+      // Remove markdown code blocks
       if (cleanedText.startsWith('```json')) {
         cleanedText = cleanedText.replace(/^```json\n/, '').replace(/\n```$/, '');
       } else if (cleanedText.startsWith('```')) {
@@ -122,6 +127,9 @@ export class GeminiProvider extends AIProvider {
       // Check if this is debt consolidation response format
       if (parsed.executiveVerdict && parsed.radicalCandorWarning) {
         return {
+          executiveVerdict: parsed.executiveVerdict,
+          cashFlowAnalysis: parsed.cashFlowAnalysis,
+          radicalCandorWarning: parsed.radicalCandorWarning,
           summary: parsed.executiveVerdict.summary || '',
           diagnostic: parsed.cashFlowAnalysis?.commentary || '',
           strategy: parsed.actionPlan?.[0]?.description || '',
@@ -181,6 +189,7 @@ export class GeminiProvider extends AIProvider {
         actionPlan: parsed.actionPlan,
         tips: parsed.tips,
         stressTestCommentary: parsed.stressTestCommentary,
+        homeRenovationV2: parsed.homeRenovationV2,
       };
     } catch (error) {
       throw new Error(`Failed to parse AI response: ${error instanceof Error ? error.message : 'Unknown error'}`);

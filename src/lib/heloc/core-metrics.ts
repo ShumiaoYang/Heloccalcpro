@@ -115,7 +115,7 @@ export function calculateMonthlySavingsByScenario(
       return Math.round((ccMonthlySavings - helocMonthlyCost) * 100) / 100;
     }
 
-    case 'contingent_liquidity': {
+    case 'emergency_fund': {
       // Savings = Opportunity cost of not having emergency fund
       // Simplified: Assume avoiding high-interest debt in emergencies
       const emergencyRate = 18; // Average emergency borrowing rate (credit cards, payday loans)

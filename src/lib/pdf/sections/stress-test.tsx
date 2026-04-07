@@ -116,6 +116,7 @@ export const StressTest: React.FC<StressTestProps> = ({ data }) => {
         {/* Payment Shock Chart */}
         <Image
           src={getPaymentShockChartUrl(baseMonthlyPayment, scenario2Payment)}
+          alt=""
           style={{ width: '100%', height: 200, marginVertical: 15 }}
         />
       </View>

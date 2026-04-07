@@ -1,3 +1,5 @@
+import { ADVISOR_PERSONA, ADVISOR_TONE_RULES } from './base';
+
 export interface DebtConsolidationReportData {
   executiveVerdict: {
     status: 'APPROVED_ZONE' | 'CAUTION_ZONE' | 'DANGER_ZONE';
@@ -22,48 +24,59 @@ export const generateDebtConsolidationPrompt = (
     newHelocMonthlyPayment: number;
   }
 ) => {
+  const toneRules = ADVISOR_TONE_RULES.map((rule) => `- ${rule}`).join('\n');
   const maxBorrowingContext = userData.isMaxBorrowing
-    ? `CRITICAL CONTEXT: The user did NOT ask for a specific amount. They checked "Calculate My Max Borrowing Power". You must emphasize that just because they are approved for ${userData.requestedAmount}, they should ONLY draw exactly what they need to pay off existing debt. Maxing out this entire line will destroy their financial life.`
-    : `CONTEXT: The user requested a specific amount of ${userData.requestedAmount} to consolidate their debt.`;
+    ? `The user selected max borrowing mode. Emphasize that approval capacity is not a draw recommendation.`
+    : `The user requested ${userData.requestedAmount} for debt consolidation.`;
 
-  return `
-You are a 15-year veteran US Senior Credit Underwriter. Act as a strict Fiduciary.
-RULE 1: NEVER use sales words like "Congratulations", "Exciting".
-RULE 2: ONLY discuss cold math and severe risks.
-RULE 3: Output strictly in the requested JSON schema. No markdown outside JSON.
+  return `<instructions>
+Persona:
+"${ADVISOR_PERSONA}"
 
-Data:
-- Home Value: ${userData.homeValue}
-- Max Limit: ${userData.maxBorrowingPower}
-- Requested: ${userData.requestedAmount}
-- Current DTI: ${userData.currentDti}%
-- New DTI: ${userData.newDti}%
-- HELOC Rate: ${userData.estimatedHelocRate}%
-- Current non-mortgage monthly debts: ${userData.currentMonthlyDebt}
-- New HELOC interest-only payment: ${userData.newHelocMonthlyPayment}
+Tone Rules:
+${toneRules}
 
-${maxBorrowingContext}
+You are writing Debt Consolidation report content for everyday homeowners.
+Focus: transparent math, budget relief potential, and repayment discipline.
+Frame downside as budgeting challenges and stress-test vulnerabilities.
+Do not output any meta-instruction text.
+Do not output these XML tags.
+Do not mention "schema", "prompt", "instruction", "CTA replacement", "architecture", or implementation notes.
+Output valid JSON only.
+</instructions>
 
-OUTPUT JSON SCHEMA:
+<case_data>
+home_value=${userData.homeValue}
+max_limit=${userData.maxBorrowingPower}
+requested_amount=${userData.requestedAmount}
+current_dti=${userData.currentDti}%
+new_dti=${userData.newDti}%
+heloc_rate=${userData.estimatedHelocRate}%
+current_non_mortgage_monthly_debt=${userData.currentMonthlyDebt}
+new_heloc_interest_only_payment=${userData.newHelocMonthlyPayment}
+context="${maxBorrowingContext}"
+</case_data>
+
+<output_schema>
 {
   "executiveVerdict": {
     "status": "APPROVED_ZONE" | "CAUTION_ZONE" | "DANGER_ZONE",
-    "headline": "[5-10 word sharp verdict]",
-    "summary": "[2-3 sentences. Acknowledge relief, highlight DTI. Warn if MAX requested.]"
+    "headline": "[5-10 word clear verdict]",
+    "summary": "[2-3 sentences. Acknowledge cash-flow relief potential, highlight DTI, and keep tone supportive.]"
   },
   "cashFlowAnalysis": {
     "freedUpCashFlow": [Number],
-    "commentary": "[Explain savings instantly, remind them debt is just moved.]"
+    "commentary": "[Explain immediate payment change and clarify debt is restructured, not eliminated.]"
   },
   "radicalCandorWarning": {
-    "title": "[Punchy warning title]",
-    "message": "[Harsh warning. Explicitly tell them to 'cut up the credit cards'.]"
+    "title": "[Professional risk warning title]",
+    "message": "[Constructive warning about re-accumulation risk and practical controls.]"
   },
   "actionPlan": [
-    { "title": "Demand 'Direct Pay'", "description": "[Explain why]" },
+    { "title": "Request 'Direct Pay' Setup", "description": "[Explain why this reduces execution risk]" },
     { "title": "...", "description": "..." },
     { "title": "...", "description": "..." }
   ]
 }
-`;
+</output_schema>`;
 };

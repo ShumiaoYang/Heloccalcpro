@@ -15,7 +15,6 @@ export default function SampleReportClient({ locale, isZh }: SampleReportClientP
     homeValue: 500000,
     mortgageBalance: 350000,
     creditScore: 740,
-    desiredLTV: 80,
     propertyType: 'Single-family' as const,
     occupancyType: 'Primary residence' as const,
     utilizationRatio: 45,

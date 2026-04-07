@@ -6,7 +6,6 @@
 import { AIProvider, AIProviderConfig } from './base';
 import type { AiAnalysis, CalculatedData, ScenarioType } from '@/types/heloc-ai';
 import { generatePrompt } from '../prompts';
-import { getSystemRolePrompt, getUserPromptV3 } from '../prompts/base';
 
 export class OpenAIProvider extends AIProvider {
   private apiEndpoint: string;
@@ -21,13 +20,18 @@ export class OpenAIProvider extends AIProvider {
     calculatedData: CalculatedData,
     userInputs: Record<string, any>
   ): Promise<AiAnalysis> {
-    const systemRole = getSystemRolePrompt();
-    const userMessage = getUserPromptV3({ calculatedData, userInputs });
+    const scenario = (userInputs.scenario as ScenarioType) || 'debt_consolidation';
+    const prompt = generatePrompt(scenario, { calculatedData, userInputs });
 
-    const response = await this.callOpenAI(systemRole, userMessage);
+    const response = await this.callOpenAI(prompt.systemRole, prompt.userMessage);
 
-    // Clean markdown code blocks if present
+    // Clean response
     let cleanedResponse = response.trim();
+
+    // Remove <think> tags if present
+    cleanedResponse = cleanedResponse.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+
+    // Remove markdown code blocks
     if (cleanedResponse.startsWith('```json')) {
       cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
     } else if (cleanedResponse.startsWith('```')) {
@@ -41,6 +45,9 @@ export class OpenAIProvider extends AIProvider {
     if (parsed.executiveVerdict && parsed.radicalCandorWarning) {
       // Map debt consolidation format to v3Report format
       return {
+        executiveVerdict: parsed.executiveVerdict,
+        cashFlowAnalysis: parsed.cashFlowAnalysis,
+        radicalCandorWarning: parsed.radicalCandorWarning,
         summary: parsed.executiveVerdict.summary || '',
         diagnostic: parsed.cashFlowAnalysis?.commentary || '',
         strategy: parsed.actionPlan?.[0]?.description || '',
@@ -80,7 +87,20 @@ export class OpenAIProvider extends AIProvider {
       };
     }
 
-    // Standard v3Report format
+    // Standard summary/diagnostic format
+    if (parsed.summary && parsed.diagnostic && parsed.strategy) {
+      return {
+        summary: parsed.summary,
+        diagnostic: parsed.diagnostic,
+        strategy: parsed.strategy,
+        actionPlan: Array.isArray(parsed.actionPlan) ? parsed.actionPlan : [],
+        tips: Array.isArray(parsed.tips) ? parsed.tips : [],
+        stressTestCommentary: parsed.stressTestCommentary,
+        homeRenovationV2: parsed.homeRenovationV2,
+      };
+    }
+
+    // v3Report fallback format
     return {
       summary: parsed.executiveBrief || '',
       diagnostic: parsed.bankEvaluation?.dtiInsight || '',
@@ -178,6 +198,7 @@ export class OpenAIProvider extends AIProvider {
         actionPlan: parsed.actionPlan,
         tips: parsed.tips,
         stressTestCommentary: parsed.stressTestCommentary,
+        homeRenovationV2: parsed.homeRenovationV2,
       };
     } catch (error) {
       throw new Error(`Failed to parse AI response: ${error instanceof Error ? error.message : 'Unknown error'}`);

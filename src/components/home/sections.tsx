@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import HelocTabbedCalculator from '@/components/calculator/heloc-tabbed-calculator';
 import { LiveRateBadge } from '@/components/home/live-rate-badge';
 import type { SiteContent } from '@/lib/content';
@@ -9,7 +10,10 @@ type SectionsProps = {
   locale: Locale;
 };
 
-type ToolSectionProps = SectionsProps;
+type ToolSectionProps = SectionsProps & {
+  livePrimeRate: number;
+  baseMargin: number;
+};
 
 export async function HeroSection({ content, locale }: SectionsProps) {
   const { hero, site } = content;
@@ -43,21 +47,20 @@ export async function HeroSection({ content, locale }: SectionsProps) {
   );
 }
 
-export function ToolSection({ content, locale }: ToolSectionProps) {
+export function ToolSection({ content, locale, livePrimeRate, baseMargin }: ToolSectionProps) {
   return (
     <section id="tool" className="section-spacing">
-      <HelocTabbedCalculator />
+      <HelocTabbedCalculator livePrimeRate={livePrimeRate} baseMargin={baseMargin} />
       <div className="mt-12 flex justify-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <a
           href="https://www.producthunt.com/products/heloc-calculator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-heloc-calculator-2-0"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img
+          <Image
             alt="HELOC Calculator 2.0 - Bank-grade HELOC stress testing &amp; AI risk analysis. | Product Hunt"
-            width="250"
-            height="54"
+            width={250}
+            height={54}
             src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1097114&theme=light&t=1773713304148"
           />
         </a>

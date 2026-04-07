@@ -5,8 +5,22 @@ import { analyzeHeloc } from '@/lib/ai/analyzer';
 import { saveLocalPdf } from '@/lib/storage/local-storage';
 import { triggerBackgroundTasks } from '@/lib/tasks/background-tasks';
 import { generateAccessToken } from '@/lib/pdf/token-manager';
+import { getLivePrimeRate, getBaseMargin } from '@/lib/heloc/rate-service';
 import type { PdfData } from '@/lib/pdf/types';
 import type { CalculatedData } from '@/types/heloc-ai';
+
+function shouldRegenerateAiAnalysis(aiAnalysis: any): boolean {
+  if (!aiAnalysis) return true;
+
+  const text = [aiAnalysis.summary, aiAnalysis.diagnostic, aiAnalysis.strategy]
+    .filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+    .join(' ');
+
+  if (!text) return true;
+
+  const nonAsciiCount = (text.match(/[^\x20-\x7E]/g) || []).length;
+  return (nonAsciiCount / Math.max(text.length, 1)) > 0.18;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,12 +47,13 @@ export async function POST(req: NextRequest) {
 
     const inputs = calculation.inputs as any;
     const results = calculation.results as any;
+    const fallbackHelocRate = (await getLivePrimeRate()) + getBaseMargin();
 
     // Check if AI analysis already exists
     let aiAnalysis = calculation.aiAnalysisRaw as any;
 
     // If no AI analysis, generate it
-    if (!aiAnalysis) {
+    if (shouldRegenerateAiAnalysis(aiAnalysis)) {
       console.log('Generating AI analysis...');
 
       // Extract calculated data from inputs (saved by frontend)
@@ -46,7 +61,7 @@ export async function POST(req: NextRequest) {
         scenario: inputs.scenario || 'DEBT_CONSOLIDATION',
         coreMetrics: {
           maxLimit: inputs.calculatedData?.coreMetrics?.maxLimit || 0,
-          helocRate: inputs.calculatedData?.coreMetrics?.helocRate || (inputs.primeRate + inputs.margin) || 9,
+          helocRate: inputs.calculatedData?.coreMetrics?.helocRate || fallbackHelocRate,
           cltv: inputs.calculatedData?.coreMetrics?.cltv || 0,
           dti: inputs.calculatedData?.coreMetrics?.dti || 0,
           monthlySavings: inputs.calculatedData?.coreMetrics?.monthlySavings || 0,
@@ -96,7 +111,7 @@ export async function POST(req: NextRequest) {
         scenario: inputs.scenario || 'debt_consolidation',
         coreMetrics: {
           maxLimit: inputs.calculatedData?.coreMetrics?.maxLimit || 0,
-          helocRate: inputs.calculatedData?.coreMetrics?.helocRate || 5,
+          helocRate: inputs.calculatedData?.coreMetrics?.helocRate || fallbackHelocRate,
           cltv: inputs.calculatedData?.coreMetrics?.cltv || 0,
           dti: inputs.calculatedData?.coreMetrics?.dti || 0,
           monthlySavings: inputs.calculatedData?.coreMetrics?.monthlySavings || 0,
@@ -104,6 +119,8 @@ export async function POST(req: NextRequest) {
         scenarioMetrics: inputs.calculatedData?.scenarioMetrics || {},
       },
       aiAnalysis,
+      scenario: inputs.scenario,
+      isMaxBorrowing: !inputs.amountNeeded || inputs.amountNeeded === 0,
       generatedAt: new Date(),
       userInfo: email ? { email } : undefined,
     };

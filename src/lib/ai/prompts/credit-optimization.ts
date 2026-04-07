@@ -3,14 +3,24 @@
  * 信用优化场景Prompt模板
  */
 
-import type { PromptContext } from './base';
+import { ADVISOR_PERSONA, ADVISOR_TONE_RULES, type PromptContext } from './base';
 import type { CreditOptimizationMetrics } from '@/types/heloc-ai';
 
 export function getCreditOptimizationPrompt(context: PromptContext): string {
   const { calculatedData, userInputs } = context;
   const metrics = calculatedData.scenarioMetrics as CreditOptimizationMetrics;
+  const toneRules = ADVISOR_TONE_RULES.map((rule) => `- ${rule}`).join('\n');
 
-  return `Smart thinking! Using your HELOC strategically can boost your credit profile and financial flexibility. Let's explore how.
+  return `Role Reminder (must follow):
+"${ADVISOR_PERSONA}"
+
+Tone Rules (must follow):
+${toneRules}
+
+Scenario stance:
+- Speak like a professional credit-risk reviewer.
+- Explain utilization improvements without promoting extra debt.
+- Emphasize sustainable repayment habits and relapse prevention.
 
 ## Your Financial Snapshot
 - Home Value: $${userInputs.homeValue?.toLocaleString()}
@@ -29,15 +39,15 @@ export function getCreditOptimizationPrompt(context: PromptContext): string {
 - Assumes responsible credit management
 
 Provide your analysis covering:
-1. **Liquidity Leverage**: How does this HELOC expand your financial flexibility?
-2. **Credit Score Impact**: Explain utilization ratio in terms they understand
-3. **Strategic Management**: How to use this tool without over-leveraging
-4. **Long-term Benefits**: Building a stronger credit profile
-5. **Critical Warnings**: The risks of treating credit like income
+1. Liquidity Leverage: where line access helps and where it becomes hidden leverage.
+2. Credit Score Impact: utilization math and realistic timeline expectations.
+3. Strategic Management: practical guardrails to prevent re-accumulation.
+4. Long-term Stability: how to preserve score improvements under stress.
+5. Critical Warnings: why treating credit like income creates budget strain and collateral risk.
 
 Respond with ONLY a valid JSON object in this exact format:
 {
-  "summary": "2-3 sentence executive summary using 'You/Your' (acknowledge their strategic thinking)",
+  "summary": "2-3 sentence executive summary using 'You/Your' with professional, empathetic tone",
   "diagnostic": "Risk diagnostic explaining CLTV and DTI in context of their security",
   "strategy": "Scenario-specific strategy for credit optimization",
   "actionPlan": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"],

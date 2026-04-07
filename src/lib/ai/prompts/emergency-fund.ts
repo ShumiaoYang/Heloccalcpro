@@ -3,14 +3,25 @@
  * 应急基金场景Prompt模板
  */
 
-import type { PromptContext } from './base';
-import type { ContingentLiquidityMetrics } from '@/types/heloc-ai';
+import { ADVISOR_PERSONA, ADVISOR_TONE_RULES, type PromptContext } from './base';
+import type { EmergencyFundMetrics } from '@/types/heloc-ai';
 
 export function getEmergencyFundPrompt(context: PromptContext): string {
   const { calculatedData, userInputs } = context;
-  const metrics = calculatedData.scenarioMetrics as ContingentLiquidityMetrics;
+  const metrics = calculatedData.scenarioMetrics as EmergencyFundMetrics;
+  const toneRules = ADVISOR_TONE_RULES.map((rule) => `- ${rule}`).join('\n');
 
-  return `It's wise that you're thinking about financial security. Let's explore how your HELOC can serve as a safety net.
+  return `Role Reminder (must follow):
+"${ADVISOR_PERSONA}"
+
+Tone Rules (must follow):
+${toneRules}
+
+Scenario stance:
+- Speak like a highly conservative defensive advisor.
+- Praise preparedness but focus on hidden lender constraints and fee traps.
+
+Analyze this HELOC as an emergency fund strategy with strict risk framing.
 
 ## Your Financial Snapshot
 - Home Value: $${userInputs.homeValue?.toLocaleString()}
@@ -37,7 +48,7 @@ Provide your analysis covering:
 
 Respond with ONLY a valid JSON object in this exact format:
 {
-  "summary": "2-3 sentence executive summary using 'You/Your'",
+  "summary": "2-3 sentence executive summary using 'You/Your' with supportive, objective tone",
   "diagnostic": "Risk diagnostic explaining CLTV and DTI",
   "strategy": "Strategy for using HELOC as emergency fund",
   "actionPlan": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"],

@@ -11,11 +11,12 @@ import {
   calculateInterestOnlyPayment,
   getMarginByCredit
 } from '@/lib/heloc/core-metrics';
+import { calculateApprovedCreditLimit } from '@/lib/heloc/credit-calculator';
 import {
   calculateDebtConsolidation,
   calculateHomeRenovation,
   calculateCreditOptimization,
-  calculateContingentLiquidity,
+  calculateEmergencyFund,
   calculateInvestment,
 } from '@/lib/heloc/scenario-calculator';
 import type { ScenarioType } from '@/types/heloc-ai';
@@ -51,7 +52,7 @@ type Scenario =
   | 'home_renovation'
   | 'debt_consolidation'
   | 'credit_optimization'
-  | 'contingent_liquidity'
+  | 'emergency_fund'
   | 'investment';
 
 export default function PdfReportCTA({
@@ -77,9 +78,7 @@ export default function PdfReportCTA({
   // Step 1: Your Goal
   const [email, setEmail] = useState('');
   const [amountNeeded, setAmountNeeded] = useState('50000');
-  const [amountType, setAmountType] = useState<'custom' | 'max' | 'none'>('custom');
   const [scenario, setScenario] = useState<Scenario | ''>('');
-  const [isMaxBorrowing, setIsMaxBorrowing] = useState(false);
 
   // Step 1 conditional fields (Home Renovation)
   const [renovationDuration, setRenovationDuration] = useState('');
@@ -164,13 +163,10 @@ export default function PdfReportCTA({
       setError('Please enter the amount needed');
       return false;
     }
-    // Validate custom amount must be > 0
-    if (amountType === 'custom') {
-      const amount = parseFloat(amountNeeded);
-      if (isNaN(amount) || amount <= 0) {
-        setError('Amount must be greater than 0');
-        return false;
-      }
+    const amount = parseFloat(amountNeeded);
+    if (isNaN(amount) || amount <= 0) {
+      setError('Amount must be greater than 0');
+      return false;
     }
     if (!scenario) {
       setError('Please select a usage scenario');
@@ -216,15 +212,7 @@ export default function PdfReportCTA({
     setError('');
 
     try {
-      // Calculate HELOC amount based on amountType
-      let helocAmount = 0;
-      if (amountType === 'custom') {
-        helocAmount = parseFloat(amountNeeded) || 0;
-      } else if (amountType === 'max') {
-        helocAmount = maxHelocAmount;
-      } else if (amountType === 'none') {
-        helocAmount = maxHelocAmount * 0.5;
-      }
+      const helocAmount = parseFloat(amountNeeded) || 0;
 
       // Use page-level parameters for rate calculation
       const helocRate = calculateHelocRate(propPrimeRate, propMargin);
@@ -234,7 +222,18 @@ export default function PdfReportCTA({
       const cltv = calculateCLTV(homeValue, mortgageBalance, helocAmount);
       const drawPeriodPayment = calculateInterestOnlyPayment(helocAmount, helocRate);
       const dti = calculateDTI(annualIncome, monthlyDebt, drawPeriodPayment);
-      const maxLimit = maxHelocAmount;
+      const recalculatedApproval = calculateApprovedCreditLimit({
+        homeValue,
+        mortgageBalance,
+        creditScore,
+        propertyType,
+        occupancyType: occupancy,
+        annualIncome,
+        existingMonthlyDebt: monthlyDebt,
+      });
+      const maxLimit = Number.isFinite(recalculatedApproval.approvedCreditLimit)
+        ? recalculatedApproval.approvedCreditLimit
+        : maxHelocAmount;
 
       // Calculate monthly savings based on scenario
       const monthlySavings = calculateMonthlySavingsByScenario(scenario as ScenarioType, {
@@ -280,8 +279,8 @@ export default function PdfReportCTA({
             creditCardLimit: creditCardLimit || 0,
           });
           break;
-        case 'contingent_liquidity':
-          scenarioMetrics = calculateContingentLiquidity({
+        case 'emergency_fund':
+          scenarioMetrics = calculateEmergencyFund({
             ...baseInput,
             monthlyExpenses: monthlyDebt, // Use monthlyDebt as proxy for expenses
           });
@@ -327,7 +326,7 @@ export default function PdfReportCTA({
           },
           calculatedData,
           // Step 1 data
-          amountNeeded: amountType === 'max' ? maxHelocAmount : (amountType === 'custom' ? parseFloat(amountNeeded) : 0),
+          amountNeeded: parseFloat(amountNeeded) || 0,
           scenario,
           renovationDuration: scenario === 'home_renovation' ? parseInt(renovationDuration) : undefined,
           renovationType: scenario === 'home_renovation' ? renovationType : undefined,
@@ -438,46 +437,21 @@ export default function PdfReportCTA({
                   <option value="home_renovation">Home Renovation</option>
                   <option value="debt_consolidation">Debt Consolidation</option>
                   <option value="credit_optimization">Credit/Asset Optimization</option>
-                  <option value="contingent_liquidity">Contingent Liquidity</option>
+                  <option value="emergency_fund">Emergency Fund</option>
                   <option value="investment">Investment/Other</option>
                 </select>
               </div>
 
               {/* Amount Needed - Using SliderWithValue */}
-              <div className={isMaxBorrowing ? 'opacity-50 pointer-events-none' : ''}>
-                <SliderWithValue
-                  label="Amount Needed"
-                  value={isMaxBorrowing ? 0 : (parseFloat(amountNeeded) || 0)}
-                  min={0}
-                  max={1000000}
-                  step={5000}
-                  onChange={(val) => setAmountNeeded(val.toString())}
-                  formatValue={(val) => `$${val.toLocaleString()}`}
-                />
-              </div>
-
-              {/* Max Borrowing Power Checkbox */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="maxBorrowing"
-                  checked={isMaxBorrowing}
-                  onChange={(e) => {
-                    const checked = e.target.checked;
-                    setIsMaxBorrowing(checked);
-                    if (checked) {
-                      setAmountType('max');
-                    } else {
-                      setAmountNeeded('50000');
-                      setAmountType('custom');
-                    }
-                  }}
-                  className="w-4 h-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500"
-                />
-                <label htmlFor="maxBorrowing" className="text-sm text-stone-700 cursor-pointer">
-                  Calculate my Maximum Borrowing Power
-                </label>
-              </div>
+              <SliderWithValue
+                label="Amount Needed"
+                value={parseFloat(amountNeeded) || 0}
+                min={0}
+                max={1000000}
+                step={5000}
+                onChange={(val) => setAmountNeeded(val.toString())}
+                formatValue={(val) => `$${val.toLocaleString()}`}
+              />
 
               {error && <p className="text-red-600 text-xs">{error}</p>}
 
