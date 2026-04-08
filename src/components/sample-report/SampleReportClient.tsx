@@ -37,8 +37,8 @@ export default function SampleReportClient({ locale, isZh }: SampleReportClientP
           </h2>
           <p className="text-slate-700 mb-6">
             {isZh
-              ? '只需$4.99，获取针对您财务状况的完整8页策略报告'
-              : 'Get your complete 8-page strategy report tailored to your finances for just $4.99'
+              ? '只需$4.99，获取针对您财务状况的完整策略报告'
+              : 'Get your complete strategy report tailored to your finances for just $4.99'
             }
           </p>
           <button
