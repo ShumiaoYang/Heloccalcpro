@@ -97,7 +97,7 @@ export class OpenAIProvider extends AIProvider {
       strategy: parsed.goalAnalysis?.advisorNote || '',
       actionPlan: parsed.bankReadiness || [],
       tips: [],
-      v3Report: parsed,
+      v3Report: parsed as AiAnalysis['v3Report'],
     };
   }
 
