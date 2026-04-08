@@ -23,7 +23,7 @@ export default function HelocFooter({ onGetReportClick }: HelocFooterProps) {
             rel="noopener noreferrer"
             className="text-sm text-blue-600 hover:text-blue-800 underline"
           >
-            [View a Sample 8-Page Strategy Report (PDF)]
+            [View a Sample Strategy Report (PDF)]
           </a>
         </div>
 

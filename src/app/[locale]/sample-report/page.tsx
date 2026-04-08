@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = isZh ? 'HELOC 报告样本 - 专业财务分析示例' : 'Sample HELOC Report - Professional Financial Analysis';
   const description = isZh
-    ? '查看我们的8页专业HELOC分析报告样本。包含DTI风险评估、现金流分析、20年还款策略和压力测试。只需$4.99获取您的定制报告。'
-    : 'View our 8-page professional HELOC analysis report sample. Includes DTI risk assessment, cash flow analysis, 20-year repayment strategy, and stress testing. Get your custom report for just $4.99.';
+    ? '查看我们的专业HELOC分析报告样本。包含DTI风险评估、现金流分析、20年还款策略和压力测试。只需$4.99获取您的定制报告。'
+    : 'View our professional HELOC analysis report sample. Includes DTI risk assessment, cash flow analysis, 20-year repayment strategy, and stress testing. Get your custom report for just $4.99.';
 
   const { metadata } = getSeoMetadata('/sample-report', locale);
 
@@ -59,8 +59,8 @@ export default async function SampleReportPage({ params }: Props) {
           <div className="max-w-3xl mx-auto">
             <p className="text-lg text-slate-700 leading-relaxed">
               {isZh
-                ? '在这份8页样本中，我们发现了45.65%的DTI高风险警告和业主未注意到的每月-$208现金流漏洞。然后我们制定了一个20年生存策略，将他们的财务状况扭转为盈利。这就是你只需$4.99就能获得的深度分析。'
-                : 'In this 8-page sample, we caught a 45.65% DTI High-Risk warning and a -$208 monthly cash flow leak that the owner hadn\'t noticed. We then mapped out a 20-year survival strategy to flip their finances into the green. This is the level of depth you get for just $4.99.'
+                ? '在这份样本中，我们发现了45.65%的DTI高风险警告和业主未注意到的每月-$208现金流漏洞。然后我们制定了一个20年生存策略，将他们的财务状况扭转为盈利。这就是你只需$4.99就能获得的深度分析。'
+                : 'In this sample, we caught a 45.65% DTI High-Risk warning and a -$208 monthly cash flow leak that the owner hadn\'t noticed. We then mapped out a 20-year survival strategy to flip their finances into the green. This is the level of depth you get for just $4.99.'
               }
             </p>
           </div>

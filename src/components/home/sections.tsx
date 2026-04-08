@@ -48,12 +48,17 @@ export async function HeroSection({ content, locale }: SectionsProps) {
 }
 
 export function ToolSection({ content, locale, livePrimeRate, baseMargin }: ToolSectionProps) {
+  const productHuntBadgeHref =
+    'https://www.producthunt.com/products/heloc-calculator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-heloc-calculator-2-0';
+  const productHuntBadgeSrc =
+    'https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1097114&theme=light';
+
   return (
     <section id="tool" className="section-spacing">
       <HelocTabbedCalculator livePrimeRate={livePrimeRate} baseMargin={baseMargin} />
       <div className="mt-12 flex justify-center">
         <a
-          href="https://www.producthunt.com/products/heloc-calculator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-heloc-calculator-2-0"
+          href={productHuntBadgeHref}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -61,7 +66,8 @@ export function ToolSection({ content, locale, livePrimeRate, baseMargin }: Tool
             alt="HELOC Calculator 2.0 - Bank-grade HELOC stress testing &amp; AI risk analysis. | Product Hunt"
             width={250}
             height={54}
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1097114&theme=light&t=1773713304148"
+            src={productHuntBadgeSrc}
+            unoptimized
           />
         </a>
       </div>
