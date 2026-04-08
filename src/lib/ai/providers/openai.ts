@@ -6,6 +6,7 @@
 import { AIProvider, AIProviderConfig } from './base';
 import type { AiAnalysis, CalculatedData, ScenarioType } from '@/types/heloc-ai';
 import { generatePrompt } from '../prompts';
+import { parseAiJsonResponse } from './response-parser';
 
 export class OpenAIProvider extends AIProvider {
   private apiEndpoint: string;
@@ -24,22 +25,7 @@ export class OpenAIProvider extends AIProvider {
     const prompt = generatePrompt(scenario, { calculatedData, userInputs });
 
     const response = await this.callOpenAI(prompt.systemRole, prompt.userMessage);
-
-    // Clean response
-    let cleanedResponse = response.trim();
-
-    // Remove <think> tags if present
-    cleanedResponse = cleanedResponse.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
-
-    // Remove markdown code blocks
-    if (cleanedResponse.startsWith('```json')) {
-      cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-    } else if (cleanedResponse.startsWith('```')) {
-      cleanedResponse = cleanedResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
-    }
-
-    // Parse JSON response
-    const parsed = JSON.parse(cleanedResponse);
+    const parsed = parseAiJsonResponse(response);
 
     // Check if this is debt consolidation response format
     if (parsed.executiveVerdict && parsed.radicalCandorWarning) {
@@ -180,7 +166,7 @@ export class OpenAIProvider extends AIProvider {
    */
   private parseResponse(responseText: string): AiAnalysis {
     try {
-      const parsed = JSON.parse(responseText);
+      const parsed = parseAiJsonResponse(responseText);
 
       // 验证必需字段
       if (!parsed.summary || !parsed.diagnostic || !parsed.strategy) {

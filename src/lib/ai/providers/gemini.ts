@@ -6,6 +6,7 @@
 import { AIProvider, AIProviderConfig } from './base';
 import type { AiAnalysis, CalculatedData, ScenarioType } from '@/types/heloc-ai';
 import { generatePrompt } from '../prompts';
+import { parseAiJsonResponse } from './response-parser';
 
 export class GeminiProvider extends AIProvider {
   private apiEndpoint: string;
@@ -109,20 +110,7 @@ export class GeminiProvider extends AIProvider {
    */
   private parseResponse(responseText: string): AiAnalysis {
     try {
-      // Clean response
-      let cleanedText = responseText.trim();
-
-      // Remove <think> tags if present
-      cleanedText = cleanedText.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
-
-      // Remove markdown code blocks
-      if (cleanedText.startsWith('```json')) {
-        cleanedText = cleanedText.replace(/^```json\n/, '').replace(/\n```$/, '');
-      } else if (cleanedText.startsWith('```')) {
-        cleanedText = cleanedText.replace(/^```\n/, '').replace(/\n```$/, '');
-      }
-
-      const parsed = JSON.parse(cleanedText);
+      const parsed = parseAiJsonResponse(responseText);
 
       // Check if this is debt consolidation response format
       if (parsed.executiveVerdict && parsed.radicalCandorWarning) {
