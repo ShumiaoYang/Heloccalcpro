@@ -25,6 +25,7 @@ type SeoEntry = {
   openGraph?: OpenGraphEntry;
   twitter?: TwitterEntry;
   heading?: string;
+  noindex?: boolean;
 };
 
 type PageConfig = Record<string, Partial<Record<Locale, SeoEntry>>>;
@@ -36,7 +37,8 @@ type SeoConfig = {
 
 const config = seoConfig as SeoConfig;
 
-const DEFAULT_DOMAIN = 'https://example.com';
+const DEFAULT_DOMAIN = 'https://heloccalculator.pro';
+let hasWarnedMissingAppDomain = false;
 
 function normalizeOrigin(origin: string | undefined) {
   const base = origin && origin.length > 0 ? origin : DEFAULT_DOMAIN;
@@ -96,7 +98,14 @@ function resolveEntry(pathname: string, locale: Locale): SeoEntry {
 }
 
 export function getSeoMetadata(pathname: string, locale: Locale): { metadata: Metadata; heading?: string } {
-  const origin = normalizeOrigin(process.env.APP_DOMAIN);
+  const envDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || process.env.APP_DOMAIN;
+  if (process.env.NODE_ENV === 'development' && !envDomain && !hasWarnedMissingAppDomain) {
+    console.warn(
+      '[SEO] Missing NEXT_PUBLIC_APP_DOMAIN and APP_DOMAIN. Falling back to default domain for metadata canonical URLs.'
+    );
+    hasWarnedMissingAppDomain = true;
+  }
+  const origin = normalizeOrigin(envDomain);
   const entry = resolveEntry(pathname, locale);
 
   // Build the actual URL path with locale prefix (since localePrefix is 'always')
@@ -128,6 +137,12 @@ export function getSeoMetadata(pathname: string, locale: Locale): { metadata: Me
           ...entry.twitter,
           title: entry.twitter?.title ?? entry.title,
           description: entry.twitter?.description ?? entry.description,
+        }
+      : undefined,
+    robots: entry.noindex
+      ? {
+          index: false,
+          follow: false,
         }
       : undefined,
   };

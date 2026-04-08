@@ -64,24 +64,42 @@
       "en": {
         "title": "Subscription & Billing | AI Toolbox",
         "description": "Upgrade usage limits and manage your AI Toolbox subscription.",
-        "heading": "Subscription & Billing"
+        "heading": "Subscription & Billing",
+        "noindex": true
       },
       "zh": {
         "title": "订阅与计费｜AI 工具箱",
         "description": "管理订阅状态并升级 AI 工具箱的可用额度。",
-        "heading": "订阅与计费"
+        "heading": "订阅与计费",
+        "noindex": true
       }
     },
     "/account/settings": {
       "en": {
         "title": "Account Settings | AI Toolbox",
         "description": "Review your profile information and adjust account preferences.",
-        "heading": "Account Settings"
+        "heading": "Account Settings",
+        "noindex": true
       },
       "zh": {
         "title": "账号设置｜AI 工具箱",
         "description": "查看账号信息并配置偏好设置。",
-        "heading": "账号设置"
+        "heading": "账号设置",
+        "noindex": true
+      }
+    },
+    "/auth/login": {
+      "en": {
+        "title": "Login | HELOC Calculator",
+        "description": "Secure sign in to access your HELOC account and reports.",
+        "heading": "Login",
+        "noindex": true
+      },
+      "zh": {
+        "title": "登录｜HELOC 计算器",
+        "description": "安全登录以访问您的 HELOC 账户和报告。",
+        "heading": "登录",
+        "noindex": true
       }
     },
     "/heloc/retrieve": {
@@ -89,13 +107,15 @@
         "title": "Retrieve Your Reports | HELOC Calculator",
         "description": "Retrieve your HELOC financial reports using your Stripe Transaction ID. Access your saved reports anytime.",
         "heading": "Retrieve Your Reports",
-        "canonical": "/en/heloc/retrieve"
+        "canonical": "/en/heloc/retrieve",
+        "noindex": true
       },
       "zh": {
         "title": "找回您的报告｜HELOC 计算器",
         "description": "使用您的 Stripe Transaction ID 找回 HELOC 财务报告。随时访问您保存的报告。",
         "heading": "找回您的报告",
-        "canonical": "/zh/heloc/retrieve"
+        "canonical": "/zh/heloc/retrieve",
+        "noindex": true
       }
     },
     "/smart-ways-to-use-heloc": {
