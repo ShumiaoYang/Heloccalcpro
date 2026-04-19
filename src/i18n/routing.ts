@@ -12,6 +12,14 @@ export const pathnames: Pathnames<typeof locales> = {
     en: '/en',
     zh: '/zh',
   },
+  '/blog': {
+    en: '/blog',
+    zh: '/blog',
+  },
+  '/blog/[slug]': {
+    en: '/blog/[slug]',
+    zh: '/blog/[slug]',
+  },
 };
 
 export const { Link, redirect, usePathname, useRouter } = createNavigation({
