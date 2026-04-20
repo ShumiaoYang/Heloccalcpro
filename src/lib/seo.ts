@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import seoConfig from '../../config/seo.config.json';
-import { Locale } from '@/i18n/routing';
+import { Locale, locales, defaultLocale } from '@/i18n/routing';
 
 type HrefLangMap = Record<string, string>;
 
@@ -45,37 +45,44 @@ function normalizeOrigin(origin: string | undefined) {
   return base.endsWith('/') ? base.slice(0, -1) : base;
 }
 
-function withOrigin(pathOrUrl: string | undefined, origin: string): string | undefined {
-  if (!pathOrUrl) {
-    return undefined;
+function normalizePath(pathname: string): string {
+  let path = pathname?.trim() || '/';
+  if (!path.startsWith('/')) {
+    path = `/${path}`;
   }
 
-  try {
-    const url = new URL(pathOrUrl);
-    return url.toString();
-  } catch {
-    const normalized = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
-    return `${origin}${normalized}`;
+  for (const locale of locales) {
+    if (path === `/${locale}`) {
+      path = '/';
+      break;
+    }
+    if (path.startsWith(`/${locale}/`)) {
+      path = path.slice(locale.length + 1);
+      break;
+    }
   }
+
+  if (path.length > 1 && path.endsWith('/')) {
+    path = path.slice(0, -1);
+  }
+  return path || '/';
 }
 
-function mapLanguages(hreflang: HrefLangMap | undefined, origin: string): HrefLangMap | undefined {
-  if (!hreflang) {
-    return undefined;
+function localizePath(pathname: string, locale: Locale): string {
+  const normalizedPath = normalizePath(pathname);
+  if (locale === defaultLocale) {
+    return normalizedPath;
   }
-  const mapped = Object.entries(hreflang).reduce<HrefLangMap>((acc, [lang, link]) => {
-    const updated = withOrigin(link, origin);
-    if (updated) {
-      acc[lang] = updated;
-    }
+  return normalizedPath === '/' ? `/${locale}` : `/${locale}${normalizedPath}`;
+}
+
+function buildAlternatesLanguages(pathname: string, origin: string): HrefLangMap {
+  const mapped = locales.reduce<HrefLangMap>((acc, locale) => {
+    acc[locale] = `${origin}${localizePath(pathname, locale)}`;
     return acc;
   }, {});
 
-  // Add x-default pointing to English version
-  if (mapped['en']) {
-    mapped['x-default'] = mapped['en'];
-  }
-
+  mapped['x-default'] = mapped[defaultLocale];
   return mapped;
 }
 
@@ -97,32 +104,17 @@ function resolveEntry(pathname: string, locale: Locale): SeoEntry {
   };
 }
 
-export function getSeoMetadata(pathname: string, locale: Locale): { metadata: Metadata; heading?: string } {
-  const envDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || process.env.APP_DOMAIN;
-  if (process.env.NODE_ENV === 'development' && !envDomain && !hasWarnedMissingAppDomain) {
-    console.warn(
-      '[SEO] Missing NEXT_PUBLIC_APP_DOMAIN and APP_DOMAIN. Falling back to default domain for metadata canonical URLs.'
-    );
-    hasWarnedMissingAppDomain = true;
-  }
-  const origin = normalizeOrigin(envDomain);
-  const entry = resolveEntry(pathname, locale);
+function constructMetadata(entry: SeoEntry, locale: Locale, pathname: string, origin: string): Metadata {
+  const languages = buildAlternatesLanguages(pathname, origin);
+  const canonical = languages[locale];
 
-  // Build the actual URL path with locale prefix (since localePrefix is 'always')
-  const localizedPath = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
-
-  // Use entry.canonical if it's explicitly set, otherwise use the localized path
-  const canonicalPath = entry.canonical || localizedPath;
-  const canonical = withOrigin(canonicalPath, origin);
-  const hreflang = mapLanguages(entry.hreflang, origin);
-
-  const metadata: Metadata = {
+  return {
     title: entry.title,
     description: entry.description,
     keywords: entry.keywords,
     alternates: {
       canonical,
-      languages: hreflang,
+      languages,
     },
     openGraph: entry.openGraph
       ? {
@@ -146,6 +138,20 @@ export function getSeoMetadata(pathname: string, locale: Locale): { metadata: Me
         }
       : undefined,
   };
+}
+
+export function getSeoMetadata(pathname: string, locale: Locale): { metadata: Metadata; heading?: string } {
+  const envDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || process.env.APP_DOMAIN;
+  if (process.env.NODE_ENV === 'development' && !envDomain && !hasWarnedMissingAppDomain) {
+    console.warn(
+      '[SEO] Missing NEXT_PUBLIC_APP_DOMAIN and APP_DOMAIN. Falling back to default domain for metadata canonical URLs.'
+    );
+    hasWarnedMissingAppDomain = true;
+  }
+  const origin = normalizeOrigin(envDomain);
+  const normalizedPath = normalizePath(pathname);
+  const entry = resolveEntry(normalizedPath, locale);
+  const metadata = constructMetadata(entry, locale, normalizedPath, origin);
 
   return {
     metadata,

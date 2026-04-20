@@ -24,6 +24,12 @@
     "subtitle": "Bank-grade logic and AI analysis to keep your finances safe."
   },
   {
+    "id": "blog",
+    "href": "/blog",
+    "label": "Insights",
+    "subtitle": "Bank-grade insights on home equity and financial risks."
+  },
+  {
     "id": "about",
     "href": "/about",
     "label": "About Us",

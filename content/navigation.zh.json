@@ -24,6 +24,12 @@
     "subtitle": "基于银行级算法结合最新的AI智能深度分析为您保驾护航。"
   },
   {
+    "id": "blog",
+    "href": "/blog",
+    "label": "Insights",
+    "subtitle": "Bank-grade insights on home equity and financial risks."
+  },
+  {
     "id": "about",
     "href": "/about",
     "label": "关于我们",
