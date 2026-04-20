@@ -94,6 +94,7 @@ export function FeaturesSection({ content, locale }: SectionsProps) {
       <div className="mt-8 text-center">
         <Link
           href={`/${locale}/heloc-calculator-features`}
+          prefetch={false}
           className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-700 bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           {content.site.name === 'HELOC Calculator' ? 'Read Full Guide' : '阅读完整指南'}
@@ -127,6 +128,7 @@ export function SmartWaysSection({ content, locale }: SectionsProps) {
       <div className="mt-8 text-center">
         <Link
           href={`/${locale}/smart-ways-to-use-heloc`}
+          prefetch={false}
           className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-700 bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           {content.site.name === 'HELOC Calculator' ? 'Read Full Guide' : '阅读完整指南'}
@@ -179,6 +181,7 @@ export function ConcernsHelpSection({ content, locale }: SectionsProps) {
       <div className="mt-8 text-center">
         <Link
           href={`/${locale}/heloc-concerns-and-risks`}
+          prefetch={false}
           className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-700 bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           {content.site.name === 'HELOC Calculator' ? 'Read Full Guide' : '阅读完整指南'}

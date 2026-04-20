@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft, Calculator } from 'lucide-react';
 import type { Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
+import KatexStylesheet from '@/components/content/katex-stylesheet';
 import { getSeoMetadata } from '@/lib/seo';
-import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
 
 type PageProps = {
@@ -43,6 +43,7 @@ export default function CalculatorFeaturesPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-50">
+      <KatexStylesheet />
       <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
         <nav className="mb-8 flex items-center gap-2 text-sm text-slate-600">
           <Link href={`/${locale}`} className="hover:text-emerald-600 transition">
