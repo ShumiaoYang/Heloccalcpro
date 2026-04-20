@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { getLocale } from 'next-intl/server';
 import { Inter, Noto_Sans_SC, JetBrains_Mono, Dancing_Script } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import AuthSessionProvider from '@/components/providers/session-provider';
-import { GoogleAnalytics } from '@/lib/analytics/google-analytics';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSans.variable} ${jetbrainsMono.variable} ${dancingScript.variable} antialiased`}>
-        {gaId && <GoogleAnalytics measurementId={gaId} />}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
         <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>

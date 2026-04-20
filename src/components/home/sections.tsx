@@ -32,7 +32,7 @@ export async function HeroSection({ content, locale }: SectionsProps) {
       <div className="flex flex-wrap gap-3">
         <Link
           href="#tool"
-          className="rounded-full bg-primary-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-600"
+          className="rounded-full bg-primary-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-800"
         >
           {hero.primaryCta}
         </Link>
@@ -94,7 +94,7 @@ export function FeaturesSection({ content, locale }: SectionsProps) {
       <div className="mt-8 text-center">
         <Link
           href={`/${locale}/heloc-calculator-features`}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-600 bg-white px-6 py-3 text-sm font-semibold text-emerald-600 transition hover:bg-emerald-50"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-700 bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           {content.site.name === 'HELOC Calculator' ? 'Read Full Guide' : '阅读完整指南'}
           <span className="text-lg">→</span>
@@ -127,7 +127,7 @@ export function SmartWaysSection({ content, locale }: SectionsProps) {
       <div className="mt-8 text-center">
         <Link
           href={`/${locale}/smart-ways-to-use-heloc`}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-600 bg-white px-6 py-3 text-sm font-semibold text-emerald-600 transition hover:bg-emerald-50"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-700 bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           {content.site.name === 'HELOC Calculator' ? 'Read Full Guide' : '阅读完整指南'}
           <span className="text-lg">→</span>
@@ -179,7 +179,7 @@ export function ConcernsHelpSection({ content, locale }: SectionsProps) {
       <div className="mt-8 text-center">
         <Link
           href={`/${locale}/heloc-concerns-and-risks`}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-600 bg-white px-6 py-3 text-sm font-semibold text-emerald-600 transition hover:bg-emerald-50"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-700 bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           {content.site.name === 'HELOC Calculator' ? 'Read Full Guide' : '阅读完整指南'}
           <span className="text-lg">→</span>

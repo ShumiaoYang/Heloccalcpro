@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useId, ReactNode } from 'react';
+import { useState, useEffect, useId, type CSSProperties, ReactNode } from 'react';
 
 interface SliderWithValueProps {
   label: string;
@@ -45,7 +45,10 @@ export default function SliderWithValue({
     onChange(val);
   };
 
-  const displayValue = formatValue ? formatValue(value) : value.toString();
+  const progress = max === min ? 0 : ((value - min) / (max - min)) * 100;
+  const rangeStyle = {
+    '--range-progress': `${Math.max(0, Math.min(100, progress))}%`,
+  } as CSSProperties;
 
   return (
     <div className="space-y-1">
@@ -77,10 +80,8 @@ export default function SliderWithValue({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label={`${label} slider`}
-        className="w-full h-2 cursor-pointer appearance-none rounded-lg bg-stone-200 accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-        style={{
-          background: `linear-gradient(to right, #10b981 0%, #10b981 ${((value - min) / (max - min)) * 100}%, #e7e5e4 ${((value - min) / (max - min)) * 100}%, #e7e5e4 100%)`,
-        }}
+        className="heloc-range w-full"
+        style={rangeStyle}
       />
 
       {/* Help Text */}

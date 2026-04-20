@@ -1,12 +1,27 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import HelocCreditCalculator from './heloc-credit-calculator';
-import HelocPaymentCalculator from './heloc-payment-calculator';
 import HelocFooter from './HelocFooter';
-import PdfReportCTA from './PdfReportCTA';
 import { calculateApprovedCreditLimit } from '@/lib/heloc/credit-calculator';
 import { PropertyType, OccupancyType } from '@/lib/heloc/types';
+
+const HelocPaymentCalculator = dynamic(() => import('./heloc-payment-calculator'), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-[760px] w-full animate-pulse rounded-xl bg-slate-100/70" aria-hidden="true" />
+  ),
+});
+
+const PdfReportCTA = dynamic(() => import('./PdfReportCTA'), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" aria-hidden="true">
+      <div className="w-full max-w-md min-h-[520px] animate-pulse rounded-2xl border border-emerald-200 bg-white" />
+    </div>
+  ),
+});
 
 type TabType = 'credit' | 'payment';
 
@@ -166,23 +181,25 @@ export default function HelocTabbedCalculator({
       </div>
 
       {/* PDF Purchase Modal */}
-      <PdfReportCTA
-        isOpen={showPdfModal}
-        onClose={() => setShowPdfModal(false)}
-        homeValue={homeValue}
-        mortgageBalance={mortgageBalance}
-        creditScore={creditScore}
-        annualIncome={annualIncome}
-        monthlyDebt={monthlyDebt}
-        primeRate={primeRate}
-        margin={margin}
-        availableAmount={availableAmount}
-        maxHelocAmount={creditResult?.approvedCreditLimit || 0}
-        propertyType={propertyType}
-        occupancyType={occupancyType}
-        subjectHousingPayment={subjectHousingPayment}
-        otherMonthlyDebt={otherMonthlyDebt}
-      />
+      {showPdfModal && (
+        <PdfReportCTA
+          isOpen={showPdfModal}
+          onClose={() => setShowPdfModal(false)}
+          homeValue={homeValue}
+          mortgageBalance={mortgageBalance}
+          creditScore={creditScore}
+          annualIncome={annualIncome}
+          monthlyDebt={monthlyDebt}
+          primeRate={primeRate}
+          margin={margin}
+          availableAmount={availableAmount}
+          maxHelocAmount={creditResult?.approvedCreditLimit || 0}
+          propertyType={propertyType}
+          occupancyType={occupancyType}
+          subjectHousingPayment={subjectHousingPayment}
+          otherMonthlyDebt={otherMonthlyDebt}
+        />
+      )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useId, type CSSProperties } from 'react';
 import { calculateMortgageBalance } from '@/lib/heloc/mortgage-calculator';
 import SliderWithValue from './SliderWithValue';
 
@@ -15,12 +15,20 @@ export default function MortgageBalanceCalculator({
   onClose,
   onConfirm,
 }: MortgageBalanceCalculatorProps) {
+  const startYearId = useId();
+  const startMonthId = useId();
+  const termYearsId = useId();
+  const annualRateId = useId();
+
   // Input states
   const [initialAmount, setInitialAmount] = useState<number>(300000);
   const [startYear, setStartYear] = useState<string>('2020');
   const [startMonth, setStartMonth] = useState<string>('01');
   const [annualRate, setAnnualRate] = useState<number>(5.0);
   const [termYears, setTermYears] = useState<number>(30);
+  const annualRateRangeStyle = {
+    '--range-progress': `${Math.max(0, Math.min(100, (annualRate / 15) * 100))}%`,
+  } as CSSProperties;
 
   // Calculate result
   const result = useMemo(() => {
@@ -95,11 +103,12 @@ export default function MortgageBalanceCalculator({
           <div className="grid grid-cols-2 gap-4">
             {/* Start Date */}
             <div>
-              <label className="text-sm font-medium text-slate-700">
+              <label htmlFor={startYearId} className="text-sm font-medium text-slate-700">
                 Mortgage Start Date
               </label>
               <div className="mt-1.5 flex gap-2">
                 <select
+                  id={startYearId}
                   value={startYear}
                   onChange={(e) => setStartYear(e.target.value)}
                   className="w-20 rounded-lg border border-slate-200 bg-white p-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
@@ -114,6 +123,8 @@ export default function MortgageBalanceCalculator({
                   })}
                 </select>
                 <select
+                  id={startMonthId}
+                  aria-label="Mortgage start month"
                   value={startMonth}
                   onChange={(e) => setStartMonth(e.target.value)}
                   className="w-16 rounded-lg border border-slate-200 bg-white p-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
@@ -132,10 +143,11 @@ export default function MortgageBalanceCalculator({
 
             {/* Loan Term */}
             <div>
-              <label className="text-sm font-medium text-slate-700">
+              <label htmlFor={termYearsId} className="text-sm font-medium text-slate-700">
                 Loan Term
               </label>
               <select
+                id={termYearsId}
                 value={termYears}
                 onChange={(e) => setTermYears(parseInt(e.target.value))}
                 className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
@@ -149,18 +161,20 @@ export default function MortgageBalanceCalculator({
 
           {/* Mortgage Rate Slider */}
           <div>
-            <label className="text-sm font-medium text-slate-700">
+            <label htmlFor={annualRateId} className="text-sm font-medium text-slate-700">
               Mortgage Rate
             </label>
             <div className="mt-1.5 flex items-center gap-3">
               <input
+                id={annualRateId}
                 type="range"
                 min="0"
                 max="15"
                 step="0.1"
                 value={annualRate}
                 onChange={(e) => setAnnualRate(parseFloat(e.target.value))}
-                className="flex-1 accent-emerald-500"
+                className="heloc-range flex-1"
+                style={annualRateRangeStyle}
               />
               <div className="font-mono text-base font-semibold text-emerald-600 w-14 text-right">
                 {annualRate.toFixed(1)}%

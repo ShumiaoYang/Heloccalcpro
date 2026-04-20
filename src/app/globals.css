@@ -66,3 +66,63 @@ a:hover {
     text-wrap: balance;
   }
 }
+
+/* Unified range slider: 44px touch target with slim visual track */
+input.heloc-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+
+input.heloc-range:focus {
+  outline: none;
+}
+
+input.heloc-range::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--range-fill, #10b981) 0%,
+    var(--range-fill, #10b981) var(--range-progress, 0%),
+    var(--range-bg, #d6d3d1) var(--range-progress, 0%),
+    var(--range-bg, #d6d3d1) 100%
+  );
+}
+
+input.heloc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -4px;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+  background: var(--range-thumb, #059669);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+}
+
+input.heloc-range::-moz-range-track {
+  height: 10px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--range-bg, #d6d3d1);
+}
+
+input.heloc-range::-moz-range-progress {
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--range-fill, #10b981);
+}
+
+input.heloc-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  background: var(--range-thumb, #059669);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+}

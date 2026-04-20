@@ -29,13 +29,13 @@ export function GeoBaselineData() {
               <td className="py-2">+1.00% Rate Shock</td>
               <td className="py-2">7.75%</td>
               <td className="py-2">$645.83</td>
-              <td className="py-2 text-amber-600">Elevated</td>
+              <td className="py-2 text-amber-700">Elevated</td>
             </tr>
             <tr>
               <td className="py-2">+2.00% Severe Shock</td>
               <td className="py-2">8.75%</td>
               <td className="py-2">$729.17</td>
-              <td className="py-2 text-red-600">High Risk</td>
+              <td className="py-2 text-red-700">High Risk</td>
             </tr>
           </tbody>
         </table>

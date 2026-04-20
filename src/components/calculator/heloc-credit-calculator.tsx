@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback, useId, type CSSProperties } from 'react';
 import dynamic from 'next/dynamic';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import MortgageBalanceCalculator from './MortgageBalanceCalculator';
@@ -13,7 +13,7 @@ const CreditHealthGaugeChart = dynamic(
   () => import('@/components/charts/CreditHealthGaugeChart'),
   {
     ssr: false,
-    loading: () => <div className="h-[200px] w-[200px] mx-auto animate-pulse rounded-full bg-slate-100/50" />
+    loading: () => <div className="h-[200px] w-full animate-pulse rounded-full bg-slate-100/50" aria-hidden="true" />
   }
 );
 
@@ -21,7 +21,7 @@ const DiagnosticChart = dynamic(
   () => import('@/components/charts/DiagnosticChart'),
   {
     ssr: false,
-    loading: () => <div className="h-[300px] w-full animate-pulse rounded-xl bg-slate-100/50 flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
+    loading: () => <div className="h-[400px] w-full animate-pulse rounded-xl bg-slate-100/50" aria-hidden="true" />
   }
 );
 
@@ -73,6 +73,9 @@ export default function HelocCreditCalculator({
   const [showDebtCalculator, setShowDebtCalculator] = useState(false);
   const [showMortgageCalc, setShowMortgageCalc] = useState(false);
   const prevDataRef = useRef<string>('');
+  const propertyTypeId = useId();
+  const occupancyId = useId();
+  const plannedDrawRangeId = useId();
 
   const debouncedHomeValue = useDebounce(homeValue, 300);
   const debouncedMortgageBalance = useDebounce(mortgageBalance, 300);
@@ -172,6 +175,9 @@ export default function HelocCreditCalculator({
 
   const handleMortgageConfirm = (balance: number) => setMortgageBalance(balance);
   const handleDebtCalculatorApply = (totalDebt: number) => setOtherMonthlyDebt(totalDebt);
+  const plannedDrawRangeStyle = {
+    '--range-progress': `${Math.max(0, Math.min(100, utilizationRatio))}%`,
+  } as CSSProperties;
 
   return (
     <div className="space-y-6">
@@ -203,7 +209,11 @@ export default function HelocCreditCalculator({
               onChange={setMortgageBalance}
               formatValue={(val) => `$${val.toLocaleString()}`}
               helpText={
-                <button type="button" onClick={() => setShowMortgageCalc(true)} className="text-left text-[11px] font-medium text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
+                <button
+                  type="button"
+                  onClick={() => setShowMortgageCalc(true)}
+                  className="inline-flex min-h-11 items-center text-left text-[11px] font-medium text-emerald-800 hover:text-emerald-900 hover:underline transition-colors"
+                >
                   Forget Your Mortgage Balance?
                 </button>
               }
@@ -245,7 +255,7 @@ export default function HelocCreditCalculator({
                 <button
                   onClick={() => setShowDebtCalculator(true)}
                   type="button"
-                  className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline"
+                  className="inline-flex min-h-11 items-center text-xs text-emerald-800 hover:text-emerald-900 hover:underline"
                 >
                   Not sure what Other Debt includes?
                 </button>
@@ -267,8 +277,8 @@ export default function HelocCreditCalculator({
               onChange={setCreditScore}
             />
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">Property Type</label>
-              <select value={propertyType} onChange={(e) => setPropertyType(e.target.value as PropertyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+              <label htmlFor={propertyTypeId} className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">Property Type</label>
+              <select id={propertyTypeId} value={propertyType} onChange={(e) => setPropertyType(e.target.value as PropertyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
                 <option value="Single-family">Single-family</option>
                 <option value="Townhouse">Townhouse</option>
                 <option value="Condo">Condo</option>
@@ -277,8 +287,8 @@ export default function HelocCreditCalculator({
               </select>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">Occupancy</label>
-              <select value={occupancyType} onChange={(e) => setOccupancyType(e.target.value as OccupancyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+              <label htmlFor={occupancyId} className="text-[12px] font-semibold text-slate-700 uppercase tracking-wider">Occupancy</label>
+              <select id={occupancyId} value={occupancyType} onChange={(e) => setOccupancyType(e.target.value as OccupancyType)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
                 <option value="Primary residence">Primary</option>
                 <option value="Second home">Second Home</option>
                 <option value="Investment property">Investment</option>
@@ -313,7 +323,7 @@ export default function HelocCreditCalculator({
         {/* Pillar 1: Money (Left) */}
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between h-full">
           <div>
-            <div className="text-xs font-bold tracking-widest text-slate-400 uppercase">Bank Approved Limit</div>
+            <div className="text-xs font-bold tracking-widest text-slate-600 uppercase">Bank Approved Limit</div>
             <div className="text-4xl md:text-5xl font-black text-slate-900 mt-2 tracking-tight">
               ${creditResult ? Math.round(('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) / 1000) * 1000 : 0}
             </div>
@@ -325,9 +335,19 @@ export default function HelocCreditCalculator({
             <div className="space-y-3">
               <div className="flex justify-between items-end text-sm font-medium">
                 <span className="text-slate-600">Planned Draw (Utilization)</span>
-                <span className={`text-xl font-bold ${utilizationRatio >= 50 ? 'text-red-500' : 'text-emerald-600'}`}>{utilizationRatio}%</span>
+                <span className={`text-xl font-bold ${utilizationRatio >= 50 ? 'text-red-700' : 'text-emerald-800'}`}>{utilizationRatio}%</span>
               </div>
-              <input type="range" min="0" max="100" value={utilizationRatio} onChange={handleUtilizationChange} className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
+              <input
+                id={plannedDrawRangeId}
+                aria-label="Planned draw utilization slider"
+                type="range"
+                min="0"
+                max="100"
+                value={utilizationRatio}
+                onChange={handleUtilizationChange}
+                className="heloc-range w-full"
+                style={plannedDrawRangeStyle}
+              />
             </div>
           </div>
 
@@ -336,16 +356,16 @@ export default function HelocCreditCalculator({
               {utilizationRatio >= 50 ? (
                 <>
                   <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                  <span className="text-red-600">High Risk Warning</span>
+                  <span className="text-red-700">High Risk Warning</span>
                 </>
               ) : (
                 <>
-                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                  <span className="text-emerald-600">Score-Safe Draw Limit</span>
+                  <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  <span className="text-emerald-800">Score-Safe Draw Limit</span>
                 </>
               )}
             </div>
-            <div className={`text-2xl font-bold ${utilizationRatio >= 50 ? 'text-red-600' : 'text-emerald-600'}`}>
+            <div className={`text-2xl font-bold ${utilizationRatio >= 50 ? 'text-red-700' : 'text-emerald-800'}`}>
               ${availableAmount.toLocaleString()}
             </div>
             
@@ -369,7 +389,7 @@ export default function HelocCreditCalculator({
           <div className="w-full bg-slate-50 rounded-xl border border-slate-200 p-4 shadow-sm relative z-10">
             <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-200">
               <span className="text-[13px] font-bold text-slate-700">Total Point Impact</span>
-              <span className="text-sm font-black text-red-600 bg-red-100 px-2 py-0.5 rounded-md leading-none shadow-sm border border-red-200/50">
+              <span className="text-sm font-black text-red-800 bg-red-50 px-2 py-0.5 rounded-md leading-none shadow-sm border border-red-200/50">
                 -{creditScoreImpact} pts
               </span>
             </div>

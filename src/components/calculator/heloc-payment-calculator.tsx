@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useId } from 'react';
 import dynamic from 'next/dynamic';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 
@@ -8,7 +8,7 @@ const PaymentTimelineChart = dynamic(
   () => import('@/components/charts/PaymentTimelineChart'),
   {
     ssr: false,
-    loading: () => <div className="h-[300px] w-full animate-pulse rounded-xl bg-slate-100/50 flex items-center justify-center text-slate-400 text-sm">Loading chart...</div>
+    loading: () => <div className="min-h-[350px] w-full animate-pulse rounded-xl bg-slate-100/60" aria-hidden="true" />
   }
 );
 
@@ -116,6 +116,10 @@ export default function HelocPaymentCalculator({
   creditScore,
   onValuesChange
 }: HelocPaymentCalculatorProps = {}) {
+  const drawAmountId = useId();
+  const incomeGrowthId = useId();
+  const inflationId = useId();
+
   // Basic inputs (internal state for immediate UI feedback)
   const [drawAmount, setDrawAmount] = useState<string>(
     initialDrawAmount ? initialDrawAmount.toString() : DEFAULT_DRAW_AMOUNT.toString()
@@ -221,10 +225,11 @@ export default function HelocPaymentCalculator({
           <div className="flex flex-wrap items-center gap-6">
             {/* Draw Amount */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Draw Amount:</label>
+              <label htmlFor={drawAmountId} className="text-sm font-medium text-slate-700 whitespace-nowrap">Draw Amount:</label>
               <div className="relative" style={{ width: '140px' }}>
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">$</span>
                 <input
+                  id={drawAmountId}
                   type="number"
                   value={drawAmount}
                   onChange={(e) => setDrawAmount(e.target.value)}
@@ -236,8 +241,9 @@ export default function HelocPaymentCalculator({
 
             {/* Income Growth */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Income Growth:</label>
+              <label htmlFor={incomeGrowthId} className="text-sm font-medium text-slate-700 whitespace-nowrap">Income Growth:</label>
               <select
+                id={incomeGrowthId}
                 value={incomeGrowth}
                 onChange={(e) => setIncomeGrowth(e.target.value as keyof typeof INCOME_GROWTH_PRESETS)}
                 className="rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
@@ -251,8 +257,9 @@ export default function HelocPaymentCalculator({
 
             {/* Economic Outlook */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Economic Outlook:</label>
+              <label htmlFor={inflationId} className="text-sm font-medium text-slate-700 whitespace-nowrap">Economic Outlook:</label>
               <select
+                id={inflationId}
                 value={inflation}
                 onChange={(e) => setInflation(e.target.value as keyof typeof INFLATION_PRESETS)}
                 className="rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
@@ -294,7 +301,7 @@ export default function HelocPaymentCalculator({
         {/* Chart and Info Card */}
         <div className="mt-6 space-y-6">
           {/* Chart */}
-          <div className="w-full overflow-hidden">
+          <div className="w-full min-h-[350px] overflow-hidden">
             <PaymentTimelineChart
               timeline={burdenRatioTimeline || paymentTimeline}
               showBurdenRatio={burdenRatioTimeline !== null}

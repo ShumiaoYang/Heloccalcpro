@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useId } from 'react';
+import { useState, useMemo, useId, type CSSProperties } from 'react';
 import dynamic from 'next/dynamic';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 
@@ -100,6 +100,9 @@ export default function HelocCalculatorV3() {
   const [drawAmount, setDrawAmount] = useState<string>(DEFAULT_DRAW_AMOUNT.toString());
   const [primeRate, setPrimeRate] = useState<string>(DEFAULT_PRIME_RATE.toString());
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN);
+  const marginRangeStyle = {
+    '--range-progress': `${Math.max(0, Math.min(100, (margin / 10) * 100))}%`,
+  } as CSSProperties;
 
   // Advanced inputs
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -190,8 +193,9 @@ export default function HelocCalculatorV3() {
                 step="0.1"
                 value={margin}
                 onChange={(e) => setMargin(parseFloat(e.target.value))}
-                className="accent-emerald-500"
-                style={{ width: '180px' }}
+                className="heloc-range"
+                style={{ width: '180px', ...marginRangeStyle }}
+                aria-label="Margin rate slider"
               />
               <span className="font-mono text-base font-semibold text-emerald-600 whitespace-nowrap">
                 {margin.toFixed(1)}%

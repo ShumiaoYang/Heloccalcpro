@@ -60,20 +60,20 @@ export default function LanguageSwitcher() {
       <button
         type="button"
         onClick={() => handleSwitch('en')}
-        className={`px-3 py-2 transition ${
+        className={`min-h-11 min-w-11 px-4 py-2 transition ${
           locale === 'en' ? 'bg-sky-100 text-sky-700' : 'hover:bg-sky-50'
         }`}
-        aria-label={t('toggleToEnglish')}
+        aria-label={`EN - ${t('toggleToEnglish')}`}
       >
         EN
       </button>
       <button
         type="button"
         onClick={() => handleSwitch('zh')}
-        className={`px-3 py-2 transition ${
+        className={`min-h-11 min-w-11 px-4 py-2 transition ${
           locale === 'zh' ? 'bg-sky-100 text-sky-700' : 'hover:bg-sky-50'
         }`}
-        aria-label={t('toggleToChinese')}
+        aria-label={`中文 - ${t('toggleToChinese')}`}
       >
         中文
       </button>

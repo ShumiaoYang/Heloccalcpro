@@ -15,7 +15,7 @@ export default function HelocFooter({ onGetReportClick }: HelocFooterProps) {
           </p>
           <p className="text-base font-semibold text-slate-800 sm:text-lg mb-2">
             Everything you need to KNOW and AVOID for just{' '}
-            <span className="text-emerald-600 font-bold">$4.99</span> today.
+            <span className="text-emerald-800 font-bold">$4.99</span> today.
           </p>
           <a
             href="/en/sample-report"
@@ -30,7 +30,7 @@ export default function HelocFooter({ onGetReportClick }: HelocFooterProps) {
         {/* Right side - Button */}
         <button
           onClick={onGetReportClick}
-          className="whitespace-nowrap rounded-lg bg-emerald-500 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-emerald-600 hover:shadow-lg"
+          className="whitespace-nowrap rounded-lg bg-emerald-700 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-emerald-800 hover:shadow-lg"
         >
           Get My Report
         </button>
