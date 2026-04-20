@@ -24,7 +24,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ...baseMetadata,
     title,
     description,
-    keywords: isZh ? 'HELOC用法, 房屋净值贷款, 债务整合, 家庭装修贷款, 投资房产' : 'HELOC uses, home equity loan, debt consolidation, home renovation loan, investment property',
     openGraph: {
       ...baseMetadata.openGraph,
       title,

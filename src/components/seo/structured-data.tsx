@@ -93,6 +93,8 @@ export function getFinancialProductSchema() {
     '@id': `${baseUrl}/#heloc-product`,
     name: 'Home Equity Line of Credit (HELOC) Analysis',
     description: 'Bank-grade analysis tool for US Home Equity Lines of Credit, featuring DTI stress testing and Payment Shock calculations.',
+    feesAndCommissionsSpecification: 'https://schema.org/FreeReturn',
+    provider: { '@id': `${baseUrl}/#organization` },
     brand: { '@id': `${baseUrl}/#organization` },
     audience: {
       '@type': 'Audience',
@@ -203,4 +205,3 @@ export function ArticleSchema({
 
   return <JsonLdScript schema={articleSchema} />;
 }
-

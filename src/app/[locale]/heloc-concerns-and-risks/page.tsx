@@ -24,7 +24,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ...baseMetadata,
     title,
     description,
-    keywords: isZh ? 'HELOC风险, 房屋净值贷款风险, 利率风险, 还款压力, 房产贬值' : 'HELOC risks, home equity loan risks, interest rate risk, repayment pressure, property depreciation',
     openGraph: {
       ...baseMetadata.openGraph,
       title,

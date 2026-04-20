@@ -19,7 +19,6 @@ type TwitterEntry = {
 type SeoEntry = {
   title?: string;
   description?: string;
-  keywords?: string[];
   canonical?: string;
   hreflang?: HrefLangMap;
   openGraph?: OpenGraphEntry;
@@ -111,7 +110,6 @@ function constructMetadata(entry: SeoEntry, locale: Locale, pathname: string, or
   return {
     title: entry.title,
     description: entry.description,
-    keywords: entry.keywords,
     alternates: {
       canonical,
       languages,
