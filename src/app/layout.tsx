@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getLocale } from 'next-intl/server';
-import { Inter, Noto_Sans_SC, JetBrains_Mono, Dancing_Script } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import AuthSessionProvider from '@/components/providers/session-provider';
@@ -10,30 +10,6 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
   fallback: ['system-ui', 'arial'],
-});
-
-const notoSans = Noto_Sans_SC({
-  subsets: ['latin'],
-  variable: '--font-noto-sans-sc',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-  fallback: ['system-ui', 'arial'],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-  fallback: ['monospace'],
-});
-
-const dancingScript = Dancing_Script({
-  subsets: ['latin'],
-  variable: '--font-dancing-script',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-  fallback: ['cursive'],
 });
 
 export const metadata: Metadata = {
@@ -47,7 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${inter.variable} ${notoSans.variable} ${jetbrainsMono.variable} ${dancingScript.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased`}>
         {gaId && <GoogleAnalytics gaId={gaId} />}
         <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
