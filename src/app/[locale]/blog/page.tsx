@@ -47,12 +47,12 @@ export default function BlogIndexPage({ params }: PageProps) {
 
       <header className="mb-10 space-y-4">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          {isZh ? 'HELOC 深度洞察' : 'HELOC Insights'}
+          {isZh ? 'HELOC 风险分析与底层审批逻辑' : 'HELOC Risk Analysis & Inside Banking Strategies'}
         </h1>
         <p className="max-w-3xl text-base text-slate-600">
           {isZh
             ? '核心银行系统架构师视角，解析银行审批逻辑、现金流压力与风险边界。'
-            : 'Core banking architect analysis on approval logic, payment shock, and real-world HELOC risk boundaries.'}
+            : 'Data-driven analysis and bank-grade stress testing guides written by a 20-year core banking architect.'}
         </p>
       </header>
 
