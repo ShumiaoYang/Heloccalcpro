@@ -1,5 +1,6 @@
 import PageShell from '@/components/layout/page-shell';
 import dynamic from 'next/dynamic';
+import { GeoBaselineData } from '@/components/seo/geo-baseline-data';
 import {
   HeroSection,
   ToolSection,
@@ -103,6 +104,7 @@ export default async function LocaleHomePage({ params }: PageProps) {
         <SmartWaysSection content={content} locale={locale} />
         <ConcernsHelpSection content={content} locale={locale} />
         <FeaturesSection content={content} locale={locale} />
+        <GeoBaselineData />
         <FooterSection content={content} locale={locale} />
       </PageShell>
     </>

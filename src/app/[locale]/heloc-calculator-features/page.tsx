@@ -26,7 +26,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ...baseMetadata,
     title,
     description,
-    keywords: isZh ? 'HELOC计算器, 房屋净值计算, 月供计算, 风险评分, 压力测试' : 'HELOC calculator, home equity calculation, payment calculator, risk scoring, stress testing',
     openGraph: {
       ...baseMetadata.openGraph,
       title,
