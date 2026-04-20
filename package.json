@@ -59,7 +59,6 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18",
     "react-katex": "^3.1.0",
-    "remark-gfm": "^4.0.1",
     "recharts": "^3.8.0",
     "resend": "^6.9.2",
     "scoop": "^0.0.2",

@@ -3,7 +3,6 @@ import { ArrowLeft } from 'lucide-react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 import type { AnchorHTMLAttributes, HTMLAttributes } from 'react';
-import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
 import { locales, type Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
@@ -194,15 +193,7 @@ export default function BlogPostPage({ params }: PageProps) {
         </header>
 
         <div className="prose prose-slate lg:prose-xl mx-auto max-w-none">
-          <MDXRemote
-            source={post.content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                remarkPlugins: [remarkGfm],
-              },
-            }}
-          />
+          <MDXRemote source={post.content} components={mdxComponents} />
         </div>
 
         <ReadyToSeeNumbersCta locale={params.locale} />

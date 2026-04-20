@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Link as I18nLink, type Locale } from '@/i18n/routing';
+import { type Locale } from '@/i18n/routing';
 import { getAllPosts } from '@/lib/posts';
 import { getSeoMetadata } from '@/lib/seo';
 
@@ -71,20 +71,20 @@ export default function BlogIndexPage({ params }: PageProps) {
                 <time dateTime={post.date}>{post.date}</time>
               </div>
               <h2 className="mb-3 text-2xl font-semibold text-slate-900">
-                <I18nLink
-                  href={{ pathname: '/blog/[slug]', params: { slug: post.slug } }}
+                <Link
+                  href={`/${locale}/blog/${post.slug}`}
                   className="transition hover:text-emerald-700"
                 >
                   {post.title}
-                </I18nLink>
+                </Link>
               </h2>
               <p className="mb-4 text-slate-600">{post.excerpt}</p>
-              <I18nLink
-                href={{ pathname: '/blog/[slug]', params: { slug: post.slug } }}
+              <Link
+                href={`/${locale}/blog/${post.slug}`}
                 className="text-sm font-semibold text-emerald-700 transition hover:text-emerald-800"
               >
                 {isZh ? '阅读全文 →' : 'Read full analysis →'}
-              </I18nLink>
+              </Link>
             </article>
           ))
         )}
