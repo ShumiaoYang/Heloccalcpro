@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { SiteContent } from '@/lib/content';
 import type { Locale } from '@/i18n/routing';
 
@@ -21,6 +21,9 @@ export default function ToolCard({ copy, slug, locale }: ToolCardProps) {
   const [result, setResult] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const abortController = useRef<AbortController | null>(null);
+  const lengthRangeStyle = {
+    '--range-progress': `${Math.max(0, Math.min(100, ((length - 1) / 4) * 100))}%`,
+  } as CSSProperties;
 
   useEffect(() => {
     return () => {
@@ -119,7 +122,8 @@ export default function ToolCard({ copy, slug, locale }: ToolCardProps) {
               max={5}
               value={length}
               onChange={(event) => setLength(Number(event.target.value))}
-              className="w-full accent-sky-500"
+              className="heloc-range w-full"
+              style={lengthRangeStyle}
             />
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{copy.lengthIndicatorStart}</span>

@@ -44,6 +44,16 @@ function normalizeOrigin(origin: string | undefined) {
   return base.endsWith('/') ? base.slice(0, -1) : base;
 }
 
+function normalizeUrlPath(path: string): string {
+  if (!path || path === '/') return '/';
+  return path.endsWith('/') ? path.slice(0, -1) : path;
+}
+
+function buildAbsoluteUrl(origin: string, path: string): string {
+  const normalizedPath = normalizeUrlPath(path);
+  return normalizedPath === '/' ? `${origin}/` : `${origin}${normalizedPath}`;
+}
+
 function normalizePath(pathname: string): string {
   let path = pathname?.trim() || '/';
   if (!path.startsWith('/')) {
@@ -69,19 +79,16 @@ function normalizePath(pathname: string): string {
 
 function localizePath(pathname: string, locale: Locale): string {
   const normalizedPath = normalizePath(pathname);
-  if (locale === defaultLocale) {
-    return normalizedPath;
-  }
   return normalizedPath === '/' ? `/${locale}` : `/${locale}${normalizedPath}`;
 }
 
 function buildAlternatesLanguages(pathname: string, origin: string): HrefLangMap {
   const mapped = locales.reduce<HrefLangMap>((acc, locale) => {
-    acc[locale] = `${origin}${localizePath(pathname, locale)}`;
+    acc[locale] = buildAbsoluteUrl(origin, localizePath(pathname, locale));
     return acc;
   }, {});
 
-  mapped['x-default'] = mapped[defaultLocale];
+  mapped['x-default'] = buildAbsoluteUrl(origin, localizePath(pathname, defaultLocale));
   return mapped;
 }
 
@@ -105,7 +112,7 @@ function resolveEntry(pathname: string, locale: Locale): SeoEntry {
 
 function constructMetadata(entry: SeoEntry, locale: Locale, pathname: string, origin: string): Metadata {
   const languages = buildAlternatesLanguages(pathname, origin);
-  const canonical = languages[locale];
+  const canonical = languages[locale] ?? buildAbsoluteUrl(origin, localizePath(pathname, locale));
 
   return {
     title: entry.title,
