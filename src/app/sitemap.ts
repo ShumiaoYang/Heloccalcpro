@@ -17,7 +17,9 @@ export const routes = [
   { path: '/heloc-effective-blended-rate', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/heloc-payment-shock', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/heloc-rate-increase-risk', priority: 0.8, changeFrequency: 'weekly' as const },
-  { path: '/heloc-cltv-limits', priority: 0.8, changeFrequency: 'weekly' as const },
+  { path: '/blog/Architects-Transparency', priority: 0.8, changeFrequency: 'weekly' as const },
+  { path: '/blog/Hidden-Rules-of-HELOC', priority: 0.8, changeFrequency: 'weekly' as const },
+  { path: '/blog/How-1-to-80', priority: 0.8, changeFrequency: 'weekly' as const },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
