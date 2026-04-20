@@ -82,7 +82,7 @@ export default async function HelocRateIncreaseRiskPage({ params }: PageProps) {
           </Link>
         </header>
 
-        <article className="prose prose-slate max-w-none">
+        <article className="content-prose max-w-none">
           {/* Section 1: Variable Rate Reality */}
           <section className="mb-12">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
