@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig = {
   experimental: {
     typedRoutes: true,
+    optimizeCss: true,
   },
   images: {
     remotePatterns: [

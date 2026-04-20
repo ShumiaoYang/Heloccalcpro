@@ -47,6 +47,7 @@
     "@prisma/client": "^6.18.0",
     "@react-pdf/renderer": "^4.3.2",
     "chart.js": "^4.5.1",
+    "critters": "^0.0.24",
     "gray-matter": "^4.0.3",
     "jsonwebtoken": "^9.0.3",
     "katex": "^0.16.40",
@@ -66,7 +67,6 @@
     "stripe": "^14.25.0"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.16",
     "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

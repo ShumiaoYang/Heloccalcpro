@@ -91,7 +91,7 @@ export default function SmartWaysPage({ params }: PageProps) {
         </div>
 
         {/* Main Content */}
-        <article className="prose prose-slate max-w-none">
+        <article className="content-prose max-w-none">
           {/* Section 1: Home Renovation */}
           <section id="home-renovation" className="mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">

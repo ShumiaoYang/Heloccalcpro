@@ -192,7 +192,7 @@ export default function BlogPostPage({ params }: PageProps) {
           <p className="mt-4 text-lg text-slate-600">{post.excerpt}</p>
         </header>
 
-        <div className="prose prose-slate lg:prose-xl mx-auto max-w-none">
+        <div className="content-prose mx-auto max-w-none">
           <MDXRemote source={post.content} components={mdxComponents} />
         </div>
 

@@ -111,7 +111,7 @@ export default function AboutPage({ params: { locale } }: Props) {
             </div>
           </div>
 
-          <div className="prose prose-stone max-w-none mb-12">
+          <div className="content-prose max-w-none mb-12">
             {isZh ? (
               <>
                 <h3 className="text-xl font-semibold text-stone-900">行业痛点：银行贷款的&ldquo;黑匣子&rdquo;</h3>
