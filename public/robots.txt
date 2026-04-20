@@ -4,8 +4,12 @@ Allow: /
 # Disallow private pages
 Disallow: /api/
 Disallow: /_next/
-Disallow: /*/auth/
-Disallow: /*/account/
-Disallow: /*/heloc/payment/
+Disallow: /en/auth/
+Disallow: /zh/auth/
+Disallow: /en/account/
+Disallow: /zh/account/
+Disallow: /en/heloc/payment/
+Disallow: /zh/heloc/payment/
 
-Sitemap: https://example.com/sitemap.xml
+# 显式指向你由 src/app/sitemap.ts 动态生成的真实地图
+Sitemap: https://heloccalculator.pro/sitemap.xml
