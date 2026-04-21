@@ -1,7 +1,7 @@
 import { getPrimeRateWithMetadata } from '@/lib/prime-rate/service';
+import { BASE_MARGIN, FALLBACK_PRIME_RATE } from '@/lib/heloc/rate-constants';
 
-const FALLBACK_PRIME_RATE = 6.75;
-const BASE_MARGIN = 0.5;
+export { FALLBACK_PRIME_RATE };
 
 export async function getLivePrimeRate(): Promise<number> {
   try {

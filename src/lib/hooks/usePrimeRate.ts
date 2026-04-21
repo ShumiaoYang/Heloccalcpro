@@ -1,9 +1,7 @@
-/**
- * usePrimeRate Hook - Fetch current Prime Rate from API
- */
+'use client';
 
 import { useState, useEffect } from 'react';
-import { DEFAULT_VALUES } from '@/lib/heloc/types';
+import { FALLBACK_PRIME_RATE } from '@/lib/heloc/rate-constants';
 
 interface PrimeRateData {
   rate: number;
@@ -12,31 +10,85 @@ interface PrimeRateData {
   isDefault: boolean;
 }
 
-export function usePrimeRate() {
+type UsePrimeRateOptions = {
+  fallbackRate?: number;
+  refreshOnMount?: boolean;
+};
+
+type UsePrimeRateResult = {
+  rate: number;
+  isLoading: boolean;
+  isStale: boolean;
+  data: PrimeRateData;
+};
+
+const REQUEST_TIMEOUT_MS = 3000;
+
+export function usePrimeRate({
+  fallbackRate = FALLBACK_PRIME_RATE,
+  refreshOnMount = true,
+}: UsePrimeRateOptions = {}): UsePrimeRateResult {
   const [data, setData] = useState<PrimeRateData>({
-    rate: DEFAULT_VALUES.primeRate,
+    rate: fallbackRate,
     effectiveDate: new Date(),
-    source: 'Default',
+    source: 'Fallback',
     isDefault: true,
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(refreshOnMount);
+  const [isStale, setIsStale] = useState(true);
 
   useEffect(() => {
-    fetch('/api/prime-rate')
-      .then(res => res.json())
-      .then(data => {
-        setData({
-          ...data,
-          effectiveDate: new Date(data.effectiveDate),
-        });
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+    if (!refreshOnMount) {
+      setIsLoading(false);
+      return;
+    }
 
-  return { data, loading, error };
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    fetch('/api/prime-rate', { signal: controller.signal, cache: 'no-store' })
+      .then((res) => {
+        if (!res.ok) throw new Error(`prime-rate status ${res.status}`);
+        return res.json();
+      })
+      .then((payload: Partial<PrimeRateData>) => {
+        const rate = Number(payload.rate);
+        if (!Number.isFinite(rate) || rate <= 0) {
+          throw new Error('invalid prime rate');
+        }
+
+        setData({
+          rate,
+          effectiveDate: payload.effectiveDate ? new Date(payload.effectiveDate) : new Date(),
+          source: payload.source ?? 'Unknown',
+          isDefault: payload.isDefault ?? false,
+        });
+        setIsStale(payload.isDefault ?? false);
+      })
+      .catch(() => {
+        setData({
+          rate: fallbackRate,
+          effectiveDate: new Date(),
+          source: 'Fallback',
+          isDefault: true,
+        });
+        setIsStale(true);
+      })
+      .finally(() => {
+        window.clearTimeout(timeoutId);
+        setIsLoading(false);
+      });
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [fallbackRate, refreshOnMount]);
+
+  return {
+    rate: data.rate,
+    isLoading,
+    isStale,
+    data,
+  };
 }

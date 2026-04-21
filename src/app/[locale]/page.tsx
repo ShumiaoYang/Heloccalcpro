@@ -28,7 +28,7 @@ const FooterSection = dynamic(
 import { getSiteContent } from '@/lib/content';
 import { getNavigation } from '@/lib/navigation';
 import { getSeoMetadata } from '@/lib/seo';
-import { getLivePrimeRate, getBaseMargin } from '@/lib/heloc/rate-service';
+import { FALLBACK_PRIME_RATE, getBaseMargin } from '@/lib/heloc/rate-service';
 import {
   getAuthorSchema,
   getOrganizationSchema,
@@ -53,7 +53,6 @@ export default async function LocaleHomePage({ params }: PageProps) {
   const { locale } = params;
   const content = getSiteContent(locale);
   const navigation = getNavigation(locale);
-  const livePrimeRate = await getLivePrimeRate();
   const baseMargin = getBaseMargin();
 
   // Generate structured data schemas
@@ -65,7 +64,26 @@ export default async function LocaleHomePage({ params }: PageProps) {
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
+      <PageShell
+        navigation={navigation}
+        siteName={content.site.name}
+        loginLabel={content.site.loginCta}
+        logoutLabel={content.site.logoutCta}
+        locale={locale}
+      >
+        <HeroSection content={content} fallbackPrimeRate={FALLBACK_PRIME_RATE} />
+        <ToolSection
+          fallbackPrimeRate={FALLBACK_PRIME_RATE}
+          baseMargin={baseMargin}
+        />
+        <SmartWaysSection content={content} locale={locale} />
+        <ConcernsHelpSection content={content} locale={locale} />
+        <FeaturesSection content={content} locale={locale} />
+        <GeoBaselineData />
+        <FooterSection content={content} locale={locale} />
+      </PageShell>
+
+      {/* JSON-LD Structured Data (after main content to reduce first-screen parse pressure) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(authorSchema) }}
@@ -86,27 +104,6 @@ export default async function LocaleHomePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-
-      <PageShell
-        navigation={navigation}
-        siteName={content.site.name}
-        loginLabel={content.site.loginCta}
-        logoutLabel={content.site.logoutCta}
-        locale={locale}
-      >
-        <HeroSection content={content} locale={locale} />
-        <ToolSection
-          content={content}
-          locale={locale}
-          livePrimeRate={livePrimeRate}
-          baseMargin={baseMargin}
-        />
-        <SmartWaysSection content={content} locale={locale} />
-        <ConcernsHelpSection content={content} locale={locale} />
-        <FeaturesSection content={content} locale={locale} />
-        <GeoBaselineData />
-        <FooterSection content={content} locale={locale} />
-      </PageShell>
     </>
   );
 }
