@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import HelocCreditCalculator from './heloc-credit-calculator';
 import HelocFooter from './HelocFooter';
@@ -55,6 +55,16 @@ export default function HelocTabbedCalculator({
   const [monthlyDebt, setMonthlyDebt] = useState(2000);
 
   const [showPdfModal, setShowPdfModal] = useState(false);
+
+  useEffect(() => {
+    if (Number.isFinite(livePrimeRate) && livePrimeRate > 0) {
+      setPrimeRate(livePrimeRate);
+    }
+  }, [livePrimeRate]);
+
+  useEffect(() => {
+    setMargin(baseMargin);
+  }, [baseMargin]);
 
   // Callbacks for child components (must be at top level, not in conditionals)
   const handleCreditValuesChange = useCallback((values: {

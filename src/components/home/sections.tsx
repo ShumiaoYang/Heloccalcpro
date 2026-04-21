@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import HelocTabbedCalculator from '@/components/calculator/heloc-tabbed-calculator';
 import { LiveRateBadge } from '@/components/home/live-rate-badge';
+import ToolSectionClient from '@/components/home/tool-section-client';
 import type { SiteContent } from '@/lib/content';
 import type { Locale } from '@/i18n/routing';
 
@@ -10,24 +10,31 @@ type SectionsProps = {
   locale: Locale;
 };
 
-type ToolSectionProps = SectionsProps & {
-  livePrimeRate: number;
+type ToolSectionProps = {
+  fallbackPrimeRate: number;
   baseMargin: number;
 };
 
-export async function HeroSection({ content, locale }: SectionsProps) {
-  const { hero, site } = content;
+type HeroSectionProps = {
+  content: SiteContent;
+  fallbackPrimeRate: number;
+};
+
+export function HeroSection({ content, fallbackPrimeRate }: HeroSectionProps) {
+  const { hero } = content;
   return (
     <section id="hero" className="section-spacing">
-      <div className="flex flex-col gap-3 mb-6">
+      <div className="mb-2">
         <span className="inline-flex rounded-full border border-emerald-100 bg-white/90 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-600 shadow-sm">
           {hero.badge}
         </span>
-        <LiveRateBadge />
       </div>
       <div className="space-y-6">
         <h1 className="text-4xl font-semibold tracking-tight text-primary-900 sm:text-5xl">{hero.title}</h1>
         <p className="max-w-4xl text-base leading-relaxed text-slate-600">{hero.subtitle}</p>
+      </div>
+      <div className="mb-6">
+        <LiveRateBadge fallbackRate={fallbackPrimeRate} />
       </div>
       <div className="flex flex-wrap gap-3">
         <Link
@@ -47,7 +54,7 @@ export async function HeroSection({ content, locale }: SectionsProps) {
   );
 }
 
-export function ToolSection({ content, locale, livePrimeRate, baseMargin }: ToolSectionProps) {
+export function ToolSection({ fallbackPrimeRate, baseMargin }: ToolSectionProps) {
   const productHuntBadgeHref =
     'https://www.producthunt.com/products/heloc-calculator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-heloc-calculator-2-0';
   const productHuntBadgeSrc =
@@ -55,7 +62,7 @@ export function ToolSection({ content, locale, livePrimeRate, baseMargin }: Tool
 
   return (
     <section id="tool" className="section-spacing">
-      <HelocTabbedCalculator livePrimeRate={livePrimeRate} baseMargin={baseMargin} />
+      <ToolSectionClient fallbackRate={fallbackPrimeRate} baseMargin={baseMargin} />
       <div className="mt-12 flex justify-center">
         <a
           href={productHuntBadgeHref}
