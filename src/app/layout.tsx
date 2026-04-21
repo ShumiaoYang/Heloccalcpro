@@ -3,6 +3,7 @@ import { getLocale } from 'next-intl/server';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import AuthSessionProvider from '@/components/providers/session-provider';
+import DelayedGoogleAnalytics from '@/components/analytics/delayed-google-analytics';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -18,10 +19,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
+        {gaId ? <DelayedGoogleAnalytics gaId={gaId} /> : null}
         <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>
