@@ -22,7 +22,7 @@ type UsePrimeRateResult = {
   data: PrimeRateData;
 };
 
-const REQUEST_TIMEOUT_MS = 3000;
+const REQUEST_TIMEOUT_MS = 800;
 
 export function usePrimeRate({
   fallbackRate = FALLBACK_PRIME_RATE,
