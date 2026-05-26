@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { LiveRateBadge } from '@/components/home/live-rate-badge';
-import ToolSectionClient from '@/components/home/tool-section-client';
+import ToolSectionLazyMount from '@/components/home/tool-section-lazy-mount.client';
 import type { SiteContent } from '@/lib/content';
 import type { Locale } from '@/i18n/routing';
 
@@ -62,7 +62,11 @@ export function ToolSection({ fallbackPrimeRate, baseMargin }: ToolSectionProps)
 
   return (
     <section id="tool" className="section-spacing">
-      <ToolSectionClient fallbackRate={fallbackPrimeRate} baseMargin={baseMargin} />
+      <ToolSectionLazyMount
+        fallbackRate={fallbackPrimeRate}
+        baseMargin={baseMargin}
+        preloadOffset={500}
+      />
       <div className="mt-12 flex justify-center">
         <a
           href={productHuntBadgeHref}
