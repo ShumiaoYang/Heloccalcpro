@@ -4,6 +4,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 import type { AnchorHTMLAttributes, HTMLAttributes } from 'react';
 import Link from 'next/link';
+import remarkGfm from 'remark-gfm';
 import { locales, type Locale } from '@/i18n/routing';
 import ArchitectNote from '@/components/content/ArchitectNote';
 import { getAllPosts, getPostBySlug } from '@/lib/posts';
@@ -152,6 +153,17 @@ export default function BlogPostPage({ params }: PageProps) {
     a: (props: AnchorHTMLAttributes<HTMLAnchorElement>) => (
       <a className="font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-4" {...props} />
     ),
+    table: (props: HTMLAttributes<HTMLTableElement>) => (
+      <div className="my-6 overflow-x-auto">
+        <table className="min-w-full border-collapse border border-slate-300 text-sm" {...props} />
+      </div>
+    ),
+    th: (props: HTMLAttributes<HTMLTableCellElement>) => (
+      <th className="border border-slate-300 bg-slate-50 px-3 py-2 text-left font-semibold text-slate-900" {...props} />
+    ),
+    td: (props: HTMLAttributes<HTMLTableCellElement>) => (
+      <td className="border border-slate-300 px-3 py-2 align-top text-slate-700" {...props} />
+    ),
   };
 
   return (
@@ -193,7 +205,15 @@ export default function BlogPostPage({ params }: PageProps) {
         </header>
 
         <div className="content-prose mx-auto max-w-none">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          <MDXRemote
+            source={post.content}
+            components={mdxComponents}
+            options={{
+              mdxOptions: {
+                remarkPlugins: [remarkGfm],
+              },
+            }}
+          />
         </div>
 
         <ReadyToSeeNumbersCta locale={params.locale} />
