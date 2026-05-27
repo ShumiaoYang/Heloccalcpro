@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import type { NavigationItem } from '@/lib/navigation';
 import type { Locale } from '@/i18n/routing';
-import AuthSessionProvider from '@/components/providers/session-provider';
 import PageShellDesktopNav from '@/components/layout/page-shell-desktop-nav';
 import PageShellHeaderAuthClient from '@/components/layout/page-shell-header-auth.client';
 import PageShellMobileNavTriggerClient from '@/components/layout/page-shell-mobile-nav-trigger.client';
@@ -26,24 +25,22 @@ export default function PageShell({
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 border-b border-emerald-200/70 bg-white/85 backdrop-blur">
-        <AuthSessionProvider>
-          <div className="mx-auto flex h-16 w-full max-w-full items-center justify-between px-4 lg:px-6">
-            <div className="flex items-center gap-3">
-              <PageShellMobileNavTriggerClient
-                navigation={navigation}
-                loginLabel={loginLabel}
-                logoutLabel={logoutLabel}
-                locale={locale}
-              />
-              <Logo siteName={siteName} />
-            </div>
-            <PageShellHeaderAuthClient
-              locale={locale}
+        <div className="mx-auto flex h-16 w-full max-w-full items-center justify-between px-4 lg:px-6">
+          <div className="flex items-center gap-3">
+            <PageShellMobileNavTriggerClient
+              navigation={navigation}
               loginLabel={loginLabel}
               logoutLabel={logoutLabel}
+              locale={locale}
             />
+            <Logo siteName={siteName} />
           </div>
-        </AuthSessionProvider>
+          <PageShellHeaderAuthClient
+            locale={locale}
+            loginLabel={loginLabel}
+            logoutLabel={logoutLabel}
+          />
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden lg:h-[calc(100vh-4rem)]">
