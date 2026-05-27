@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
+import AuthSessionProvider from '@/components/providers/session-provider';
 import type { NavigationItem } from '@/lib/navigation';
 import { useActiveSection } from '@/lib/hooks/useActiveSection';
 import { scrollToAnchor, updateHash } from '@/lib/utils/scroll-to-anchor';
@@ -23,6 +24,26 @@ type MobileNavDrawerProps = {
 };
 
 export default function PageShellMobileNavDrawerClient({
+  navigation,
+  loginLabel,
+  logoutLabel,
+  locale,
+  onClose,
+}: MobileNavDrawerProps) {
+  return (
+    <AuthSessionProvider>
+      <PageShellMobileNavDrawerInner
+        navigation={navigation}
+        loginLabel={loginLabel}
+        logoutLabel={logoutLabel}
+        locale={locale}
+        onClose={onClose}
+      />
+    </AuthSessionProvider>
+  );
+}
+
+function PageShellMobileNavDrawerInner({
   navigation,
   loginLabel,
   logoutLabel,

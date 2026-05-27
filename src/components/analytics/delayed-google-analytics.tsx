@@ -12,55 +12,46 @@ export default function DelayedGoogleAnalytics({ gaId }: DelayedGoogleAnalyticsP
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const win = window as Window & {
-      requestIdleCallback?: (
-        callback: IdleRequestCallback,
-        options?: IdleRequestOptions,
-      ) => number;
-      cancelIdleCallback?: (handle: number) => void;
-    };
 
+    let activated = false;
     let timeoutId: number | null = null;
-    let idleId: number | null = null;
-    let cancelled = false;
 
     const activate = () => {
-      if (!cancelled) {
-        setShouldLoad(true);
+      if (activated) return;
+      activated = true;
+      setShouldLoad(true);
+      removeListeners();
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
       }
     };
 
-    const scheduleLoad = () => {
-      if (win.requestIdleCallback) {
-        idleId = win.requestIdleCallback(activate, { timeout: 2000 });
-        return;
-      }
+    const onInteraction = () => activate();
 
-      timeoutId = window.setTimeout(activate, 1200);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        activate();
+      }
     };
 
-    if (document.readyState === 'complete') {
-      scheduleLoad();
-      return () => {
-        cancelled = true;
-        if (idleId !== null && win.cancelIdleCallback) {
-          win.cancelIdleCallback(idleId);
-        }
-        if (timeoutId !== null) {
-          window.clearTimeout(timeoutId);
-        }
-      };
-    }
+    const removeListeners = () => {
+      window.removeEventListener('pointerdown', onInteraction);
+      window.removeEventListener('keydown', onInteraction);
+      window.removeEventListener('touchstart', onInteraction);
+      window.removeEventListener('scroll', onInteraction);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
 
-    const onLoad = () => scheduleLoad();
-    window.addEventListener('load', onLoad, { once: true });
+    window.addEventListener('pointerdown', onInteraction, { once: true, passive: true });
+    window.addEventListener('keydown', onInteraction, { once: true });
+    window.addEventListener('touchstart', onInteraction, { once: true, passive: true });
+    window.addEventListener('scroll', onInteraction, { once: true, passive: true });
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    timeoutId = window.setTimeout(activate, 15000);
 
     return () => {
-      cancelled = true;
-      window.removeEventListener('load', onLoad);
-      if (idleId !== null && win.cancelIdleCallback) {
-        win.cancelIdleCallback(idleId);
-      }
+      removeListeners();
       if (timeoutId !== null) {
         window.clearTimeout(timeoutId);
       }

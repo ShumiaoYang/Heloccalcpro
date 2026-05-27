@@ -65,7 +65,8 @@ export function ToolSection({ fallbackPrimeRate, baseMargin }: ToolSectionProps)
       <ToolSectionLazyMount
         fallbackRate={fallbackPrimeRate}
         baseMargin={baseMargin}
-        preloadOffset={500}
+        preloadOffset={0}
+        idleLoad
       />
       <div className="mt-12 flex justify-center">
         <a

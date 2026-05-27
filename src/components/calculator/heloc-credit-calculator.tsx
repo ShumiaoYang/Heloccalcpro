@@ -72,6 +72,7 @@ export default function HelocCreditCalculator({
 
   const [showDebtCalculator, setShowDebtCalculator] = useState(false);
   const [showMortgageCalc, setShowMortgageCalc] = useState(false);
+  const [showCharts, setShowCharts] = useState(false);
   const prevDataRef = useRef<string>('');
   const propertyTypeId = useId();
   const occupancyId = useId();
@@ -80,6 +81,36 @@ export default function HelocCreditCalculator({
   const debouncedHomeValue = useDebounce(homeValue, 300);
   const debouncedMortgageBalance = useDebounce(mortgageBalance, 300);
   const debouncedCreditScore = useDebounce(creditScore, 300);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const win = window as Window & {
+      requestIdleCallback?: (
+        callback: IdleRequestCallback,
+        options?: IdleRequestOptions,
+      ) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    let timeoutId: number | null = null;
+
+    if (win.requestIdleCallback) {
+      const idleId = win.requestIdleCallback(() => setShowCharts(true), { timeout: 1800 });
+      return () => {
+        if (win.cancelIdleCallback) {
+          win.cancelIdleCallback(idleId);
+        }
+      };
+    }
+
+    timeoutId = window.setTimeout(() => setShowCharts(true), 300);
+    return () => {
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
 
   // Dynamic mortgage max based on home value
   const dynamicMortgageMax = useMemo(() => {
@@ -303,16 +334,20 @@ export default function HelocCreditCalculator({
       {/* 中层：视觉沙盘 (Diagnostic Chart) */}
       {/* ========================================================= */}
       <div className={`transition-opacity duration-500 ${!creditResult ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
-        <DiagnosticChart
-          annualIncome={annualIncome || 0}
-          totalMonthlyDebt={(otherMonthlyDebt || 0) + (subjectHousingPayment || 0)}
-          homeValue={debouncedHomeValue || 0}
-          mortgageBalance={debouncedMortgageBalance || 0}
-          currentApprovedLimit={creditResult ? ('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) : 0}
-          cltvCap={creditResult ? (creditResult as any).cltvCap : 85}
-          creditScore={debouncedCreditScore || 740}
-          projectedCLTV={creditResult ? (creditResult as any).projectedLTV : 0}
-        />
+        {showCharts ? (
+          <DiagnosticChart
+            annualIncome={annualIncome || 0}
+            totalMonthlyDebt={(otherMonthlyDebt || 0) + (subjectHousingPayment || 0)}
+            homeValue={debouncedHomeValue || 0}
+            mortgageBalance={debouncedMortgageBalance || 0}
+            currentApprovedLimit={creditResult ? ('approvedCreditLimit' in creditResult ? creditResult.approvedCreditLimit : (creditResult as any).maxHelocAmount) : 0}
+            cltvCap={creditResult ? (creditResult as any).cltvCap : 85}
+            creditScore={debouncedCreditScore || 740}
+            projectedCLTV={creditResult ? (creditResult as any).projectedLTV : 0}
+          />
+        ) : (
+          <div className="h-[400px] w-full animate-pulse rounded-xl bg-slate-100/50" aria-hidden="true" />
+        )}
       </div>
 
       {/* ========================================================= */}
@@ -382,7 +417,11 @@ export default function HelocCreditCalculator({
           
           <div className="w-full flex justify-center items-start -mb-6">
             <div className="w-full max-w-[200px]">
-              <CreditHealthGaugeChart currentScore={creditScore || 0} healthScore={healthScore} label="Predicted Credit Score" />
+              {showCharts ? (
+                <CreditHealthGaugeChart currentScore={creditScore || 0} healthScore={healthScore} label="Predicted Credit Score" />
+              ) : (
+                <div className="h-[200px] w-full animate-pulse rounded-full bg-slate-100/50" aria-hidden="true" />
+              )}
             </div>
           </div>
 
