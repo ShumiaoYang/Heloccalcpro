@@ -1,279 +1,390 @@
 # Heloccalcpro
 
-Professional HELOC (Home Equity Line of Credit) Calculator with AI-powered financial analysis.
+**Financial decision-support SaaS for modeling HELOC borrowing, payment, interest-rate, and repayment scenarios.**
 
-## 🌟 Features
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-heloccalculator.pro-blue)](https://heloccalculator.pro/en)
 
-- **Credit Line Calculator**: Calculate maximum borrowing capacity based on home value, mortgage balance, and credit score
-- **Payment Simulator**: Forecast monthly payments with inflation adjustment over time
-- **Risk Analysis**: Comprehensive risk scoring system (0-100 scale) with detailed health metrics
-- **Credit Score Impact**: Simulate how HELOC utilization affects your credit score
-- **Stress Testing**: Test financial resilience under various interest rate scenarios
-- **AI Expert Reports**: Generate detailed financial analysis reports using GPT-5 and Gemini
-- **PDF Reports**: Professional PDF report generation with charts and recommendations
-- **Stripe Integration**: Secure payment processing for premium features
-- **Email Notifications**: Automated email delivery for reports
-- **Multi-language**: Full support for English and Chinese (中文)
+## Overview
 
-## 🛠️ Tech Stack
+Heloccalcpro is a financial modeling and decision-support application for **Home Equity Lines of Credit (HELOCs)**.
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: Custom components with shadcn/ui patterns
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js with Google OAuth
-- **Payment**: Stripe
-- **AI**: OpenAI GPT-5, Google Gemini
-- **PDF Generation**: @react-pdf/renderer
-- **Email**: Nodemailer
-- **Storage**: Cloudflare R2
-- **Charts**: Chart.js with react-chartjs-2
-- **i18n**: next-intl
-- **Testing**: Vitest + Playwright
+Instead of treating a HELOC as a simple borrowing-limit calculation, the application models the financial path of a HELOC over time:
 
-## 📦 Installation
+- How much home equity may be available
+- What monthly payments may look like
+- How payments change when interest rates rise
+- What happens when the draw period ends
+- How repayment can create payment shock
+- How the proposed borrowing structure behaves under stress
+- How the analysis can be explained in a clear, customer-facing report
 
-1. **Clone the repository**:
-```bash
-git clone https://github.com/your-username/Heloccalcpro.git
-cd Heloccalcpro
+The application combines a **deterministic financial calculation engine** with an **AI interpretation layer**.
+
+> **Core principle:** Financial calculations and risk metrics should be deterministic, testable, and auditable. AI should primarily explain and communicate the calculated results rather than act as the financial calculation engine.
+
+## Why I Built It
+
+Many online HELOC calculators focus primarily on estimating available credit.
+
+That answers:
+
+> "How much can I borrow?"
+
+But a more important question is:
+
+> "What happens after I borrow it?"
+
+A HELOC is a variable-rate product with a draw period, a repayment period, and potentially significant changes in required payments.
+
+I built this project to explore how a financial application can move from a simple calculator toward **scenario-based financial decision support**.
+
+The project also reflects my background in banking technology and financial systems. I have spent more than 20 years working with banking software, core banking systems, payment platforms, financial applications, and complex business rules.
+
+## Key Capabilities
+
+### Borrowing & Credit Analysis
+
+- HELOC credit-line estimation
+- Home equity and CLTV analysis
+- Credit-score-based scenario modeling
+- Property and occupancy considerations
+- Borrowing-capacity analysis
+
+### Payment Modeling
+
+- Interest-only payment calculations
+- Principal-and-interest repayment calculations
+- Amortization schedules
+- Draw-period and repayment-period modeling
+- Payment comparison across scenarios
+
+### Interest-Rate Stress Testing
+
+The application can model how payments change under different interest-rate scenarios.
+
+This helps illustrate questions such as:
+
+- What happens if rates increase?
+- How much could the monthly payment change?
+- Can the borrower absorb the increase?
+- What happens when the loan transitions from interest-only payments to amortizing payments?
+
+### Repayment & Payment-Shock Analysis
+
+One of the key risks modeled by the application is the transition from the draw period to the repayment period.
+
+A borrower may initially see a relatively manageable interest-only payment, followed by a substantially higher payment when principal repayment begins.
+
+The application therefore treats **payment shock** as a first-class risk rather than simply displaying an amortization table.
+
+### Risk Analysis
+
+The application combines calculated financial metrics and stress-test results to provide a structured view of borrowing risk.
+
+The goal is not to make a lending decision, but to help users understand the consequences of different borrowing scenarios.
+
+### AI Financial Analysis
+
+AI is used as an interpretation and communication layer.
+
+The application can use LLM APIs to:
+
+- Explain calculated financial results
+- Summarize major risks
+- Compare scenarios
+- Generate user-facing financial analysis
+- Provide contextual explanations in plain language
+
+The underlying financial calculations remain application logic rather than being delegated to the LLM.
+
+### PDF Reports
+
+The application can generate customer-facing PDF reports containing the financial analysis and scenario results.
+
+The report is designed to turn complex calculations into something that can be reviewed and discussed by a homeowner or financial professional.
+
+## Architecture
+
+The key architectural principle is to keep domain calculations deterministic and auditable, while using AI primarily for interpretation and communication.
+
+```text
+User Financial Inputs
+        ↓
+Deterministic Calculation Engine
+        ↓
+Scenario & Stress Testing Engine
+        ↓
+Risk Analysis & Financial Metrics
+        ↓
+AI Analysis Layer
+        ↓
+Report Generation
 ```
 
-2. **Install dependencies**:
+This separation is intentional:
+
+- **Financial calculations** are implemented as deterministic application logic rather than delegated to an LLM.
+- **Scenario analysis and stress testing** operate on structured financial data and defined rules.
+- **AI** is used to interpret calculated results, explain risks, and generate user-facing financial reports.
+- **PDF generation** converts the structured analysis into a customer-facing report.
+
+This architecture makes the financial logic easier to test, audit, and evolve independently from the AI layer.
+
+## Technology Stack
+
+### Application
+
+- Next.js 14
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui patterns
+
+### Backend & Data
+
+- Node.js
+- PostgreSQL
+- Prisma ORM
+- NextAuth
+- REST/API routes
+
+### AI & Financial Analysis
+
+- OpenAI API
+- Google Gemini API
+- Deterministic financial calculation engine
+- Scenario and stress-testing engine
+- AI-generated financial analysis and reports
+
+### Documents & Infrastructure
+
+- React PDF
+- Cloudflare R2
+- Nodemailer
+- Stripe
+- Vercel
+
+### Testing
+
+- Vitest
+- Playwright
+
+## Project Structure
+
+```text
+src/
+├── app/                 # Next.js application routes
+├── components/          # UI components
+├── lib/
+│   ├── heloc/           # Financial calculation and risk logic
+│   │   ├── credit-calculator.ts
+│   │   ├── risk-score.ts
+│   │   ├── stress-test.ts
+│   │   └── amortization.ts
+│   ├── ai/              # AI analysis
+│   ├── pdf/             # PDF generation
+│   ├── email/           # Email services
+│   ├── storage/         # Object storage
+│   ├── tasks/           # Background/task logic
+│   ├── auth/            # Authentication
+│   └── billing/         # Billing and Stripe
+├── prisma/              # Database schema and migrations
+├── config/              # Application configuration
+├── content/             # Localized content
+├── public/              # Static assets
+└── scripts/             # Utility and deployment scripts
+
+tests/
+├── unit/
+└── e2e/
+```
+
+## Engineering Highlights
+
+### Deterministic Financial Logic
+
+Financial calculations are implemented as application code instead of relying on probabilistic LLM output.
+
+This provides:
+
+- Repeatable results
+- Automated testing
+- Easier debugging
+- Clear separation between calculation and explanation
+- A more auditable financial model
+
+### Scenario-First Design
+
+The product is designed around scenarios rather than a single calculated number.
+
+Instead of only presenting a maximum credit line, the application can compare different borrowing and repayment conditions.
+
+### Stress Testing
+
+Interest-rate changes and repayment-period transitions are modeled explicitly so that users can understand potential downside scenarios before borrowing.
+
+### AI as an Interpretation Layer
+
+The architecture deliberately separates:
+
+```text
+Calculation → Analysis → Explanation
+```
+
+from:
+
+```text
+LLM → Calculation
+```
+
+This allows AI to add value without becoming a source of truth for financial mathematics.
+
+### Production SaaS Architecture
+
+The project includes the major components required by a production-oriented SaaS application, including:
+
+- Authentication
+- Database persistence
+- Billing
+- Email
+- Object storage
+- PDF generation
+- AI APIs
+- Internationalization
+- Automated testing
+
+## Running Locally
+
+### Prerequisites
+
+- Node.js
+- PostgreSQL
+- API credentials for the services you want to use
+
+### Installation
+
 ```bash
+git clone https://github.com/ShumiaoYang/Heloccalcpro.git
+cd Heloccalcpro
 npm install
 ```
 
-3. **Set up environment variables**:
+Create a local environment file:
+
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-Edit `.env` and fill in your API keys and configuration values.
+Configure the required environment variables for your local environment.
 
-4. **Set up the database**:
+### Database
+
+Run the Prisma database setup:
+
 ```bash
 npx prisma generate
 npx prisma migrate dev
 ```
 
-5. **Run the development server**:
+### Development
+
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## Environment Variables
 
-## 🔧 Environment Variables
+The application uses environment variables for configuration, including:
 
-See `.env.example` for all required environment variables. Key variables include:
+```text
+APP_DOMAIN
+NODE_ENV
+DATABASE_URL
 
-### Core
-- `APP_DOMAIN`: Your application domain
-- `NODE_ENV`: Environment (development/production)
-- `DATABASE_URL`: PostgreSQL connection string
+NEXTAUTH_URL
+NEXTAUTH_SECRET
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
 
-### Authentication
-- `NEXTAUTH_URL`: NextAuth URL
-- `NEXTAUTH_SECRET`: Secret for NextAuth.js
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`: Google OAuth credentials
+OPENAI_API_KEY
+GEMINI_API_KEY
 
-### AI Services
-- `OPENAI_API_KEY_GPT5`: OpenAI API key
-- `GEMINI_API_KEY`: Google Gemini API key
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
 
-### Payment
-- `STRIPE_SECRET_KEY` / `STRIPE_PUBLISHABLE_KEY`: Stripe credentials
-- `STRIPE_WEBHOOK_SECRET`: Stripe webhook secret
-- `STRIPE_PRICE_HELOC_REPORT`: Stripe price ID for reports
+R2_ACCOUNT_ID
+R2_ACCESS_KEY_ID
+R2_SECRET_ACCESS_KEY
+R2_BUCKET_NAME
 
-### Storage
-- `R2_*`: Cloudflare R2 storage credentials
+SMTP_HOST
+SMTP_PORT
+SMTP_USER
+SMTP_PASSWORD
+```
 
-### Email
-- `SMTP_*`: SMTP configuration for email notifications
+Only configure the services required for the functionality you intend to run locally.
 
-## 🚀 Deployment
+## Testing
 
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Import the project in [Vercel](https://vercel.com)
-3. Configure environment variables in Vercel dashboard
-4. Deploy
-
-### Manual Deployment
+Unit tests:
 
 ```bash
-npm run build
-npm start
-```
-
-## 📖 Project Structure
-
-```
-Heloccalcpro/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── [locale]/          # Internationalized routes
-│   │   │   ├── page.tsx       # Homepage (HELOC Calculator)
-│   │   │   ├── heloc/         # HELOC related pages
-│   │   │   ├── about/         # About page
-│   │   │   └── account/       # Account management
-│   │   └── api/               # API routes
-│   │       ├── heloc/         # HELOC API endpoints
-│   │       ├── auth/          # Authentication
-│   │       └── billing/       # Stripe billing
-│   ├── components/            # React components
-│   │   ├── calculator/        # Calculator components
-│   │   ├── charts/           # Chart components
-│   │   ├── heloc/            # HELOC specific components
-│   │   ├── billing/          # Billing components
-│   │   ├── home/             # Homepage sections
-│   │   ├── layout/           # Layout components
-│   │   └── ui/               # Reusable UI components
-│   ├── lib/                  # Business logic
-│   │   ├── heloc/           # HELOC calculations
-│   │   │   ├── credit-calculator.ts
-│   │   │   ├── risk-score.ts
-│   │   │   ├── stress-test.ts
-│   │   │   └── amortization.ts
-│   │   ├── ai/              # AI analysis
-│   │   ├── pdf/             # PDF generation
-│   │   ├── email/           # Email service
-│   │   ├── storage/         # R2 storage
-│   │   ├── tasks/           # Background tasks
-│   │   ├── auth/            # Auth configuration
-│   │   └── billing/         # Billing logic
-│   └── types/               # TypeScript types
-├── prisma/                  # Database schema & migrations
-├── config/                  # Configuration files
-│   ├── seo.config.json
-│   └── billing.config.json
-├── content/                 # i18n content
-│   ├── en.json
-│   └── zh.json
-├── public/                  # Static assets
-├── scripts/                 # Utility scripts
-└── tests/                   # Tests (Vitest + Playwright)
-```
-
-## 🧪 Testing
-
-```bash
-# Run unit tests
 npm run test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run E2E tests
-npm run test:e2e
-
-# Run E2E tests with UI
-npm run test:e2e:headed
 ```
 
-## 🛠️ Development Scripts
+End-to-end tests:
 
 ```bash
-# Development
-npm run dev                 # Start dev server
-npm run build              # Build for production
-npm run start              # Start production server
-
-# Code Quality
-npm run lint               # Run ESLint
-npm run lint:fix           # Fix ESLint errors
-npm run format             # Check formatting
-npm run format:write       # Fix formatting
-
-# Database
-npm run prisma:generate    # Generate Prisma Client
-npm run prisma:migrate     # Run migrations
-
-# SEO
-npm run generate:sitemap   # Generate sitemap.xml
-npm run generate:robots    # Generate robots.txt
+npm run test:e2e
 ```
 
-## 🎯 Key Features Explained
+## Deployment
 
-### HELOC Credit Calculator
-Calculates the maximum Home Equity Line of Credit amount based on:
-- Home value
-- Current mortgage balance
-- Credit score (affects LTV limits and interest rates)
-- Desired LTV ratio (Loan-to-Value)
+The application is designed to support deployment to platforms such as Vercel, with PostgreSQL and external services configured through environment variables.
 
-### Risk Scoring System
-Provides a 0-100 risk health score based on:
-- LTV ratio
-- DTI (Debt-to-Income) ratio
-- Credit score
-- Financial stability indicators
+The production deployment separates application configuration and credentials from source code.
 
-### Stress Testing
-Simulates financial scenarios over 10 years:
-- Interest rate increases (Prime Rate fluctuations)
-- Income growth projections
-- Inflation-adjusted payment analysis
+## Product
 
-### AI Analysis
-Uses GPT-5 and Gemini to generate:
-- Personalized financial recommendations
-- Risk analysis and warnings
-- Actionable next steps
-- Long-term financial planning advice
+Live application:
 
-### PDF Reports
-Professional reports including:
-- Executive summary
-- Detailed calculations with charts
-- Risk analysis
-- AI-generated recommendations
-- Payment schedules and amortization
+**https://heloccalculator.pro/en**
 
-## 🌍 Internationalization
+The product is intended for:
 
-The application supports both English and Chinese:
-- `/en` - English version
-- `/zh` - Chinese version (中文)
+- Homeowners researching HELOC options
+- Financial professionals discussing borrowing scenarios
+- Mortgage and real-estate professionals who need clearer scenario explanations
 
-Content is managed through JSON files in the `content/` directory.
+## Background
 
-## 📝 License
+This project is part of my transition from traditional enterprise banking technology into modern AI-native SaaS development.
 
-MIT License - see [LICENSE](LICENSE) file for details.
+My background includes more than 20 years of experience across:
 
-## 🤝 Contributing
+- Core banking systems
+- Payment platforms
+- Financial applications
+- Banking data governance
+- Enterprise architecture
+- Software engineering
+- Technical project management
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+The project combines that domain experience with modern technologies including Next.js, React, Node.js, PostgreSQL, and LLM APIs.
 
-## 🐛 Bug Reports
+## Disclaimer
 
-If you find a bug, please open an issue on GitHub with:
-- Description of the bug
-- Steps to reproduce
-- Expected behavior
-- Screenshots (if applicable)
+Heloccalcpro is a financial modeling and educational decision-support tool.
 
-## 📧 Contact
+It does **not** provide loan approval, lending offers, financial advice, or guarantees of eligibility or borrowing terms.
 
-For questions or support, please open an issue on GitHub.
+Actual HELOC terms, credit limits, interest rates, fees, and approval decisions are determined by individual lenders based on their own underwriting criteria and applicable regulations.
 
-## 🙏 Acknowledgments
+## License
 
-Built with:
-- [Next.js](https://nextjs.org/)
-- [Prisma](https://www.prisma.io/)
-- [Stripe](https://stripe.com/)
-- [OpenAI](https://openai.com/)
-- [Google Gemini](https://ai.google.dev/)
-- [Cloudflare R2](https://www.cloudflare.com/products/r2/)
-- And many other amazing open-source projects
+This project is licensed under the MIT License.
 
----
+## Contact
 
-**Note**: This is a financial calculator tool. Always consult with a qualified financial advisor before making important financial decisions.
+For questions, feedback, or collaboration, please open an issue in this repository or contact the project maintainer.
